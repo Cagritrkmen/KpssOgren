@@ -1,0 +1,1119 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Türkiye Coğrafya Eşleştirme Oyunu</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-color: #0f172a;
+      --panel-bg: #1e293b;
+      --card-bg: #334155;
+      --card-hover: #475569;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --accent: #6366f1;
+      --accent-hover: #4f46e5;
+      
+      --cat-milli: #10b981;
+      --cat-ramsar: #06b6d4;
+      --cat-unesco: #f59e0b;
+      --cat-ticaret: #8b5cf6;
+      --cat-kapi: #ef4444;
+      --cat-cittaslow: #14b8a6;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    
+    html, body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      touch-action: manipulation;
+    }
+
+    body {
+      background: var(--bg-color);
+      color: var(--text-main);
+      font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* HEADER */
+    header {
+      padding: 10px 16px;
+      background: rgba(30, 41, 59, 0.95);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      z-index: 1000;
+      flex-shrink: 0;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .brand-icon {
+      font-size: 18px;
+      background: rgba(99, 102, 241, 0.15);
+      padding: 4px 8px;
+      border-radius: 8px;
+      border: 1px solid rgba(99, 102, 241, 0.3);
+    }
+
+    h1 {
+      font-size: 15px;
+      font-weight: 800;
+      background: linear-gradient(135deg, #fff 0%, #cbd5e1 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      line-height: 1.2;
+    }
+
+    .sub {
+      color: var(--text-muted);
+      font-size: 10.5px;
+    }
+
+    .stats-bar {
+      display: flex;
+      gap: 6px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .stat-pill {
+      background: rgba(15, 23, 42, 0.6);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      padding: 4px 10px;
+      border-radius: 99px;
+      font-size: 11px;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .stat-pill val {
+      color: #38bdf8;
+      font-weight: 800;
+    }
+
+    .combo-pill {
+      background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+      color: #fff;
+      padding: 4px 8px;
+      border-radius: 99px;
+      font-size: 11px;
+      font-weight: 800;
+      display: none;
+    }
+
+    .btn {
+      border: 0;
+      border-radius: 8px;
+      padding: 6px 10px;
+      font-size: 11.5px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      white-space: nowrap;
+      min-height: 32px;
+    }
+
+    .btn-primary { background: var(--accent); color: #fff; }
+    .btn-primary:hover { background: var(--accent-hover); }
+    .btn-icon { background: rgba(255, 255, 255, 0.06); color: var(--text-main); border: 1px solid rgba(255, 255, 255, 0.1); }
+    .btn-icon:hover { background: rgba(255, 255, 255, 0.12); }
+
+    /* UPPER PANEL */
+    .top-panel {
+      background: var(--panel-bg);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      padding: 8px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      flex-shrink: 0;
+      max-height: 40vh;
+      overflow-y: auto;
+    }
+
+    .controls-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      overflow-x: auto;
+      padding-bottom: 2px;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .search-box {
+      position: relative;
+      width: 180px;
+      flex-shrink: 0;
+    }
+
+    .search-box input {
+      width: 100%;
+      background: rgba(15, 23, 42, 0.6);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 8px;
+      padding: 6px 10px 6px 28px;
+      color: #fff;
+      font-size: 11.5px;
+      outline: none;
+      height: 32px;
+    }
+
+    .search-box svg {
+      position: absolute;
+      left: 8px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 14px;
+      height: 14px;
+      fill: var(--text-muted);
+    }
+
+    .filters {
+      display: flex;
+      gap: 4px;
+      flex-shrink: 0;
+    }
+
+    .filter-btn {
+      background: rgba(15, 23, 42, 0.5);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      color: var(--text-muted);
+      padding: 6px 10px;
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 700;
+      cursor: pointer;
+      white-space: nowrap;
+      min-height: 32px;
+    }
+
+    .filter-btn.active {
+      background: var(--accent);
+      color: #fff;
+      border-color: var(--accent);
+    }
+
+    /* GÖZ HAFIZASI PANELİ */
+    .memory-container {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(15, 23, 42, 0.4);
+      padding: 4px 8px;
+      border-radius: 8px;
+      border: 1px dashed rgba(239, 68, 68, 0.3);
+      overflow-x: auto;
+      white-space: nowrap;
+      flex-grow: 1;
+      min-height: 32px;
+    }
+
+    .memory-title {
+      font-size: 10.5px;
+      font-weight: 700;
+      color: #fca5a5;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      flex-shrink: 0;
+    }
+
+    .memory-list {
+      display: flex;
+      gap: 6px;
+    }
+
+    .memory-chip {
+      background: rgba(239, 68, 68, 0.15);
+      border: 1px solid rgba(239, 68, 68, 0.4);
+      color: #fecdd3;
+      padding: 2px 8px;
+      border-radius: 99px;
+      font-size: 10px;
+      font-weight: 700;
+      animation: fadeIn 0.3s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: scale(0.9); }
+      to { opacity: 1; transform: scale(1); }
+    }
+
+    /* CARDS HORIZONTAL SCROLL */
+    .cards-container {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      padding: 2px 0 6px 0;
+      scroll-behavior: smooth;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .cards-container::-webkit-scrollbar,
+    .controls-row::-webkit-scrollbar,
+    .memory-container::-webkit-scrollbar {
+      height: 3px;
+    }
+    .cards-container::-webkit-scrollbar-thumb,
+    .controls-row::-webkit-scrollbar-thumb,
+    .memory-container::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.15);
+      border-radius: 3px;
+    }
+
+    .card {
+      background: var(--card-bg);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 10px;
+      padding: 8px 10px;
+      cursor: pointer;
+      user-select: none;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      min-width: 155px;
+      max-width: 175px;
+      flex-shrink: 0;
+      transition: all 0.2s;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .card:active {
+      transform: scale(0.98);
+    }
+
+    .card.selected {
+      border: 2px solid #38bdf8 !important;
+      background: #1e293b;
+      box-shadow: 0 0 12px rgba(56, 189, 248, 0.4);
+    }
+
+    .card.wrong-shake {
+      animation: shake 0.4s ease-in-out;
+      border-color: #ef4444 !important;
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      20%, 60% { transform: translateX(-4px); }
+      40%, 80% { transform: translateX(4px); }
+    }
+
+    .tag {
+      font-size: 8.5px;
+      font-weight: 800;
+      text-transform: uppercase;
+      padding: 2px 5px;
+      border-radius: 4px;
+      color: #fff;
+      width: fit-content;
+    }
+
+    .tag-milli { background: var(--cat-milli); }
+    .tag-ramsar { background: var(--cat-ramsar); }
+    .tag-unesco { background: var(--cat-unesco); }
+    .tag-ticaret { background: var(--cat-ticaret); }
+    .tag-kapi { background: var(--cat-kapi); }
+    .tag-cittaslow { background: var(--cat-cittaslow); }
+
+    .card-title {
+      font-size: 12px;
+      font-weight: 700;
+      color: #f8fafc;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .card-hint-text {
+      font-size: 9.5px;
+      color: #fca5a5;
+      background: rgba(239, 68, 68, 0.15);
+      padding: 3px 6px;
+      border-radius: 4px;
+    }
+
+    /* MAP AREA */
+    #mapWrap {
+      position: relative;
+      flex: 1;
+      width: 100%;
+      height: 100%;
+      background: #090d16;
+    }
+
+    #map {
+      height: 100%;
+      width: 100%;
+      background: #090d16;
+    }
+
+    .province-label {
+      background: transparent !important;
+      border: 0 !important;
+      box-shadow: none !important;
+      color: #94a3b8 !important;
+      font-weight: 700 !important;
+      font-size: 8.5px !important;
+      text-shadow: 0 1px 3px rgba(0,0,0,0.9), 0 0 2px #000 !important;
+      white-space: nowrap;
+      pointer-events: none;
+      transition: opacity 0.2s ease;
+    }
+
+    body.hide-labels .province-label {
+      display: none !important;
+    }
+
+    /* FLOATING POPUP TOAST */
+    .toast-banner {
+      position: absolute;
+      top: 12px;
+      left: 50%;
+      transform: translateX(-50%) translateY(-10px);
+      z-index: 1000;
+      background: rgba(15, 23, 42, 0.95);
+      border: 1px solid rgba(16, 185, 129, 0.4);
+      backdrop-filter: blur(12px);
+      color: #fff;
+      padding: 8px 14px;
+      border-radius: 99px;
+      font-size: 11.5px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+      opacity: 0;
+      pointer-events: none;
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      max-width: 92%;
+      text-align: center;
+    }
+
+    .toast-banner.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    .toast-success { border-color: #10b981; }
+    .toast-danger { border-color: #ef4444; }
+
+    .matched-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: #10b981;
+      border: 2px solid #ffffff;
+      box-shadow: 0 0 8px rgba(16, 185, 129, 0.8);
+    }
+
+    /* MOBILE RESPONSIVE MEDIA QUERIES */
+    @media (max-width: 768px) {
+      header {
+        flex-direction: column;
+        align-items: stretch;
+        padding: 8px 12px;
+        gap: 8px;
+      }
+
+      .brand {
+        justify-content: space-between;
+      }
+
+      .sub {
+        display: none;
+      }
+
+      .stats-bar {
+        justify-content: space-between;
+        width: 100%;
+      }
+
+      .stat-pill {
+        padding: 3px 8px;
+        font-size: 10.5px;
+      }
+
+      .btn {
+        padding: 4px 8px;
+        font-size: 10.5px;
+      }
+
+      .search-box {
+        width: 140px;
+      }
+
+      .card {
+        min-width: 140px;
+        max-width: 150px;
+        padding: 6px 8px;
+      }
+
+      .toast-banner {
+        top: 8px;
+        font-size: 10.5px;
+        padding: 6px 12px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header>
+    <div class="brand">
+      <div style="display: flex; align-items: center; gap: 8px;">
+        <div class="brand-icon">🗺️</div>
+        <div>
+          <h1>Türkiye Coğrafya Eşleştirme</h1>
+          <div class="sub">Yukarıdan kartı seç, haritadaki ilin veya noktanın üzerine tıkla.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="stats-bar">
+      <div class="combo-pill" id="comboPill">🔥 <span id="comboVal">2</span>x</div>
+      <div class="stat-pill">Doğru: <val id="score">0</val></div>
+      <div class="stat-pill">Kalan: <val id="left">0</val></div>
+      <button class="btn btn-icon" id="toggleLabelsBtn" title="İl İsimlerini Gizle/Göster">🏷️ İsimler</button>
+      <button class="btn btn-icon" id="soundToggle">🔊</button>
+      <button class="btn btn-primary" id="reset">Yeniden Başlat</button>
+    </div>
+  </header>
+
+  <!-- TOP PANEL -->
+  <div class="top-panel">
+    <div class="controls-row">
+      <div class="search-box">
+        <svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+        <input type="text" id="searchInput" placeholder="Arama yap...">
+      </div>
+      <div class="filters">
+        <button class="filter-btn active" data-cat="all">Tümü</button>
+        <button class="filter-btn" data-cat="Milli Park">Milli Park</button>
+        <button class="filter-btn" data-cat="Ramsar">Ramsar</button>
+        <button class="filter-btn" data-cat="UNESCO">UNESCO</button>
+        <button class="filter-btn" data-cat="Cittaslow" style="border-color: rgba(20, 184, 166, 0.4);">🐌 Sakin Şehir</button>
+        <button class="filter-btn" data-cat="Serbest Bölge">Ticaret</button>
+        <button class="filter-btn" data-cat="Sınır Kapısı" style="border-color: rgba(239, 68, 68, 0.4);">🚪 Sınır Kapısı</button>
+      </div>
+
+      <!-- GÖZ HAFIZASI PANELİ -->
+      <div class="memory-container">
+        <div class="memory-title">🧠 Hafıza:</div>
+        <div class="memory-list" id="memoryList"></div>
+      </div>
+    </div>
+
+    <div id="cards" class="cards-container"></div>
+  </div>
+
+  <!-- MAIN MAP WRAPPER -->
+  <div id="mapWrap">
+    <div class="toast-banner" id="toast">
+      <span id="toastIcon">💡</span>
+      <span id="toastText">Kart seçip haritada il veya sınır kapısı üzerine tıklayın.</span>
+    </div>
+    <div id="map"></div>
+  </div>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="./turkiye.js"></script>
+  <script>
+    const rawItems = [
+      ["Milli Park","Nemrut Dağı",["Adıyaman","Malatya"]],["Milli Park","Akdağ",["Afyonkarahisar","Denizli"]],
+      ["Milli Park","Başkomutan",["Afyonkarahisar","Kütahya","Uşak"]],["Milli Park","Ağrı Dağı",["Ağrı","Iğdır"]],
+      ["Milli Park","Soğuksu",["Ankara"]],["Milli Park","Sakarya Meydan Muharebesi",["Ankara"]],
+      ["Milli Park","Sarıçalı Dağı",["Ankara"]],["Milli Park","Güllük Dağı - Termessos",["Antalya"]],
+      ["Milli Park","Beydağları Sahil",["Antalya"]],["Milli Park","Altınbeşik Mağarası",["Antalya"]],
+      ["Milli Park","Köprülü Kanyon",["Antalya","Isparta"]],["Milli Park","Hatila Vadisi",["Artvin"]],
+      ["Milli Park","Kaçkar Dağları",["Rize"]],["Milli Park","Dilek Yarımadası - Büyük Menderes Deltası",["Aydın"]],
+      ["Milli Park","Kuşcenneti",["Balıkesir"]],["Milli Park","Kazdağı",["Balıkesir"]],
+      ["Milli Park","Kop Dağı Müdafaası",["Bayburt","Erzurum"]],["Milli Park","Yedigöller",["Bolu"]],
+      ["Milli Park","Abant Gölü",["Bolu"]],["Milli Park","Uludağ",["Bursa"]],
+      ["Milli Park","Troya",["Çanakkale"]],["Milli Park","Boğazköy – Alacahöyük",["Çorum"]],
+      ["Milli Park","Honaz Dağı",["Denizli"]],["Milli Park","Gala Gölü",["Edirne"]],
+      ["Milli Park","Nene Hatun",["Erzurum"]],["Milli Park","Hakkari Cilo ve Sat Dağları",["Hakkari"]],
+      ["Milli Park","Kızıldağ",["Isparta"]],["Milli Park","Kovada Gölü",["Isparta"]],
+      ["Milli Park","Geben Vadisi",["Kahramanmaraş"]],["Milli Park","Sarıkamış - Allahuekber Dağları",["Kars","Erzurum"]],
+      ["Milli Park","Küre Dağları",["Kastamonu","Bartın"]],["Milli Park","Ilgaz Dağı",["Kastamonu","Çankırı"]],
+      ["Milli Park","İstiklal Yolu",["Kastamonu","Çankırı"]],["Milli Park","Sultan Sazlığı",["Kayseri"]],
+      ["Milli Park","İğneada Longoz Ormanları",["Kırklareli"]],["Milli Park","Beyşehir Gölü",["Konya"]],
+      ["Milli Park","Derebucak Çamlık Mağaraları",["Konya"]],["Milli Park","Spil Dağı",["Manisa"]],
+      ["Milli Park","Marmaris",["Muğla"]],["Milli Park","Saklıkent",["Muğla","Antalya"]],
+      ["Milli Park","Malazgirt Meydan Muharebesi",["Muş"]],["Milli Park","Aladağlar",["Niğde","Adana","Kayseri"]],
+      ["Milli Park","Karatepe - Aslantaş",["Osmaniye"]],["Milli Park","Karagöl – Sahara",["Rize","Artvin"]],
+      ["Milli Park","Botan Vadisi",["Siirt"]],["Milli Park","Divriği",["Sivas"]],
+      ["Milli Park","Tek Tek Dağları",["Şanlıurfa"]],["Milli Park","Altındere Vadisi",["Trabzon"]],
+      ["Milli Park","Munzur Vadisi",["Tunceli"]],["Milli Park","Yozgat Çamlığı",["Yozgat"]],
+      
+      ["Ramsar","Göksu Deltası",["Mersin"]],["Ramsar","Burdur Gölü",["Burdur"]],["Ramsar","Seyfe Gölü",["Kırşehir"]],
+      ["Ramsar","Manyas Kuşgölü",["Balıkesir"]],["Ramsar","Sultan Sazlığı",["Kayseri"]],["Ramsar","Kızılırmak Deltası",["Samsun"]],
+      ["Ramsar","Akyatan Lagünü",["Adana"]],["Ramsar","Uluabat Gölü",["Bursa"]],["Ramsar","Gediz Deltası",["İzmir"]],
+      ["Ramsar","Meke Krater Gölü",["Konya"]],["Ramsar","Yumurtalık Lagünleri",["Adana"]],["Ramsar","Kızören Obruğu",["Konya"]],
+      ["Ramsar","Kuyucuk Gölü",["Kars"]],["Ramsar","Nemrut Gölü",["Bitlis"]],
+      
+      ["UNESCO","Divriği Ulu Camii ve Darüşşifası",["Sivas"]],["UNESCO","İstanbul’un Tarihi Alanları",["İstanbul"]],
+      ["UNESCO","Hattuşa (Boğazköy) - Hitit Başkenti",["Çorum"]],["UNESCO","Nemrut Dağı",["Adıyaman"]],
+      ["UNESCO","Xanthos-Letoon",["Antalya","Muğla"]],["UNESCO","Safranbolu Şehri",["Karabük"]],
+      ["UNESCO","Troya Arkeolojik Alanı",["Çanakkale"]],["UNESCO","Edirne Selimiye Camii ve Külliyesi",["Edirne"]],
+      ["UNESCO","Çatalhöyük Neolitik Alanı",["Konya"]],["UNESCO","Bergama Çok Katmanlı Kültürel Peyzaj Alanı",["İzmir"]],
+      ["UNESCO","Bursa ve Cumalıkızık: Osmanlı İmparatorluğunun Doğuşu",["Bursa"]],["UNESCO","Diyarbakır Kalesi ve Hevsel Bahçeleri Kültürel Peyzajı",["Diyarbakır"]],
+      ["UNESCO","Efes",["İzmir"]],["UNESCO","Ani Arkeolojik Alanı",["Kars"]],["UNESCO","Afrodisias",["Aydın"]],
+      ["UNESCO","Göbeklitepe",["Şanlıurfa"]],["UNESCO","Arslantepe Höyüğü",["Malatya"]],["UNESCO","Gordion",["Ankara"]],
+      ["UNESCO","Anadolu’nun Orta Çağ Dönemi Ahşap Hipostil Camileri",["Afyonkarahisar","Ankara","Eskişehir","Kastamonu","Konya"]],
+      ["UNESCO","Sardes Antik Kenti ve Bintepeler Lidya Tümülüsleri",["Manisa"]],
+
+      // CITTASLOW (SAKİN ŞEHİRLER - TESCİL SIRASINA GÖRE)
+      // CITTASLOW (SAKİN ŞEHİRLER - RESMİ TESCİL SIRASI)
+      ["Cittaslow","1-Seferihisar",["İzmir"]],
+      ["Cittaslow","2-Akyaka",["Muğla"]],
+      ["Cittaslow","3-Gökçeada",["Çanakkale"]],
+      ["Cittaslow","4-Yenipazar",["Aydın"]],
+      ["Cittaslow","5-Vize",["Kırklareli"]],
+      ["Cittaslow","6-Perşembe",["Ordu"]],
+      ["Cittaslow","7-Yalvaç",["Isparta"]],
+      ["Cittaslow","8-Halfeti",["Şanlıurfa"]],
+      ["Cittaslow","9-Şavşat",["Artvin"]],
+      ["Cittaslow","10-Uzundere",["Erzurum"]],
+      ["Cittaslow","11-Göynük",["Bolu"]],
+      ["Cittaslow","12-Gerze",["Sinop"]],
+      ["Cittaslow","13-Eğirdir",["Isparta"]],
+      ["Cittaslow","14-Mudurnu",["Bolu"]],
+      ["Cittaslow","15-Köyceğiz",["Muğla"]],
+      ["Cittaslow","16-Ahlat",["Bitlis"]],
+      ["Cittaslow","17-Güdül",["Ankara"]],
+      ["Cittaslow","18-Arapgir",["Malatya"]],
+      ["Cittaslow","19-Foça",["İzmir"]],
+      ["Cittaslow","20-Kemaliye",["Erzincan"]],
+      ["Cittaslow","21-Finike",["Antalya"]],
+      ["Cittaslow","22-Şarköy",["Tekirdağ"]],
+      ["Cittaslow","23-İznik",["Bursa"]],
+      ["Cittaslow","24-Safranbolu",["Karabük"]],
+      ["Cittaslow","25-Daday",["Kastamonu"]],
+      ["Cittaslow","26-İbradı",["Antalya"]],
+      ["Cittaslow","27-Demre",["Antalya"]],
+      ["Cittaslow","28-Çameli",["Denizli"]],
+      ["Cittaslow","29-Ortahisar",["Nevşehir"]],
+      
+      ["Serbest Bölge","Yumurtalık Serbest Bölgesi",["Adana"]],["Serbest Bölge","Antalya Serbest Bölgesi",["Antalya"]],
+      ["Serbest Bölge","Avrupa Serbest Bölgesi",["Tekirdağ"]],["Serbest Bölge","Batı Anadolu Serbest Bölgesi",["İzmir"]],
+      ["Serbest Bölge","Bursa Serbest Bölgesi",["Bursa"]],["Serbest Bölge","Denizli Serbest Bölgesi",["Denizli"]],
+      ["Serbest Bölge","Ege Serbest Bölgesi",["İzmir"]],["Serbest Bölge","Gaziantep Serbest Bölgesi",["Gaziantep"]],
+      ["Serbest Bölge","İstanbul İhtisas Serbest Bölgesi",["İstanbul"]],["Serbest Bölge","İstanbul Endüstri ve Ticaret Serbest Bölgesi",["İstanbul"]],
+      ["Serbest Bölge","İstanbul Trakya Serbest Bölgesi",["Tekirdağ"]],["Serbest Bölge","İzmir Serbest Bölgesi",["İzmir"]],
+      ["Serbest Bölge","Kayseri Serbest Bölgesi",["Kayseri"]],["Serbest Bölge","Kocaeli Serbest Bölgesi",["Kocaeli"]],
+      ["Serbest Bölge","Mersin Serbest Bölgesi",["Mersin"]],["Serbest Bölge","Rize Serbest Bölgesi",["Rize"]],
+      ["Serbest Bölge","Samsun Serbest Bölgesi",["Samsun"]],["Serbest Bölge","Trabzon Serbest Bölgesi",["Trabzon"]],
+      ["Serbest Bölge","TÜBİTAK MAM Teknoloji Serbest Bölgesi",["Kocaeli"]],
+
+      ["Sınır Kapısı","İpsala",["Edirne"],"Yunanistan"],
+      ["Sınır Kapısı","Uzunköprü 🚂",["Edirne"],"Yunanistan"],
+      ["Sınır Kapısı","Pazarkule",["Edirne"],"Yunanistan"],
+      ["Sınır Kapısı","Kapıkule 🚂",["Edirne"],"Bulgaristan"],
+      ["Sınır Kapısı","Hamzabeyli",["Edirne"],"Bulgaristan"],
+      ["Sınır Kapısı","Dereköy (Aziziye)",["Kırklareli"],"Bulgaristan"],
+      ["Sınır Kapısı","Sarp",["Artvin"],"Gürcistan"],
+      ["Sınır Kapısı","Türkgözü",["Ardahan"],"Gürcistan"],
+      ["Sınır Kapısı","Çıldır-Aktaş",["Ardahan"],"Gürcistan"],
+      ["Sınır Kapısı","Canbaz 🚂",["Ardahan"],"Gürcistan"],
+      ["Sınır Kapısı","Akyaka 🚂",["Kars"],"Ermenistan"],
+      ["Sınır Kapısı","Alican",["Iğdır"],"Ermenistan"],
+      ["Sınır Kapısı","Gürbulak",["Ağrı"],"İran"],
+      ["Sınır Kapısı","Kapıköy 🚂",["Van"],"İran"],
+      ["Sınır Kapısı","Esendere",["Hakkari"],"İran"],
+      ["Sınır Kapısı","Dilucu",["Iğdır"],"Nahçıvan"],
+      ["Sınır Kapısı","Derecik",["Hakkari"],"Irak"],
+      ["Sınır Kapısı","Üzümlü",["Hakkari"],"Irak"],
+      ["Sınır Kapısı","Habur",["Şırnak"],"Irak"],
+      ["Sınır Kapısı","Nusaybin 🚂",["Mardin"],"Suriye"],
+      ["Sınır Kapısı","Ceylanpınar",["Şanlıurfa"],"Suriye"],
+      ["Sınır Kapısı","Akçakale",["Şanlıurfa"],"Suriye"],
+      ["Sınır Kapısı","Çobanbey 🚂",["Gaziantep"],"Suriye"],
+      ["Sınır Kapısı","Mürşitpınar 🚂",["Şanlıurfa"],"Suriye"],
+      ["Sınır Kapısı","Karkamış",["Gaziantep"],"Suriye"],
+      ["Sınır Kapısı","Öncüpınar",["Kilis"],"Suriye"],
+      ["Sınır Kapısı","Zeytindalı",["Hatay"],"Suriye"],
+      ["Sınır Kapısı","Cilvegözü",["Hatay"],"Suriye"],
+      ["Sınır Kapısı","Yayladağı",["Hatay"],"Suriye"]
+    ];
+
+    function shuffleArray(array) {
+      const arr = [...array];
+      for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+      }
+      return arr;
+    }
+
+    const items = shuffleArray(rawItems);
+
+    const countryColors = {
+      "Bulgaristan": "#3b82f6",
+      "Yunanistan": "#ec4899",
+      "Gürcistan": "#eab308",
+      "Ermenistan": "#f97316",
+      "İran": "#a855f7",
+      "Irak": "#14b8a6",
+      "Suriye": "#10b981",
+      "Nahçıvan": "#06b6d4"
+    };
+
+    const borderGateCoords = {
+      "İpsala": { lat: 40.918, lng: 26.319, country: "Yunanistan", prov: "Edirne" },
+      "Uzunköprü 🚂": { lat: 41.272, lng: 26.680, country: "Yunanistan", prov: "Edirne" },
+      "Pazarkule": { lat: 41.658, lng: 26.545, country: "Yunanistan", prov: "Edirne" },
+      "Kapıkule 🚂": { lat: 41.716, lng: 26.353, country: "Bulgaristan", prov: "Edirne" },
+      "Hamzabeyli": { lat: 41.968, lng: 26.636, country: "Bulgaristan", prov: "Edirne" },
+      "Dereköy (Aziziye)": { lat: 41.932, lng: 27.368, country: "Bulgaristan", prov: "Kırklareli" },
+      "Sarp": { lat: 41.522, lng: 41.551, country: "Gürcistan", prov: "Artvin" },
+      "Türkgözü": { lat: 41.417, lng: 42.662, country: "Gürcistan", prov: "Ardahan" },
+      "Çıldır-Aktaş": { lat: 41.229, lng: 43.218, country: "Gürcistan", prov: "Ardahan" },
+      "Canbaz 🚂": { lat: 41.135, lng: 43.280, country: "Gürcistan", prov: "Ardahan" },
+      "Akyaka 🚂": { lat: 40.738, lng: 43.714, country: "Ermenistan", prov: "Kars" },
+      "Gürbulak": { lat: 39.412, lng: 44.377, country: "İran", prov: "Ağrı" },
+      "Kapıköy 🚂": { lat: 38.514, lng: 44.372, country: "İran", prov: "Van" },
+      "Esendere": { lat: 37.712, lng: 44.573, country: "İran", prov: "Hakkari" },
+      "Derecik": { lat: 37.042, lng: 44.362, country: "Irak", prov: "Hakkari" },
+      "Üzümlü": { lat: 37.039, lng: 44.225, country: "Irak", prov: "Hakkari" },
+      "Habur": { lat: 37.152, lng: 42.563, country: "Irak", prov: "Şırnak" },
+      "Alican": { lat: 40.122, lng: 44.028, country: "Ermenistan", prov: "Iğdır" },
+      "Dilucu": { lat: 39.789, lng: 44.783, country: "Nahçıvan", prov: "Iğdır" },
+      "Nusaybin 🚂": { lat: 37.067, lng: 41.218, country: "Suriye", prov: "Mardin" },
+      "Ceylanpınar": { lat: 36.838, lng: 39.998, country: "Suriye", prov: "Şanlıurfa" },
+      "Akçakale": { lat: 36.703, lng: 38.948, country: "Suriye", prov: "Şanlıurfa" },
+      "Çobanbey 🚂": { lat: 36.671, lng: 37.498, country: "Suriye", prov: "Gaziantep" },
+      "Mürşitpınar 🚂": { lat: 36.885, lng: 38.351, country: "Suriye", prov: "Şanlıurfa" },
+      "Karkamış": { lat: 36.833, lng: 38.016, country: "Suriye", prov: "Gaziantep" },
+      "Öncüpınar": { lat: 36.648, lng: 37.082, country: "Suriye", prov: "Kilis" },
+      "Zeytindalı": { lat: 36.471, lng: 36.578, country: "Suriye", prov: "Hatay" },
+      "Cilvegözü": { lat: 36.239, lng: 36.657, country: "Suriye", prov: "Hatay" },
+      "Yayladağı": { lat: 35.903, lng: 35.972, country: "Suriye", prov: "Hatay" }
+    };
+
+    const facts = {
+      "Yozgat Çamlığı": "🌲 Türkiye'nin İLAN EDİLEN İLK MİLLİ PARKI'dır (1958).",
+      "Ağrı Dağı": "🏔️ Türkiye'nin EN BÜYÜK MİLLİ PARKI ve en yüksek dağıdır (5.137 m).",
+      "Marmaris": "🏖️ Türkiye'nin ziyaretçi sayısı ve turizm potansiyeli en yüksek milli parklarındandır.",
+      "Botan Vadisi": "🏞️ Türkiye'nin son ilan edilen milli parklarındandır.",
+      "Nemrut Dağı": "🗿 Kommagene Krallığı'na ait dev heykellerin bulunduğu UNESCO mirasıdır.",
+      "Uludağ": "🎿 Türkiye'nin kış turizminin başkenti ve biyoçeşitlilik merkezidir.",
+      "İğneada Longoz Ormanları": "🌊 Avrupa'nın en büyük subasar (longoz) ormanlarındandır.",
+      "Başkomutan": "⚔️ Kurtuluş Savaşı'nın zaferle sonuçlandığı Büyük Taarruz topraklarıdır.",
+      "İstiklal Yolu": "📜 İnebolu'dan Ankara'ya cephane taşınan tarihi milli park hattıdır.",
+      "Karatepe - Aslantaş": "🦁 Türkiye'nin ilk açık hava müzesi niteliğindeki milli parkıdır.",
+      "Altınbeşik Mağarası": "🚣 Türkiye'nin en büyük yeraltı gölü mağarasına ev sahipliği yapar.",
+      "Göksu Deltası": "🦆 Türkiye'nin İLAN EDİLEN İLK RAMSAR ALANI'dır (1994).",
+      "Kızılırmak Deltası": "🌾 Türkiye'nin EN BÜYÜK RAMSAR ALANI'dır.",
+      "Meke Krater Gölü": "🧿 'Dünyanın Nazar Boncuğu' olarak bilinen volkanik maar gölüdür.",
+      "Sultan Sazlığı": "🦅 Tatlı ve tuzlu su ekosistemlerini bir arada barındıran sulak alandır.",
+      "Manyas Kuşgölü": "🕊️ Türkiye'nin ilk tescillenen kuş cennetidir.",
+      "Nemrut Gölü": "🌋 Türkiye'nin en büyük, dünyanın 2. büyük kaldera gölüdür.",
+      "Divriği Ulu Camii ve Darüşşifası": "🕌 Türkiye'nin UNESCO Listesi'ne giren İLK KÜLTÜREL VARLIĞI'dır (1985).",
+      "Göbeklitepe": "🏛️ Tarihin bilinen en eski tapınak kompleksidir (~12.000 yıllık).",
+      "Çatalhöyük Neolitik Alanı": "🏠 İnsanlığın ilk yerleşik hayata geçtiği sokaksız neolitik kenttir.",
+      "Gordion": "📜 Frigya Krallığı'nın başkentidir (2023 UNESCO).",
+      "Sardes Antik Kenti ve Bintepeler Lidya Tümülüsleri": "🪙 Parayı ilk kullanan Lidyalıların başkentidir (2025 UNESCO).",
+      "Arslantepe Höyüğü": "🧱 Dünyanın bilinen ilk devlet bürokrasisine sahip Malatya höyüğüdür.",
+      "Mersin Serbest Bölgesi": "🏬 Türkiye'nin İLAN EDİLEN İLK SERBEST BÖLGESİ'dir (1985).",
+      "Ege Serbest Bölgesi": "🏭 Türkiye'nin en yüksek işlem hacmine sahip serbest bölgesidir.",
+      "1-Seferihisar": "🐌 Türkiye'nin İLK Sakin Şehri (2009 - İzmir).",
+      "2-Gökçeada": "🏝️ Dünyanın İLK ve TEK sakin adası (Çanakkale).",
+      "29-Ortahisar": "🐌 Türkiye'nin son (29.) tescillenen Sakin Şehri (Nevşehir).",
+      "Kapıkule 🚂": "🚂 Türkiye'nin en yoğun ve en büyük kara/demiryolu sınır kapısıdır (Bulgaristan).",
+      "Habur": "🚛 Türkiye'nin Ortadoğu'ya açılan en yüksek işlem hacimli sınır kapısıdır (Irak).",
+      "Sarp": "🚶 Kimlikle geçiş yapılabilen ve Karadeniz'i Kafkaslara bağlayan kapıdır (Gürcistan).",
+      "Dilucu": "🇦🇿 Türkiye'nin Azerbaycan (Nahçıvan) ile tek kara sınır kapısıdır."
+    };
+
+    let soundEnabled = true;
+    let showLabels = true;
+    const AudioCtx = window.AudioContext || window.webkitAudioContext;
+    let audioCtx = null;
+
+    function playSound(type) {
+      if(!soundEnabled) return;
+      if(!audioCtx) audioCtx = new AudioCtx();
+      if(audioCtx.state === 'suspended') audioCtx.resume();
+
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      const now = audioCtx.currentTime;
+
+      if(type === 'correct') {
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(523.25, now);
+        osc.frequency.exponentialRampToValueAtTime(659.25, now + 0.15);
+        gain.gain.setValueAtTime(0.2, now);
+        gain.gain.exponentialRampToValueAtTime(0.01, now + 0.25);
+        osc.start(now); osc.stop(now + 0.25);
+      } else if(type === 'wrong') {
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(220, now);
+        osc.frequency.exponentialRampToValueAtTime(130, now + 0.2);
+        gain.gain.setValueAtTime(0.2, now);
+        gain.gain.exponentialRampToValueAtTime(0.01, now + 0.25);
+        osc.start(now); osc.stop(now + 0.25);
+      }
+    }
+
+    let map;
+    let provinceLayers = [];
+    let borderMarkers = {};
+    let matched = new Set();
+    let score = 0;
+    let combo = 0;
+    let activeCat = 'all';
+    let searchQuery = '';
+    let dragItem = null;
+    let selectedItem = null;
+    let wrongCounts = {};
+    let memoryItems = [];
+
+    function norm(s) {
+      return s.toLocaleLowerCase('tr-TR')
+        .replaceAll('’',"'").replaceAll('ı','i').replaceAll('ğ','g')
+        .replaceAll('ü','u').replaceAll('ş','s').replaceAll('ö','o').replaceAll('ç','c');
+    }
+
+    function getProvinceName(p) {
+      return p.ADI || p.adi || p.name || p.NAME_1 || p.province || p.il;
+    }
+
+    function loadMap() {
+      const isMobile = window.innerWidth <= 768;
+      const initialZoom = isMobile ? 5 : 6;
+      const initialCenter = isMobile ? [39.0, 35.2] : [39.05, 35.2];
+
+      map = L.map('map', { 
+        zoomControl: !isMobile, 
+        attributionControl: false,
+        tap: true
+      }).setView(initialCenter, initialZoom);
+      
+      L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}{r}.png', {
+        maxZoom: 10,
+        subdomains: 'abcd'
+      }).addTo(map);
+
+      try {
+        if (typeof turkeyGeoJSON === 'undefined') {
+          showToast('⚠️ turkiye.js yüklenemedi.', 'danger', 5000);
+          return;
+        }
+
+        const geoJsonLayer = L.geoJSON(turkeyGeoJSON, {
+          style: () => ({
+            color: 'rgba(255, 255, 255, 0.18)',
+            weight: 1.2,
+            fillColor: '#1e293b',
+            fillOpacity: 0.65
+          }),
+          onEachFeature: (feature, layer) => {
+            const name = getProvinceName(feature.properties);
+            layer.provinceName = name;
+            provinceLayers.push(layer);
+
+            layer.bindTooltip(name, {
+              permanent: true,
+              direction: 'center',
+              className: 'province-label',
+              opacity: 0.95
+            });
+
+            layer.on('mouseover', () => {
+              if (dragItem !== null || selectedItem !== null) {
+                layer.setStyle({ fillColor: '#6366f1', fillOpacity: 0.8, weight: 2 });
+              }
+            });
+
+            layer.on('mouseout', () => {
+              layer.setStyle({ fillColor: '#1e293b', fillOpacity: 0.65, weight: 1.2 });
+            });
+
+            layer.on('click', (e) => {
+              if (selectedItem !== null && items[selectedItem][0] !== 'Sınır Kapısı') {
+                attemptMatch(selectedItem, layer, e.latlng);
+              }
+            });
+          }
+        }).addTo(map);
+
+        renderBorderPoints();
+
+        map.fitBounds(geoJsonLayer.getBounds(), { padding: isMobile ? [5, 5] : [10, 10] });
+
+      } catch (err) {
+        showToast('⚠️ Harita verisi işlenirken hata oluştu.', 'danger');
+      }
+    }
+
+    function renderBorderPoints() {
+      const isMobile = window.innerWidth <= 768;
+      const markerRadius = isMobile ? 8 : 6;
+
+      Object.keys(borderGateCoords).forEach(gateName => {
+        const data = borderGateCoords[gateName];
+        
+        const marker = L.circleMarker([data.lat, data.lng], {
+          radius: markerRadius,
+          fillColor: "#ffffff",
+          color: "#000000",
+          weight: 2,
+          opacity: 1,
+          fillOpacity: 0.95
+        }).addTo(map);
+
+        marker.gateName = gateName;
+        borderMarkers[gateName] = marker;
+
+        marker.on('click', () => {
+          if (selectedItem !== null) {
+            attemptMatch(selectedItem, null, [data.lat, data.lng], gateName);
+          }
+        });
+      });
+    }
+
+    function pointInRing(pt, ring) {
+      let inside = false;
+      for (let i = 0, j = ring.length - 1; i < ring.length; j = i++) {
+        const xi = ring[i][0], yi = ring[i][1], xj = ring[j][0], yj = ring[j][1];
+        const hit = ((yi > pt[1]) !== (yj > pt[1])) && (pt[0] < (xj - xi) * (pt[1] - yi) / (yj - yi) + xi);
+        if (hit) inside = !inside;
+      }
+      return inside;
+    }
+
+    function pointInGeometry(latlng, g) {
+      const pt = [latlng.lng, latlng.lat];
+      if (g.type === 'Polygon') return pointInRing(pt, g.coordinates[0]) && g.coordinates.slice(1).every(r => !pointInRing(pt, r));
+      if (g.type === 'MultiPolygon') return g.coordinates.some(p => pointInRing(pt, p[0]) && p.slice(1).every(r => !pointInRing(pt, r)));
+      return false;
+    }
+
+    function provinceAt(ll) {
+      for (const l of provinceLayers) if (pointInGeometry(ll, l.feature.geometry)) return l;
+      return null;
+    }
+
+    function renderCards() {
+      const container = document.getElementById('cards');
+      container.innerHTML = '';
+
+      items.forEach((x, i) => {
+        if (matched.has(i)) return;
+        if (activeCat !== 'all' && x[0] !== activeCat) return;
+        if (searchQuery && !norm(x[1]).includes(norm(searchQuery))) return;
+
+        const card = document.createElement('div');
+        card.className = `card ${selectedItem === i ? 'selected' : ''}`;
+        card.dataset.i = i;
+
+        let tagClass = 'tag-milli';
+        if(x[0] === 'Ramsar') tagClass = 'tag-ramsar';
+        if(x[0] === 'UNESCO') tagClass = 'tag-unesco';
+        if(x[0] === 'Cittaslow') tagClass = 'tag-cittaslow';
+        if(x[0] === 'Serbest Bölge') tagClass = 'tag-ticaret';
+        if(x[0] === 'Sınır Kapısı') tagClass = 'tag-kapi';
+
+        let hintHTML = '';
+        if (wrongCounts[i] >= 3) {
+          const detail = x[3] ? `${x[3]} (${x[2].join('/')})` : x[2].join(' / ');
+          hintHTML = `<div class="card-hint-text">💡 ${detail}</div>`;
+        }
+
+        card.innerHTML = `
+          <span class="tag ${tagClass}">${x[0]}</span>
+          <div class="card-title" title="${x[1]}">${x[1]}</div>
+          ${hintHTML}
+        `;
+
+        card.addEventListener('click', () => {
+          selectedItem = (selectedItem === i) ? null : i;
+          if (selectedItem !== null) {
+            const targetText = x[0] === 'Sınır Kapısı' ? 'doğru nokta' : 'doğru il';
+            showToast(`📍 Haritada ${x[1]} için ${targetText} üzerine tıklayın.`, 'success', 1800);
+          }
+          renderCards();
+        });
+
+        container.appendChild(card);
+      });
+
+      document.getElementById('score').textContent = score;
+      document.getElementById('left').textContent = items.length - matched.size;
+
+      if (combo > 1) {
+        document.getElementById('comboPill').style.display = 'flex';
+        document.getElementById('comboVal').textContent = combo;
+      } else {
+        document.getElementById('comboPill').style.display = 'none';
+      }
+    }
+
+    function addMemoryChip(name, detailInfo) {
+      const chipText = `${name} - ${detailInfo}`;
+      if (!memoryItems.includes(chipText)) {
+        memoryItems.push(chipText);
+        const memoryList = document.getElementById('memoryList');
+        const chip = document.createElement('div');
+        chip.className = 'memory-chip';
+        chip.textContent = chipText;
+        memoryList.insertBefore(chip, memoryList.firstChild);
+      }
+    }
+
+    function attemptMatch(itemIndex, layer, latlng, hitGateName = null) {
+      const [cat, name, provs, country] = items[itemIndex];
+      let ok = false;
+
+      if (cat === 'Sınır Kapısı') {
+        if (hitGateName) {
+          ok = (norm(hitGateName) === norm(name));
+        } else if (layer) {
+          ok = provs.some(p => norm(p) === norm(layer.provinceName));
+        }
+      } else {
+        if (layer) {
+          ok = provs.some(p => norm(p) === norm(layer.provinceName));
+        }
+      }
+
+      if (ok) {
+        matched.add(itemIndex);
+        score++;
+        combo++;
+        playSound('correct');
+
+        const infoLabel = country ? `${country} (${provs[0]})` : (layer ? layer.provinceName : provs[0]);
+
+        if (wrongCounts[itemIndex] && wrongCounts[itemIndex] > 0) {
+          addMemoryChip(name, infoLabel);
+        }
+
+        if (cat === 'Sınır Kapısı' && borderMarkers[name]) {
+          const marker = borderMarkers[name];
+          const color = countryColors[country] || '#10b981';
+          
+          marker.setStyle({ fillColor: color, color: '#ffffff', radius: 8 });
+          marker.bindTooltip(`<b>${name}</b> (${country} - ${provs[0]})`, {
+            direction: 'top',
+            offset: [0, -8]
+          });
+        } else if (layer) {
+          L.marker(latlng, {
+            icon: L.divIcon({ className: 'matched-dot', iconSize: [12, 12], iconAnchor: [6, 6] }),
+            interactive: false
+          }).addTo(map).bindTooltip(name, { direction: 'top', offset: [0, -6] });
+
+          layer.setStyle({ fillColor: '#10b981', fillOpacity: 0.85, weight: 2 });
+        }
+
+        const specialFact = facts[name];
+        if (specialFact) {
+          showToast(`✅ Doğru! ${name} → ${specialFact}`, 'success', 2200);
+        } else {
+          showToast(`✅ Doğru! ${name} → ${infoLabel}`, 'success', 1500);
+        }
+
+        selectedItem = null;
+        dragItem = null;
+        renderCards();
+
+      } else {
+        combo = 0;
+        wrongCounts[itemIndex] = (wrongCounts[itemIndex] || 0) + 1;
+        playSound('wrong');
+
+        const cardEl = document.querySelector(`.card[data-i="${itemIndex}"]`);
+        if (cardEl) {
+          cardEl.classList.add('wrong-shake');
+          setTimeout(() => cardEl.classList.remove('wrong-shake'), 400);
+        }
+
+        const targetName = layer ? layer.provinceName : (hitGateName || 'Yanlış Nokta');
+        if (wrongCounts[itemIndex] >= 3) {
+          const targetDetail = country ? `${country} - ${provs.join('/')}` : provs.join(' / ');
+          showToast(`💡 İpucu: ${name} → ${targetDetail}`, 'danger', 2500);
+        } else {
+          showToast(`❌ Yanlış (${targetName}). Tekrar dene! (${wrongCounts[itemIndex]}/3)`, 'danger', 1500);
+        }
+
+        renderCards();
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      loadMap();
+      renderCards();
+    });
+
+    let toastTimeout;
+    function showToast(text, type = 'success', duration = 2000) {
+      const toast = document.getElementById('toast');
+      document.getElementById('toastText').innerHTML = text;
+      document.getElementById('toastIcon').textContent = type === 'success' ? '✨' : '💡';
+      toast.className = `toast-banner show toast-${type}`;
+
+      clearTimeout(toastTimeout);
+      toastTimeout = setTimeout(() => { 
+        toast.className = 'toast-banner'; 
+      }, duration);
+    }
+
+    document.getElementById('toggleLabelsBtn').addEventListener('click', (e) => {
+      showLabels = !showLabels;
+      if (showLabels) {
+        document.body.classList.remove('hide-labels');
+        e.target.textContent = '🏷️ İsimler';
+      } else {
+        document.body.classList.add('hide-labels');
+        e.target.textContent = '🏷️ Gizli';
+      }
+    });
+
+    document.querySelectorAll('.filter-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        activeCat = btn.dataset.cat;
+        renderCards();
+      });
+    });
+
+    document.getElementById('searchInput').addEventListener('input', (e) => {
+      searchQuery = e.target.value;
+      renderCards();
+    });
+
+    document.getElementById('soundToggle').addEventListener('click', (e) => {
+      soundEnabled = !soundEnabled;
+      e.target.textContent = soundEnabled ? '🔊' : '🔇';
+    });
+
+    document.getElementById('reset').addEventListener('click', () => location.reload());
+  </script>
+</body>
+</html>
