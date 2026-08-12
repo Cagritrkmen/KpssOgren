@@ -28,6 +28,14 @@
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
     
+    /* MOBİL MODAL - MASAÜSTÜNDE MUTLAKA GİZLE */
+    .mobile-bottom-bar,
+    .mobile-filter-modal {
+      display: none !important;
+      visibility: hidden !important;
+      pointer-events: none !important;
+    }
+    
     html, body {
       width: 100%;
       height: 100%;
@@ -43,17 +51,18 @@
       flex-direction: column;
     }
 
-    /* HEADER */
+    /* DESKTOP HEADER */
     header {
-      padding: 10px 16px;
-      background: rgba(30, 41, 59, 0.95);
-      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      padding: 12px 20px;
+      background: linear-gradient(135deg, rgba(30, 41, 59, 0.95) 0%, rgba(15, 23, 42, 0.95) 100%);
+      border-bottom: 2px solid rgba(99, 102, 241, 0.15);
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 12px;
+      gap: 16px;
       z-index: 1000;
       flex-shrink: 0;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
     }
 
     .brand {
@@ -99,11 +108,19 @@
       font-size: 11px;
       font-weight: 600;
       white-space: nowrap;
+      transition: all 0.2s ease;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .stat-pill:hover {
+      background: rgba(15, 23, 42, 0.8);
+      border-color: rgba(99, 102, 241, 0.3);
     }
 
     .stat-pill val {
       color: #38bdf8;
       font-weight: 800;
+      margin-left: 2px;
     }
 
     .combo-pill {
@@ -114,6 +131,19 @@
       font-size: 11px;
       font-weight: 800;
       display: none;
+      box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
+    }
+
+    .combo-pill:hover {
+      box-shadow: 0 6px 16px rgba(245, 158, 11, 0.4);
+    }
+
+    .mobile-stats-floating .combo-pill {
+      padding: 6px 12px;
+      font-size: 12px;
+      border-radius: 10px;
+      display: none;
+      box-shadow: 0 4px 8px rgba(245, 158, 11, 0.3);
     }
 
     .btn {
@@ -129,24 +159,51 @@
       gap: 4px;
       white-space: nowrap;
       min-height: 32px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
     }
 
-    .btn-primary { background: var(--accent); color: #fff; }
-    .btn-primary:hover { background: var(--accent-hover); }
-    .btn-icon { background: rgba(255, 255, 255, 0.06); color: var(--text-main); border: 1px solid rgba(255, 255, 255, 0.1); }
-    .btn-icon:hover { background: rgba(255, 255, 255, 0.12); }
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    }
+
+    .btn:active {
+      transform: scale(0.95);
+    }
+
+    .btn-primary { 
+      background: linear-gradient(135deg, var(--accent) 0%, rgba(79, 70, 229, 0.8) 100%);
+      color: #fff;
+    }
+    
+    .btn-primary:hover { 
+      background: linear-gradient(135deg, var(--accent-hover) 0%, rgba(79, 70, 229, 0.9) 100%);
+      box-shadow: 0 6px 16px rgba(99, 102, 241, 0.3);
+    }
+    
+    .btn-icon { 
+      background: rgba(255, 255, 255, 0.06);
+      color: var(--text-main);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    .btn-icon:hover { 
+      background: rgba(99, 102, 241, 0.1);
+      border-color: rgba(99, 102, 241, 0.3);
+    }
 
     /* UPPER PANEL */
     .top-panel {
-      background: var(--panel-bg);
-      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-      padding: 8px 12px;
+      background: linear-gradient(180deg, var(--panel-bg) 0%, rgba(15, 23, 42, 0.8) 100%);
+      border-bottom: 2px solid rgba(99, 102, 241, 0.1);
+      padding: 12px 16px;
       display: flex;
       flex-direction: column;
-      gap: 8px;
+      gap: 10px;
       flex-shrink: 0;
       max-height: 40vh;
       overflow-y: auto;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
     }
 
     .controls-row {
@@ -174,6 +231,18 @@
       font-size: 11.5px;
       outline: none;
       height: 32px;
+      transition: all 0.2s ease;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .search-box input:focus {
+      background: rgba(15, 23, 42, 0.8);
+      border-color: rgba(99, 102, 241, 0.4);
+      box-shadow: 0 0 12px rgba(99, 102, 241, 0.2);
+    }
+
+    .search-box input::placeholder {
+      color: #64748b;
     }
 
     .search-box svg {
@@ -184,6 +253,11 @@
       width: 14px;
       height: 14px;
       fill: var(--text-muted);
+      transition: all 0.2s ease;
+    }
+
+    .search-box input:focus ~ svg {
+      fill: #38bdf8;
     }
 
     .region-select-box {
@@ -201,6 +275,18 @@
       outline: none;
       height: 32px;
       cursor: pointer;
+      transition: all 0.2s ease;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .region-select:hover {
+      background: rgba(16, 185, 129, 0.25);
+      border-color: rgba(16, 185, 129, 0.6);
+    }
+
+    .region-select:focus {
+      border-color: #10b981;
+      box-shadow: 0 0 12px rgba(16, 185, 129, 0.2);
     }
 
     .region-select option {
@@ -225,12 +311,20 @@
       cursor: pointer;
       white-space: nowrap;
       min-height: 32px;
+      transition: all 0.2s ease;
+    }
+
+    .filter-btn:hover {
+      background: rgba(99, 102, 241, 0.1);
+      border-color: rgba(99, 102, 241, 0.3);
+      color: #cbd5e1;
     }
 
     .filter-btn.active {
-      background: var(--accent);
+      background: linear-gradient(135deg, var(--accent) 0%, rgba(79, 70, 229, 0.8) 100%);
       color: #fff;
       border-color: var(--accent);
+      box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
     }
 
     /* GÖZ HAFIZASI PANELİ */
@@ -238,7 +332,7 @@
       display: flex;
       align-items: center;
       gap: 6px;
-      background: rgba(15, 23, 42, 0.4);
+      background: linear-gradient(135deg, rgba(15, 23, 42, 0.5) 0%, rgba(15, 23, 42, 0.3) 100%);
       padding: 4px 8px;
       border-radius: 8px;
       border: 1px dashed rgba(239, 68, 68, 0.3);
@@ -246,6 +340,13 @@
       white-space: nowrap;
       flex-grow: 1;
       min-height: 32px;
+      transition: all 0.2s ease;
+      box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .memory-container:hover {
+      border-color: rgba(239, 68, 68, 0.5);
+      background: linear-gradient(135deg, rgba(15, 23, 42, 0.6) 0%, rgba(15, 23, 42, 0.4) 100%);
     }
 
     .memory-title {
@@ -264,7 +365,7 @@
     }
 
     .memory-chip {
-      background: rgba(239, 68, 68, 0.15);
+      background: linear-gradient(135deg, rgba(239, 68, 68, 0.2) 0%, rgba(239, 68, 68, 0.1) 100%);
       border: 1px solid rgba(239, 68, 68, 0.4);
       color: #fecdd3;
       padding: 2px 8px;
@@ -272,6 +373,7 @@
       font-size: 10px;
       font-weight: 700;
       animation: fadeIn 0.3s ease;
+      box-shadow: 0 2px 4px rgba(239, 68, 68, 0.1);
     }
 
     @keyframes fadeIn {
@@ -316,6 +418,14 @@
       flex-shrink: 0;
       transition: all 0.2s;
       -webkit-tap-highlight-color: transparent;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+    }
+
+    .card:hover {
+      background: var(--card-hover);
+      border-color: rgba(99, 102, 241, 0.3);
+      box-shadow: 0 6px 16px rgba(99, 102, 241, 0.2);
+      transform: translateY(-2px);
     }
 
     .card:active {
@@ -325,7 +435,8 @@
     .card.selected {
       border: 2px solid #38bdf8 !important;
       background: #1e293b;
-      box-shadow: 0 0 12px rgba(56, 189, 248, 0.4);
+      box-shadow: 0 0 16px rgba(56, 189, 248, 0.35);
+      background: linear-gradient(135deg, rgba(56, 189, 248, 0.1) 0%, rgba(30, 41, 59, 0.8) 100%);
     }
 
     .card.wrong-shake {
@@ -347,6 +458,8 @@
       border-radius: 4px;
       color: #fff;
       width: fit-content;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+      letter-spacing: 0.5px;
     }
 
     .tag-milli { background: var(--cat-milli); }
@@ -364,6 +477,7 @@
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
+      letter-spacing: 0.2px;
     }
 
     .card-progress {
@@ -378,6 +492,7 @@
       background: rgba(239, 68, 68, 0.15);
       padding: 3px 6px;
       border-radius: 4px;
+      border: 1px solid rgba(239, 68, 68, 0.2);
     }
 
     /* MAP AREA */
@@ -443,27 +558,423 @@
       box-shadow: 0 0 8px rgba(16, 185, 129, 0.8);
     }
 
+    /* Mobil Stats Bar - Masaüstü ekranda gizle */
+    .mobile-stats-floating {
+      display: none;
+    }
+
+    .mobile-bottom-bar {
+      display: none;
+    }
+
+    .mobile-filters-sheet {
+      display: none;
+    }
+
+    /* --- MOBIL ÖZEL OPTİMİZASYONLAR --- */
     @media (max-width: 768px) {
-      header {
+      body {
+        display: flex;
         flex-direction: column;
-        align-items: stretch;
-        padding: 8px 12px;
+        height: 100vh;
+        overflow: hidden;
+      }
+
+      header {
+        display: none; /* Üstteki hantal başlığı mobilde tamamente kaldırıyoruz */
+      }
+
+      /* MOBIL ELEMENTLERI GÖSTER */
+      .mobile-bottom-bar {
+        display: flex !important;
+        visibility: visible !important;
+        pointer-events: auto !important;
+      }
+
+      .mobile-filter-modal {
+        display: none !important;
+        visibility: hidden !important;
+        pointer-events: none !important;
+      }
+
+      .mobile-filter-modal.active {
+        display: flex !important;
+        visibility: visible !important;
+        pointer-events: auto !important;
+        align-items: flex-end;
+      }
+
+      /* Mobile-specific optimizations */
+      * {
+        -webkit-tap-highlight-color: transparent;
+        -webkit-touch-callout: none;
+        -webkit-user-select: none;
+        user-select: none;
+      }
+
+      input, select {
+        -webkit-user-select: text;
+        user-select: text;
+      }
+
+      /* Mobil Header - Sadece Stats Bar */
+      .top-panel {
+        padding: 10px 12px;
+        gap: 10px;
+        background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+        border-bottom: 2px solid rgba(99, 102, 241, 0.2);
+        max-height: none;
+        flex-shrink: 0;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+      }
+
+      /* Yüzen Mobil İstatistik ve Kontrol Çubuğu - ÜST KISI */
+      .mobile-stats-floating {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        padding: 4px 0;
+        background: transparent;
+        backdrop-filter: none;
+        border-radius: 0;
+        border: none;
+      }
+
+      .mobile-stats-floating > div:first-child {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+      }
+
+      .mobile-stats-floating > div:last-child {
+        display: flex;
+        gap: 6px;
+        align-items: center;
+      }
+
+      /* Kontrol Satırını Mobilde Gizle */
+      .controls-row {
+        display: none !important;
+      }
+
+      /* Hafıza Container'ı Mobilde Gizle */
+      .memory-container {
+        display: none !important;
+      }
+
+      /* Kartları Mobilde Daha Büyük ve İyi Görüntüle */
+      .cards-container {
+        padding: 6px 8px 8px 8px;
+        gap: 6px;
+        max-height: 180px;
+        flex-shrink: 0;
+      }
+
+      .card {
+        min-width: 160px;
+        max-width: 185px;
+        padding: 12px 11px;
+        background: linear-gradient(135deg, var(--card-bg) 0%, rgba(51, 65, 85, 0.8) 100%);
+        border-radius: 12px;
+        border: 2px solid rgba(99, 102, 241, 0.15);
+        transition: all 0.2s ease;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+      }
+
+      .card:active {
+        transform: scale(0.95);
+      }
+
+      .card:hover {
+        border-color: rgba(99, 102, 241, 0.4);
+        background: linear-gradient(135deg, var(--card-hover) 0%, rgba(71, 85, 105, 0.9) 100%);
+        box-shadow: 0 4px 10px rgba(99, 102, 241, 0.2);
+      }
+
+      .card.selected {
+        border: 2px solid #38bdf8 !important;
+        background: linear-gradient(135deg, rgba(56, 189, 248, 0.15) 0%, rgba(30, 41, 59, 0.8) 100%);
+        box-shadow: 0 0 16px rgba(56, 189, 248, 0.35);
+      }
+
+      .card-title {
+        font-size: 12px;
+        font-weight: 700;
+        line-height: 1.3;
+      }
+
+      .tag {
+        font-size: 9px;
+        padding: 3px 7px;
+        font-weight: 700;
+      }
+
+      .card-progress {
+        font-size: 10px;
+        color: #fbbf24;
+        font-weight: 600;
+        margin-top: 2px;
+      }
+
+      .stat-pill {
+        padding: 5px 12px;
+        font-size: 12px;
+        background: rgba(15, 23, 42, 0.6);
+        border: 1.5px solid rgba(99, 102, 241, 0.3);
+        border-radius: 8px;
+        font-weight: 700;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+      }
+
+      .stat-pill val {
+        color: #38bdf8;
+        font-weight: 800;
+        font-size: 14px;
+        margin-left: 2px;
+      }
+
+      .search-box {
+        display: none;
+      }
+
+      .search-box input {
+        height: 32px;
+        font-size: 12px;
+        padding-left: 28px;
+      }
+
+      .region-select-box {
+        display: none;
+      }
+
+      .region-select {
+        height: 32px;
+        font-size: 11px;
+        padding: 0 8px;
+      }
+
+      .filters {
+        display: none;
+      }
+
+      .filter-btn {
+        min-height: 32px;
+        padding: 6px 10px;
+        font-size: 11px;
+        border-radius: 8px;
+      }
+
+      /* MOBIL ALT BAR */
+      .mobile-bottom-bar {
+        display: flex;
+        align-items: center;
+        justify-content: space-around;
+        gap: 6px;
+        padding: 6px 8px;
+        background: linear-gradient(180deg, rgba(30, 41, 59, 0.98) 0%, rgba(15, 23, 42, 0.99) 100%);
+        border-top: 2px solid rgba(99, 102, 241, 0.25);
+        flex-shrink: 0;
+        position: relative;
+        z-index: 100;
+        box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.3);
+      }
+
+      .mobile-bottom-bar button {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 3px;
+        padding: 8px 2px;
+        background: rgba(99, 102, 241, 0.08);
+        border: 1.5px solid rgba(99, 102, 241, 0.25);
+        color: var(--text-main);
+        font-size: 10.5px;
+        font-weight: 700;
+        border-radius: 10px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        min-height: 44px;
+        letter-spacing: 0.3px;
+        flex-wrap: wrap;
+      }
+
+      .mobile-bottom-bar button:active {
+        background: rgba(99, 102, 241, 0.3);
+        border-color: #6366f1;
+        transform: scale(0.95);
+        box-shadow: 0 0 12px rgba(99, 102, 241, 0.4);
+      }
+
+      .mobile-bottom-bar button:hover {
+        background: rgba(99, 102, 241, 0.15);
+        border-color: rgba(99, 102, 241, 0.5);
+      }
+
+      .mobile-filter-btn {
+        background: rgba(56, 189, 248, 0.1) !important;
+        border: 1.5px solid rgba(56, 189, 248, 0.3) !important;
+        color: #38bdf8 !important;
+      }
+
+      .mobile-filter-btn:hover {
+        background: rgba(56, 189, 248, 0.2) !important;
+        border-color: rgba(56, 189, 248, 0.5) !important;
+      }
+
+      /* MAP AREA */
+      #mapWrap {
+        flex: 1;
+        overflow: hidden;
+      }
+
+      .btn {
+        min-height: 32px;
+        padding: 6px 10px;
+        font-size: 12px;
+        border-radius: 8px;
+      }
+
+      .combo-pill {
+        padding: 6px 12px !important;
+        font-size: 12px !important;
+        border-radius: 10px !important;
+        box-shadow: 0 4px 8px rgba(245, 158, 11, 0.3);
+      }
+
+      /* MOBIL FİLTRE MODAL */
+      .mobile-filter-modal {
+        display: none !important;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.6);
+        z-index: 1000;
+        backdrop-filter: blur(3px);
+        animation: fadeIn 0.2s ease;
+        visibility: hidden !important;
+        pointer-events: none !important;
+      }
+
+      .mobile-filter-content {
+        width: 100%;
+        background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+        border-radius: 16px 16px 0 0;
+        border-top: 2px solid rgba(99, 102, 241, 0.3);
+        padding: 0;
+        animation: slideUp 0.3s ease;
+        max-height: 70vh;
+        overflow-y: auto;
+      }
+
+      .mobile-filter-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 16px 16px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        background: rgba(15, 23, 42, 0.5);
+      }
+
+      .mobile-filter-header h3 {
+        font-size: 16px;
+        font-weight: 700;
+        color: #f8fafc;
+        margin: 0;
+      }
+
+      .mobile-filter-close {
+        background: none;
+        border: none;
+        color: #94a3b8;
+        font-size: 24px;
+        cursor: pointer;
+        padding: 0;
+        width: 32px;
+        height: 32px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 8px;
+        transition: all 0.2s ease;
+      }
+
+      .mobile-filter-close:active {
+        background: rgba(99, 102, 241, 0.2);
+        color: #f8fafc;
+      }
+
+      .mobile-filter-list {
+        display: flex;
+        flex-direction: column;
+        gap: 0;
+        padding: 8px;
+      }
+
+      .mobile-filter-option {
+        width: 100%;
+        padding: 14px 16px;
+        background: rgba(51, 65, 85, 0.4);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        color: #cbd5e1;
+        font-size: 14px;
+        font-weight: 600;
+        border-radius: 10px;
+        cursor: pointer;
+        text-align: left;
+        transition: all 0.2s ease;
+        margin-bottom: 6px;
+        display: flex;
+        align-items: center;
         gap: 8px;
       }
 
-      .brand { justify-content: space-between; }
-      .sub { display: none; }
-      .stats-bar { justify-content: space-between; width: 100%; }
-      .stat-pill { padding: 3px 8px; font-size: 10.5px; }
-      .btn { padding: 4px 8px; font-size: 10.5px; }
-      .search-box { width: 130px; }
-      .card { min-width: 140px; max-width: 150px; padding: 6px 8px; }
+      .mobile-filter-option:last-child {
+        margin-bottom: 0;
+      }
+
+      .mobile-filter-option:active {
+        transform: scale(0.98);
+      }
+
+      .mobile-filter-option:hover {
+        background: rgba(51, 65, 85, 0.7);
+        border-color: rgba(99, 102, 241, 0.4);
+      }
+
+      .mobile-filter-option.active {
+        background: linear-gradient(135deg, rgba(99, 102, 241, 0.3) 0%, rgba(99, 102, 241, 0.1) 100%);
+        border-color: #6366f1;
+        color: #38bdf8;
+        font-weight: 700;
+      }
+
+      @keyframes slideUp {
+        from {
+          transform: translateY(100%);
+        }
+        to {
+          transform: translateY(0);
+        }
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
+      }
     }
   </style>
 </head>
 <body>
 
-  <!-- HEADER -->
+  <!-- DESKTOP HEADER -->
   <header>
     <div class="brand">
       <div style="display: flex; align-items: center; gap: 8px;">
@@ -477,16 +988,27 @@
 
     <div class="stats-bar">
       <div class="combo-pill" id="comboPill">🔥 <span id="comboVal">2</span>x</div>
-      <div class="stat-pill">Doğru: <val id="score">0</val></div>
-      <div class="stat-pill">Kalan: <val id="left">0</val></div>
-      <button class="btn btn-icon" id="toggleLabelsBtn" title="İl İsimlerini Gizle/Göster">🏷️ İsimler</button>
-      <button class="btn btn-icon" id="soundToggle">🔊</button>
-      <button class="btn btn-primary" id="reset">Yeniden Başlat</button>
+      <div class="stat-pill">Doğru: <val class="score-val">0</val></div>
+      <div class="stat-pill">Kalan: <val class="left-val">0</val></div>
+      <button class="btn btn-icon toggleLabelsBtn" title="İl İsimlerini Gizle/Göster">🏷️ İsimler</button>
+      <button class="btn btn-icon soundToggle">🔊</button>
+      <button class="btn btn-primary resetBtn">Yeniden Başlat</button>
     </div>
   </header>
 
   <!-- TOP PANEL -->
   <div class="top-panel">
+    <!-- Mobil Ekranlar İçin Kompakt İstatistik & Aksiyon Satırı -->
+    <div class="mobile-stats-floating" id="mobileStatsBar">
+      <div style="display:flex; gap:6px; align-items:center;">
+        <div class="stat-pill">✅ <val class="score-val">0</val></div>
+        <div class="stat-pill">📍 <val class="left-val">0</val></div>
+      </div>
+      <div style="display:flex; gap:6px; align-items:center;">
+        <div class="combo-pill" id="comboPill" style="display:none; margin:0;">🔥 <span id="comboVal">2</span>x</div>
+      </div>
+    </div>
+
     <div class="controls-row">
       <div class="search-box">
         <svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
@@ -530,6 +1052,34 @@
   <!-- MAIN MAP WRAPPER -->
   <div id="mapWrap">
     <div id="map"></div>
+  </div>
+
+  <!-- MOBIL ALT KONTROL ÇUBUĞU -->
+  <div class="mobile-bottom-bar" id="mobileBottomBar">
+    <button class="toggleLabelsBtn" title="İl İsimlerini Gizle/Göster">🏷️ İsimler</button>
+    <button class="soundToggle">🔊 Ses</button>
+    <button class="mobile-filter-btn" id="mobileFilterBtn">🎯 Filtreler</button>
+    <button class="resetBtn">↺ Başlat</button>
+  </div>
+
+  <!-- MOBIL FİLTRE MODAL -->
+  <div class="mobile-filter-modal" id="mobileFilterModal">
+    <div class="mobile-filter-content">
+      <div class="mobile-filter-header">
+        <h3>Kategorileri Seç</h3>
+        <button class="mobile-filter-close" id="mobileFilterClose">✕</button>
+      </div>
+      <div class="mobile-filter-list">
+        <button class="mobile-filter-option active" data-cat="all">✓ Tümü</button>
+        <button class="mobile-filter-option" data-cat="Milli Park">🏞️ Milli Park</button>
+        <button class="mobile-filter-option" data-cat="Ramsar">🦆 Ramsar</button>
+        <button class="mobile-filter-option" data-cat="UNESCO">🏛️ UNESCO</button>
+        <button class="mobile-filter-option" data-cat="Cittaslow">🐌 Sakin Şehir</button>
+        <button class="mobile-filter-option" data-cat="Kalkınma Projesi">🏗️ Kalkınma</button>
+        <button class="mobile-filter-option" data-cat="Serbest Bölge">🏭 Ticaret</button>
+        <button class="mobile-filter-option" data-cat="Sınır Kapısı">🚪 Sınır Kapısı</button>
+      </div>
+    </div>
   </div>
 
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
@@ -775,7 +1325,7 @@
       const osc = audioCtx.createOscillator();
       const gain = audioCtx.createGain();
       osc.connect(gain);
-      gain.connect(audioCtx.destination);
+      osc.connect(audioCtx.destination);
       const now = audioCtx.currentTime;
 
       if(type === 'correct') {
@@ -1006,8 +1556,8 @@
         container.appendChild(card);
       });
 
-      document.getElementById('score').textContent = score;
-      document.getElementById('left').textContent = items.length - matched.size;
+      document.querySelectorAll('.score-val').forEach(el => el.textContent = score);
+      document.querySelectorAll('.left-val').forEach(el => el.textContent = items.length - matched.size);
 
       if (combo > 1) {
         document.getElementById('comboPill').style.display = 'flex';
@@ -1180,15 +1730,17 @@
       renderCards();
     });
 
-    document.getElementById('toggleLabelsBtn').addEventListener('click', (e) => {
-      showLabels = !showLabels;
-      if (showLabels) {
-        document.body.classList.remove('hide-labels');
-        e.target.textContent = '🏷️ İsimler';
-      } else {
-        document.body.classList.add('hide-labels');
-        e.target.textContent = '🏷️ Gizli';
-      }
+    document.querySelectorAll('.toggleLabelsBtn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        showLabels = !showLabels;
+        if (showLabels) {
+          document.body.classList.remove('hide-labels');
+          document.querySelectorAll('.toggleLabelsBtn').forEach(b => b.textContent = window.innerWidth <= 768 ? '🏷️ Isimler' : '🏷️ İsimler');
+        } else {
+          document.body.classList.add('hide-labels');
+          document.querySelectorAll('.toggleLabelsBtn').forEach(b => b.textContent = window.innerWidth <= 768 ? '🏷️ Gizli' : '🏷️ Gizli');
+        }
+      });
     });
 
     document.querySelectorAll('.filter-btn').forEach(btn => {
@@ -1211,12 +1763,62 @@
       renderCards();
     });
 
-    document.getElementById('soundToggle').addEventListener('click', (e) => {
-      soundEnabled = !soundEnabled;
-      e.target.textContent = soundEnabled ? '🔊' : '🔇';
+    document.querySelectorAll('.soundToggle').forEach(btn => {
+      btn.addEventListener('click', () => {
+        soundEnabled = !soundEnabled;
+        document.querySelectorAll('.soundToggle').forEach(b => b.textContent = soundEnabled ? '🔊' : '🔇');
+      });
     });
 
-    document.getElementById('reset').addEventListener('click', () => location.reload());
+    document.querySelectorAll('.resetBtn').forEach(btn => {
+      btn.addEventListener('click', () => location.reload());
+    });
+
+    // MOBIL FİLTRE MODAL KONTROL
+    const mobileFilterBtn = document.getElementById('mobileFilterBtn');
+    const mobileFilterModal = document.getElementById('mobileFilterModal');
+    const mobileFilterClose = document.getElementById('mobileFilterClose');
+
+    if (mobileFilterBtn) {
+      mobileFilterBtn.addEventListener('click', () => {
+        mobileFilterModal.classList.add('active');
+      });
+    }
+
+    if (mobileFilterClose) {
+      mobileFilterClose.addEventListener('click', () => {
+        mobileFilterModal.classList.remove('active');
+      });
+    }
+
+    // Modal dışına tıklayınca kapat
+    mobileFilterModal.addEventListener('click', (e) => {
+      if (e.target === mobileFilterModal) {
+        mobileFilterModal.classList.remove('active');
+      }
+    });
+
+    // Mobil filter seçenekleri
+    document.querySelectorAll('.mobile-filter-option').forEach(btn => {
+      btn.addEventListener('click', () => {
+        // Active sınıfını kaldır
+        document.querySelectorAll('.mobile-filter-option').forEach(b => b.classList.remove('active'));
+        // Seçilen butona ekle
+        btn.classList.add('active');
+        
+        // Kategoriyi ayarla
+        activeCat = btn.dataset.cat;
+        
+        // Kartları güncelle
+        selectNextAvailableCard();
+        renderCards();
+        
+        // Modali kapat
+        setTimeout(() => {
+          mobileFilterModal.classList.remove('active');
+        }, 200);
+      });
+    });
   </script>
 </body>
 </html>
