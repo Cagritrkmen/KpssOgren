@@ -572,7 +572,7 @@
     }
 
     /* --- MOBIL ÖZEL OPTİMİZASYONLAR --- */
-    @media (max-width: 768px) {
+    @media (max-width: 1000px) {
       body {
         display: flex;
         flex-direction: column;
@@ -1372,7 +1372,7 @@
     }
 
     function loadMap() {
-      const isMobile = window.innerWidth <= 768;
+      const isMobile = window.innerWidth <= 1000;
       const initialZoom = isMobile ? 5 : 6;
       const initialCenter = isMobile ? [39.0, 35.2] : [39.05, 35.2];
 
@@ -1459,7 +1459,7 @@
     }
 
     function renderBorderPoints() {
-      const isMobile = window.innerWidth <= 768;
+      const isMobile = window.innerWidth <= 1000;
       const markerRadius = isMobile ? 8 : 6;
 
       Object.keys(borderGateCoords).forEach(gateName => {
@@ -1735,10 +1735,10 @@
         showLabels = !showLabels;
         if (showLabels) {
           document.body.classList.remove('hide-labels');
-          document.querySelectorAll('.toggleLabelsBtn').forEach(b => b.textContent = window.innerWidth <= 768 ? '🏷️ Isimler' : '🏷️ İsimler');
+          document.querySelectorAll('.toggleLabelsBtn').forEach(b => b.textContent = window.innerWidth <= 1000 ? '🏷️ Isimler' : '🏷️ İsimler');
         } else {
           document.body.classList.add('hide-labels');
-          document.querySelectorAll('.toggleLabelsBtn').forEach(b => b.textContent = window.innerWidth <= 768 ? '🏷️ Gizli' : '🏷️ Gizli');
+          document.querySelectorAll('.toggleLabelsBtn').forEach(b => b.textContent = window.innerWidth <= 1000 ? '🏷️ Gizli' : '🏷️ Gizli');
         }
       });
     });
