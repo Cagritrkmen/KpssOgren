@@ -576,7 +576,7 @@
       body {
         display: flex;
         flex-direction: column;
-        height: 100vh;
+        height: 100dvh;
         overflow: hidden;
       }
 
@@ -767,6 +767,11 @@
 
       /* MOBIL ALT BAR */
       .mobile-bottom-bar {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        width: 100%;
         display: flex;
         align-items: center;
         justify-content: space-around;
@@ -775,9 +780,8 @@
         background: linear-gradient(180deg, rgba(30, 41, 59, 0.98) 0%, rgba(15, 23, 42, 0.99) 100%);
         border-top: 2px solid rgba(99, 102, 241, 0.25);
         flex-shrink: 0;
-        position: relative;
-        z-index: 100;
-        box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.3);
+        z-index: 999;
+        box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.4);
       }
 
       .mobile-bottom-bar button {
@@ -827,6 +831,7 @@
       #mapWrap {
         flex: 1;
         overflow: hidden;
+        padding-bottom: 70px;
       }
 
       .btn {
