@@ -23,6 +23,7 @@
       --cat-ticaret: #8b5cf6;
       --cat-kapi: #ef4444;
       --cat-cittaslow: #14b8a6;
+      --cat-kalkinma: #38bdf8;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -159,7 +160,7 @@
 
     .search-box {
       position: relative;
-      width: 180px;
+      width: 160px;
       flex-shrink: 0;
     }
 
@@ -183,6 +184,28 @@
       width: 14px;
       height: 14px;
       fill: var(--text-muted);
+    }
+
+    .region-select-box {
+      flex-shrink: 0;
+    }
+
+    .region-select {
+      background: rgba(16, 185, 129, 0.15);
+      border: 1px solid rgba(16, 185, 129, 0.4);
+      color: #6ee7b7;
+      padding: 0 8px;
+      border-radius: 8px;
+      font-size: 11px;
+      font-weight: 700;
+      outline: none;
+      height: 32px;
+      cursor: pointer;
+    }
+
+    .region-select option {
+      background: #1e293b;
+      color: #fff;
     }
 
     .filters {
@@ -332,6 +355,7 @@
     .tag-ticaret { background: var(--cat-ticaret); }
     .tag-kapi { background: var(--cat-kapi); }
     .tag-cittaslow { background: var(--cat-cittaslow); }
+    .tag-kalkinma { background: var(--cat-kalkinma); color: #0f172a; }
 
     .card-title {
       font-size: 12px;
@@ -340,6 +364,12 @@
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
+    }
+
+    .card-progress {
+      font-size: 9.5px;
+      color: #38bdf8;
+      font-weight: 700;
     }
 
     .card-hint-text {
@@ -425,7 +455,6 @@
       box-shadow: 0 0 8px rgba(16, 185, 129, 0.8);
     }
 
-    /* MOBILE RESPONSIVE MEDIA QUERIES */
     @media (max-width: 768px) {
       header {
         flex-direction: column;
@@ -434,44 +463,14 @@
         gap: 8px;
       }
 
-      .brand {
-        justify-content: space-between;
-      }
-
-      .sub {
-        display: none;
-      }
-
-      .stats-bar {
-        justify-content: space-between;
-        width: 100%;
-      }
-
-      .stat-pill {
-        padding: 3px 8px;
-        font-size: 10.5px;
-      }
-
-      .btn {
-        padding: 4px 8px;
-        font-size: 10.5px;
-      }
-
-      .search-box {
-        width: 140px;
-      }
-
-      .card {
-        min-width: 140px;
-        max-width: 150px;
-        padding: 6px 8px;
-      }
-
-      .toast-banner {
-        top: 8px;
-        font-size: 10.5px;
-        padding: 6px 12px;
-      }
+      .brand { justify-content: space-between; }
+      .sub { display: none; }
+      .stats-bar { justify-content: space-between; width: 100%; }
+      .stat-pill { padding: 3px 8px; font-size: 10.5px; }
+      .btn { padding: 4px 8px; font-size: 10.5px; }
+      .search-box { width: 130px; }
+      .card { min-width: 140px; max-width: 150px; padding: 6px 8px; }
+      .toast-banner { top: 8px; font-size: 10.5px; padding: 6px 12px; }
     }
   </style>
 </head>
@@ -506,8 +505,23 @@
         <svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
         <input type="text" id="searchInput" placeholder="Arama yap...">
       </div>
+
+      <!-- BÖLGE KATMANI GÖSTERİMİ -->
+      <div class="region-select-box">
+        <select id="regionHighlightSelect" class="region-select">
+          <option value="">🗺️ Bölge Katmanı (İncele)</option>
+          <option value="GAP">GAP Göster</option>
+          <option value="DOKAP">DOKAP Göster</option>
+          <option value="YHGP">YHGP Göster</option>
+          <option value="DAP">DAP Göster</option>
+          <option value="KOP">KOP Göster</option>
+          <option value="ZBK">ZBK Göster</option>
+        </select>
+      </div>
+
       <div class="filters">
         <button class="filter-btn active" data-cat="all">Tümü</button>
+        <button class="filter-btn" data-cat="Kalkınma Projesi" style="border-color: rgba(56, 189, 248, 0.4);">🏗️ Kalkınma</button>
         <button class="filter-btn" data-cat="Milli Park">Milli Park</button>
         <button class="filter-btn" data-cat="Ramsar">Ramsar</button>
         <button class="filter-btn" data-cat="UNESCO">UNESCO</button>
@@ -538,7 +552,23 @@
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script src="./turkiye.js"></script>
   <script>
+    const developmentProjects = {
+      "GAP": ["Adıyaman", "Batman", "Diyarbakır", "Gaziantep", "Kilis", "Mardin", "Siirt", "Şanlıurfa", "Şırnak"],
+      "DOKAP": ["Amasya", "Artvin", "Bayburt", "Giresun", "Gümüşhane", "Ordu", "Rize", "Samsun", "Tokat", "Trabzon", "Çorum"],
+      "YHGP": ["Amasya", "Çorum", "Tokat", "Samsun"],
+      "DAP": ["Ağrı", "Ardahan", "Bingöl", "Bitlis", "Elazığ", "Erzincan", "Erzurum", "Hakkari", "Iğdır", "Kars", "Malatya", "Muş", "Tunceli", "Van", "Sivas"],
+      "KOP": ["Aksaray", "Karaman", "Konya", "Niğde", "Nevşehir", "Yozgat", "Kırıkkale", "Kırşehir"],
+      "ZBK": ["Zonguldak", "Bartın", "Karabük"]
+    };
+
     const rawItems = [
+      ["Kalkınma Projesi", "GAP (Güneydoğu Anadolu)", developmentProjects["GAP"]],
+      ["Kalkınma Projesi", "DOKAP (Doğu Karadeniz)", developmentProjects["DOKAP"]],
+      ["Kalkınma Projesi", "YHGP (Yeşilırmak Havzası)", developmentProjects["YHGP"]],
+      ["Kalkınma Projesi", "DAP (Doğu Anadolu)", developmentProjects["DAP"]],
+      ["Kalkınma Projesi", "KOP (Konya Ovası)", developmentProjects["KOP"]],
+      ["Kalkınma Projesi", "ZBK (Zonguldak-Bartın-Karabük)", developmentProjects["ZBK"]],
+
       ["Milli Park","Nemrut Dağı",["Adıyaman","Malatya"]],["Milli Park","Akdağ",["Afyonkarahisar","Denizli"]],
       ["Milli Park","Başkomutan",["Afyonkarahisar","Kütahya","Uşak"]],["Milli Park","Ağrı Dağı",["Ağrı","Iğdır"]],
       ["Milli Park","Soğuksu",["Ankara"]],["Milli Park","Sakarya Meydan Muharebesi",["Ankara"]],
@@ -582,8 +612,6 @@
       ["UNESCO","Anadolu’nun Orta Çağ Dönemi Ahşap Hipostil Camileri",["Afyonkarahisar","Ankara","Eskişehir","Kastamonu","Konya"]],
       ["UNESCO","Sardes Antik Kenti ve Bintepeler Lidya Tümülüsleri",["Manisa"]],
 
-      // CITTASLOW (SAKİN ŞEHİRLER - TESCİL SIRASINA GÖRE)
-      // CITTASLOW (SAKİN ŞEHİRLER - RESMİ TESCİL SIRASI)
       ["Cittaslow","1-Seferihisar",["İzmir"]],
       ["Cittaslow","2-Akyaka",["Muğla"]],
       ["Cittaslow","3-Gökçeada",["Çanakkale"]],
@@ -742,7 +770,13 @@
       "Kapıkule 🚂": "🚂 Türkiye'nin en yoğun ve en büyük kara/demiryolu sınır kapısıdır (Bulgaristan).",
       "Habur": "🚛 Türkiye'nin Ortadoğu'ya açılan en yüksek işlem hacimli sınır kapısıdır (Irak).",
       "Sarp": "🚶 Kimlikle geçiş yapılabilen ve Karadeniz'i Kafkaslara bağlayan kapıdır (Gürcistan).",
-      "Dilucu": "🇦🇿 Türkiye'nin Azerbaycan (Nahçıvan) ile tek kara sınır kapısıdır."
+      "Dilucu": "🇦🇿 Türkiye'nin Azerbaycan (Nahçıvan) ile tek kara sınır kapısıdır.",
+      "GAP (Güneydoğu Anadolu)": "🏗️ Güneydoğu Anadolu Projesi - Sulama, enerji ve tarımsal kalkınma odaklı projeyi kapsar.",
+      "DOKAP (Doğu Karadeniz)": "🏔️ Doğu Karadeniz Projesi - Turizm, ulaşım ve yayla koridoru odaklı projedir.",
+      "YHGP (Yeşilırmak Havzası)": "🌊 Yeşilırmak Havzası Gelişim Projesi - Havza erozyonu ve çevre düzenleme odaklıdır.",
+      "DAP (Doğu Anadolu)": "🏔️ Doğu Anadolu Projesi - Hayvancılık ve tarımsal altyapıyı güçlendirmeyi hedefler.",
+      "KOP (Konya Ovası)": "🌾 Konya Ovası Projesi - Tarımsal sulama ve su kaynakları yönetimi odaklıdır.",
+      "ZBK (Zonguldak-Bartın-Karabük)": "⛏️ Zonguldak, Bartın, Karabük Projesi - Sanayi ve madencilik odaklı dönüşüm projesidir."
     };
 
     let soundEnabled = true;
@@ -782,6 +816,7 @@
     let provinceLayers = [];
     let borderMarkers = {};
     let matched = new Set();
+    let projectMatchedProvinces = {}; // Her projenin bulunan şehirlerini tutar
     let score = 0;
     let combo = 0;
     let activeCat = 'all';
@@ -790,6 +825,7 @@
     let selectedItem = null;
     let wrongCounts = {};
     let memoryItems = [];
+    let currentHighlightedRegion = "";
 
     function norm(s) {
       return s.toLocaleLowerCase('tr-TR')
@@ -849,7 +885,7 @@
             });
 
             layer.on('mouseout', () => {
-              layer.setStyle({ fillColor: '#1e293b', fillOpacity: 0.65, weight: 1.2 });
+              updateProvinceStyle(layer);
             });
 
             layer.on('click', (e) => {
@@ -866,6 +902,32 @@
 
       } catch (err) {
         showToast('⚠️ Harita verisi işlenirken hata oluştu.', 'danger');
+      }
+    }
+
+    function updateProvinceStyle(layer) {
+      if (currentHighlightedRegion && developmentProjects[currentHighlightedRegion]) {
+        const regionProvs = developmentProjects[currentHighlightedRegion];
+        const isRegionProv = regionProvs.some(p => norm(p) === norm(layer.provinceName));
+        if (isRegionProv) {
+          layer.setStyle({ fillColor: '#10b981', fillOpacity: 0.85, weight: 2, color: '#34d399' });
+          return;
+        }
+      }
+
+      layer.setStyle({ fillColor: '#1e293b', fillOpacity: 0.65, weight: 1.2, color: 'rgba(255, 255, 255, 0.18)' });
+    }
+
+    function highlightRegion(regionKey) {
+      currentHighlightedRegion = regionKey;
+      provinceLayers.forEach(layer => {
+        updateProvinceStyle(layer);
+      });
+
+      if (regionKey && developmentProjects[regionKey]) {
+        showToast(`🌿 ${regionKey} Projesi kapsamındaki iller yeşil ile gösteriliyor.`, 'success', 2200);
+      } else {
+        showToast('🗺️ Bölge katmanı temizlendi.', 'success', 1200);
       }
     }
 
@@ -896,28 +958,6 @@
       });
     }
 
-    function pointInRing(pt, ring) {
-      let inside = false;
-      for (let i = 0, j = ring.length - 1; i < ring.length; j = i++) {
-        const xi = ring[i][0], yi = ring[i][1], xj = ring[j][0], yj = ring[j][1];
-        const hit = ((yi > pt[1]) !== (yj > pt[1])) && (pt[0] < (xj - xi) * (pt[1] - yi) / (yj - yi) + xi);
-        if (hit) inside = !inside;
-      }
-      return inside;
-    }
-
-    function pointInGeometry(latlng, g) {
-      const pt = [latlng.lng, latlng.lat];
-      if (g.type === 'Polygon') return pointInRing(pt, g.coordinates[0]) && g.coordinates.slice(1).every(r => !pointInRing(pt, r));
-      if (g.type === 'MultiPolygon') return g.coordinates.some(p => pointInRing(pt, p[0]) && p.slice(1).every(r => !pointInRing(pt, r)));
-      return false;
-    }
-
-    function provinceAt(ll) {
-      for (const l of provinceLayers) if (pointInGeometry(ll, l.feature.geometry)) return l;
-      return null;
-    }
-
     function renderCards() {
       const container = document.getElementById('cards');
       container.innerHTML = '';
@@ -937,6 +977,13 @@
         if(x[0] === 'Cittaslow') tagClass = 'tag-cittaslow';
         if(x[0] === 'Serbest Bölge') tagClass = 'tag-ticaret';
         if(x[0] === 'Sınır Kapısı') tagClass = 'tag-kapi';
+        if(x[0] === 'Kalkınma Projesi') tagClass = 'tag-kalkinma';
+
+        let progressHTML = '';
+        if (x[0] === 'Kalkınma Projesi') {
+          const foundSet = projectMatchedProvinces[i] || new Set();
+          progressHTML = `<div class="card-progress">📍 Bulunan: ${foundSet.size} / ${x[2].length} Şehir</div>`;
+        }
 
         let hintHTML = '';
         if (wrongCounts[i] >= 3) {
@@ -947,13 +994,14 @@
         card.innerHTML = `
           <span class="tag ${tagClass}">${x[0]}</span>
           <div class="card-title" title="${x[1]}">${x[1]}</div>
+          ${progressHTML}
           ${hintHTML}
         `;
 
         card.addEventListener('click', () => {
           selectedItem = (selectedItem === i) ? null : i;
           if (selectedItem !== null) {
-            const targetText = x[0] === 'Sınır Kapısı' ? 'doğru nokta' : 'doğru il';
+            const targetText = x[0] === 'Sınır Kapısı' ? 'doğru nokta' : (x[0] === 'Kalkınma Projesi' ? 'projeye dahil kalan bir şehir' : 'doğru il');
             showToast(`📍 Haritada ${x[1]} için ${targetText} üzerine tıklayın.`, 'success', 1800);
           }
           renderCards();
@@ -1002,43 +1050,81 @@
       }
 
       if (ok) {
-        matched.add(itemIndex);
-        score++;
-        combo++;
-        playSound('correct');
+        if (cat === 'Kalkınma Projesi') {
+          if (!projectMatchedProvinces[itemIndex]) {
+            projectMatchedProvinces[itemIndex] = new Set();
+          }
+          const foundSet = projectMatchedProvinces[itemIndex];
 
-        const infoLabel = country ? `${country} (${provs[0]})` : (layer ? layer.provinceName : provs[0]);
+          const clickedProvNormalized = norm(layer.provinceName);
+          const matchedProvReal = provs.find(p => norm(p) === clickedProvNormalized);
 
-        if (wrongCounts[itemIndex] && wrongCounts[itemIndex] > 0) {
-          addMemoryChip(name, infoLabel);
-        }
+          if (foundSet.has(matchedProvReal)) {
+            showToast(`ℹ️ ${layer.provinceName} zaten bulundu! Kalan diğer şehirleri seçin.`, 'danger', 1800);
+            return;
+          }
 
-        if (cat === 'Sınır Kapısı' && borderMarkers[name]) {
-          const marker = borderMarkers[name];
-          const color = countryColors[country] || '#10b981';
-          
-          marker.setStyle({ fillColor: color, color: '#ffffff', radius: 8 });
-          marker.bindTooltip(`<b>${name}</b> (${country} - ${provs[0]})`, {
-            direction: 'top',
-            offset: [0, -8]
-          });
-        } else if (layer) {
+          foundSet.add(matchedProvReal);
+          score++;
+          combo++;
+          playSound('correct');
+
+          // Haritada ilin rengi DEĞİŞMİYOR. Sadece üzerine nokta koyuluyor.
           L.marker(latlng, {
             icon: L.divIcon({ className: 'matched-dot', iconSize: [12, 12], iconAnchor: [6, 6] }),
             interactive: false
-          }).addTo(map).bindTooltip(name, { direction: 'top', offset: [0, -6] });
+          }).addTo(map).bindTooltip(`${name} (${matchedProvReal})`, { direction: 'top', offset: [0, -6] });
 
-          layer.setStyle({ fillColor: '#10b981', fillOpacity: 0.85, weight: 2 });
-        }
+          const remaining = provs.length - foundSet.size;
 
-        const specialFact = facts[name];
-        if (specialFact) {
-          showToast(`✅ Doğru! ${name} → ${specialFact}`, 'success', 2200);
+          if (remaining === 0) {
+            matched.add(itemIndex);
+            showToast(`🎉 Tebrikler! ${name} projesinin TÜM şehirlerini tamamladınız!`, 'success', 3000);
+            selectedItem = null;
+          } else {
+            showToast(`✅ Doğru! ${matchedProvReal} (${name}). Kalan şehir sayısı: ${remaining}`, 'success', 2000);
+          }
+
         } else {
-          showToast(`✅ Doğru! ${name} → ${infoLabel}`, 'success', 1500);
+          matched.add(itemIndex);
+          score++;
+          combo++;
+          playSound('correct');
+
+          const infoLabel = country ? `${country} (${provs[0]})` : (layer ? layer.provinceName : provs[0]);
+
+          if (wrongCounts[itemIndex] && wrongCounts[itemIndex] > 0) {
+            addMemoryChip(name, infoLabel);
+          }
+
+          if (cat === 'Sınır Kapısı' && borderMarkers[name]) {
+            const marker = borderMarkers[name];
+            const color = countryColors[country] || '#10b981';
+            
+            marker.setStyle({ fillColor: color, color: '#ffffff', radius: 8 });
+            marker.bindTooltip(`<b>${name}</b> (${country} - ${provs[0]})`, {
+              direction: 'top',
+              offset: [0, -8]
+            });
+          } else if (layer) {
+            L.marker(latlng, {
+              icon: L.divIcon({ className: 'matched-dot', iconSize: [12, 12], iconAnchor: [6, 6] }),
+              interactive: false
+            }).addTo(map).bindTooltip(name, { direction: 'top', offset: [0, -6] });
+
+            layer.setStyle({ fillColor: '#10b981', fillOpacity: 0.85, weight: 2 });
+          }
+
+          const specialFact = facts[name];
+          if (specialFact) {
+            showToast(`✅ Doğru! ${name} → ${specialFact}`, 'success', 2500);
+          } else {
+            showToast(`✅ Doğru! ${name} → ${infoLabel}`, 'success', 1500);
+          }
+
+          selectedItem = null;
         }
 
-        selectedItem = null;
         dragItem = null;
         renderCards();
 
@@ -1101,6 +1187,10 @@
         activeCat = btn.dataset.cat;
         renderCards();
       });
+    });
+
+    document.getElementById('regionHighlightSelect').addEventListener('change', (e) => {
+      highlightRegion(e.target.value);
     });
 
     document.getElementById('searchInput').addEventListener('input', (e) => {
