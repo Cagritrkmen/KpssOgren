@@ -412,39 +412,27 @@
       display: none !important;
     }
 
-    /* FLOATING POPUP TOAST */
-    .toast-banner {
-      position: absolute;
-      top: 12px;
-      left: 50%;
-      transform: translateX(-50%) translateY(-10px);
-      z-index: 1000;
-      background: rgba(15, 23, 42, 0.95);
-      border: 1px solid rgba(16, 185, 129, 0.4);
-      backdrop-filter: blur(12px);
-      color: #fff;
-      padding: 8px 14px;
-      border-radius: 99px;
-      font-size: 11.5px;
-      font-weight: 600;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
-      opacity: 0;
-      pointer-events: none;
-      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-      max-width: 92%;
-      text-align: center;
+    /* CUSTOM LEAFLET POPUP STYLES */
+    .leaflet-popup-content-wrapper {
+      background: rgba(15, 23, 42, 0.92) !important;
+      border: 1px solid rgba(255, 255, 255, 0.15) !important;
+      color: #fff !important;
+      border-radius: 8px !important;
+      backdrop-filter: blur(8px);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.6) !important;
+      padding: 2px 4px !important;
     }
-
-    .toast-banner.show {
-      opacity: 1;
-      transform: translateX(-50%) translateY(0);
+    .leaflet-popup-tip {
+      background: rgba(15, 23, 42, 0.92) !important;
     }
-
-    .toast-success { border-color: #10b981; }
-    .toast-danger { border-color: #ef4444; }
+    .leaflet-popup-content {
+      margin: 8px 12px !important;
+      font-size: 11.5px !important;
+      font-weight: 700 !important;
+      line-height: 1.4 !important;
+    }
+    .popup-success { color: #34d399; }
+    .popup-danger { color: #f87171; }
 
     .matched-dot {
       width: 12px;
@@ -470,7 +458,6 @@
       .btn { padding: 4px 8px; font-size: 10.5px; }
       .search-box { width: 130px; }
       .card { min-width: 140px; max-width: 150px; padding: 6px 8px; }
-      .toast-banner { top: 8px; font-size: 10.5px; padding: 6px 12px; }
     }
   </style>
 </head>
@@ -542,10 +529,6 @@
 
   <!-- MAIN MAP WRAPPER -->
   <div id="mapWrap">
-    <div class="toast-banner" id="toast">
-      <span id="toastIcon">💡</span>
-      <span id="toastText">Kart seçip haritada il veya sınır kapısı üzerine tıklayın.</span>
-    </div>
     <div id="map"></div>
   </div>
 
@@ -745,7 +728,7 @@
       "Botan Vadisi": "🏞️ Türkiye'nin son ilan edilen milli parklarındandır.",
       "Nemrut Dağı": "🗿 Kommagene Krallığı'na ait dev heykellerin bulunduğu UNESCO mirasıdır.",
       "Uludağ": "🎿 Türkiye'nin kış turizminin başkenti ve biyoçeşitlilik merkezidir.",
-      "İğneada Longoz Ormanları": "🌊 Avrupa'nın en büyük subasar (longoz) ormanlarındandır.",
+      "İğneada Longoz Ormanları": "🌊 Avrupa'nin en büyük subasar (longoz) ormanlarındandır.",
       "Başkomutan": "⚔️ Kurtuluş Savaşı'nın zaferle sonuçlandığı Büyük Taarruz topraklarıdır.",
       "İstiklal Yolu": "📜 İnebolu'dan Ankara'ya cephane taşınan tarihi milli park hattıdır.",
       "Karatepe - Aslantaş": "🦁 Türkiye'nin ilk açık hava müzesi niteliğindeki milli parkıdır.",
@@ -774,7 +757,7 @@
       "GAP (Güneydoğu Anadolu)": "🏗️ Güneydoğu Anadolu Projesi - Sulama, enerji ve tarımsal kalkınma odaklı projeyi kapsar.",
       "DOKAP (Doğu Karadeniz)": "🏔️ Doğu Karadeniz Projesi - Turizm, ulaşım ve yayla koridoru odaklı projedir.",
       "YHGP (Yeşilırmak Havzası)": "🌊 Yeşilırmak Havzası Gelişim Projesi - Havza erozyonu ve çevre düzenleme odaklıdır.",
-      "DAP (Doğu Anadolu)": "🏔️ Doğu Anadolu Projesi - Hayvancılık ve tarımsal altyapıyı güçlendirmeyi hedefler.",
+      "DAP (Doğu Anadolu)": "🏔️ Doğu Anadolu Projesi - Hayvancılık ve tarımsal altyapıyı güçlendirmeyi hedefleyen projedir.",
       "KOP (Konya Ovası)": "🌾 Konya Ovası Projesi - Tarımsal sulama ve su kaynakları yönetimi odaklıdır.",
       "ZBK (Zonguldak-Bartın-Karabük)": "⛏️ Zonguldak, Bartın, Karabük Projesi - Sanayi ve madencilik odaklı dönüşüm projesidir."
     };
@@ -816,7 +799,7 @@
     let provinceLayers = [];
     let borderMarkers = {};
     let matched = new Set();
-    let projectMatchedProvinces = {}; // Her projenin bulunan şehirlerini tutar
+    let projectMatchedProvinces = {}; 
     let score = 0;
     let combo = 0;
     let activeCat = 'all';
@@ -826,6 +809,7 @@
     let wrongCounts = {};
     let memoryItems = [];
     let currentHighlightedRegion = "";
+    let activePopup = null;
 
     function norm(s) {
       return s.toLocaleLowerCase('tr-TR')
@@ -855,7 +839,6 @@
 
       try {
         if (typeof turkeyGeoJSON === 'undefined') {
-          showToast('⚠️ turkiye.js yüklenemedi.', 'danger', 5000);
           return;
         }
 
@@ -901,7 +884,7 @@
         map.fitBounds(geoJsonLayer.getBounds(), { padding: isMobile ? [5, 5] : [10, 10] });
 
       } catch (err) {
-        showToast('⚠️ Harita verisi işlenirken hata oluştu.', 'danger');
+        console.error('Harita hatası:', err);
       }
     }
 
@@ -923,12 +906,6 @@
       provinceLayers.forEach(layer => {
         updateProvinceStyle(layer);
       });
-
-      if (regionKey && developmentProjects[regionKey]) {
-        showToast(`🌿 ${regionKey} Projesi kapsamındaki iller yeşil ile gösteriliyor.`, 'success', 2200);
-      } else {
-        showToast('🗺️ Bölge katmanı temizlendi.', 'success', 1200);
-      }
     }
 
     function renderBorderPoints() {
@@ -956,6 +933,29 @@
           }
         });
       });
+    }
+
+    function selectNextAvailableCard() {
+      const availableIndices = [];
+      items.forEach((x, idx) => {
+        if (!matched.has(idx)) {
+          if (activeCat !== 'all' && x[0] !== activeCat) return;
+          if (searchQuery && !norm(x[1]).includes(norm(searchQuery))) return;
+          availableIndices.push(idx);
+        }
+      });
+
+      if (availableIndices.length > 0) {
+        selectedItem = availableIndices[0];
+        setTimeout(() => {
+          const cardEl = document.querySelector(`.card[data-i="${selectedItem}"]`);
+          if (cardEl) {
+            cardEl.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+          }
+        }, 50);
+      } else {
+        selectedItem = null;
+      }
     }
 
     function renderCards() {
@@ -1000,10 +1000,6 @@
 
         card.addEventListener('click', () => {
           selectedItem = (selectedItem === i) ? null : i;
-          if (selectedItem !== null) {
-            const targetText = x[0] === 'Sınır Kapısı' ? 'doğru nokta' : (x[0] === 'Kalkınma Projesi' ? 'projeye dahil kalan bir şehir' : 'doğru il');
-            showToast(`📍 Haritada ${x[1]} için ${targetText} üzerine tıklayın.`, 'success', 1800);
-          }
           renderCards();
         });
 
@@ -1033,6 +1029,33 @@
       }
     }
 
+    function showMapPopup(latlng, message, type = 'success', duration = 3000) {
+      if (activePopup) {
+        map.closePopup(activePopup);
+      }
+
+      const icon = type === 'success' ? '✨' : '❌';
+      const cssClass = type === 'success' ? 'popup-success' : 'popup-danger';
+      const content = `<div class="${cssClass}">${icon} ${message}</div>`;
+
+      activePopup = L.popup({
+        closeButton: false,
+        autoClose: false,
+        closeOnClick: false,
+        offset: [0, -10]
+      })
+      .setLatLng(latlng)
+      .setContent(content)
+      .openOn(map);
+
+      setTimeout(() => {
+        if (activePopup) {
+          map.closePopup(activePopup);
+          activePopup = null;
+        }
+      }, duration);
+    }
+
     function attemptMatch(itemIndex, layer, latlng, hitGateName = null) {
       const [cat, name, provs, country] = items[itemIndex];
       let ok = false;
@@ -1060,7 +1083,7 @@
           const matchedProvReal = provs.find(p => norm(p) === clickedProvNormalized);
 
           if (foundSet.has(matchedProvReal)) {
-            showToast(`ℹ️ ${layer.provinceName} zaten bulundu! Kalan diğer şehirleri seçin.`, 'danger', 1800);
+            showMapPopup(latlng, `${layer.provinceName} zaten bulundu! Kalan diğer şehirleri seçin.`, 'danger', 2000);
             return;
           }
 
@@ -1069,7 +1092,6 @@
           combo++;
           playSound('correct');
 
-          // Haritada ilin rengi DEĞİŞMİYOR. Sadece üzerine nokta koyuluyor.
           L.marker(latlng, {
             icon: L.divIcon({ className: 'matched-dot', iconSize: [12, 12], iconAnchor: [6, 6] }),
             interactive: false
@@ -1079,10 +1101,10 @@
 
           if (remaining === 0) {
             matched.add(itemIndex);
-            showToast(`🎉 Tebrikler! ${name} projesinin TÜM şehirlerini tamamladınız!`, 'success', 3000);
-            selectedItem = null;
+            showMapPopup(latlng, `Tebrikler! ${name} projesinin TÜM şehirlerini tamamladınız!`, 'success', 3000);
+            selectNextAvailableCard();
           } else {
-            showToast(`✅ Doğru! ${matchedProvReal} (${name}). Kalan şehir sayısı: ${remaining}`, 'success', 2000);
+            showMapPopup(latlng, `Doğru! ${matchedProvReal} (${name}). Kalan: ${remaining}`, 'success', 2000);
           }
 
         } else {
@@ -1117,12 +1139,12 @@
 
           const specialFact = facts[name];
           if (specialFact) {
-            showToast(`✅ Doğru! ${name} → ${specialFact}`, 'success', 2500);
+            showMapPopup(latlng, `Doğru! ${name} <br><span style="font-size:10px; font-weight:normal; color:#cbd5e1">${specialFact}</span>`, 'success', 3000);
           } else {
-            showToast(`✅ Doğru! ${name} → ${infoLabel}`, 'success', 1500);
+            showMapPopup(latlng, `Doğru! ${name} → ${infoLabel}`, 'success', 2000);
           }
 
-          selectedItem = null;
+          selectNextAvailableCard();
         }
 
         dragItem = null;
@@ -1140,11 +1162,12 @@
         }
 
         const targetName = layer ? layer.provinceName : (hitGateName || 'Yanlış Nokta');
+        
         if (wrongCounts[itemIndex] >= 3) {
           const targetDetail = country ? `${country} - ${provs.join('/')}` : provs.join(' / ');
-          showToast(`💡 İpucu: ${name} → ${targetDetail}`, 'danger', 2500);
+          showMapPopup(latlng, `Yanlış (${targetName})!<br>💡 İpucu: ${name} → ${targetDetail}`, 'danger', 3000);
         } else {
-          showToast(`❌ Yanlış (${targetName}). Tekrar dene! (${wrongCounts[itemIndex]}/3)`, 'danger', 1500);
+          showMapPopup(latlng, `Yanlış (${targetName}). Aranan: ${name} (${wrongCounts[itemIndex]}/3)`, 'danger', 2000);
         }
 
         renderCards();
@@ -1153,21 +1176,9 @@
 
     document.addEventListener('DOMContentLoaded', () => {
       loadMap();
+      selectNextAvailableCard();
       renderCards();
     });
-
-    let toastTimeout;
-    function showToast(text, type = 'success', duration = 2000) {
-      const toast = document.getElementById('toast');
-      document.getElementById('toastText').innerHTML = text;
-      document.getElementById('toastIcon').textContent = type === 'success' ? '✨' : '💡';
-      toast.className = `toast-banner show toast-${type}`;
-
-      clearTimeout(toastTimeout);
-      toastTimeout = setTimeout(() => { 
-        toast.className = 'toast-banner'; 
-      }, duration);
-    }
 
     document.getElementById('toggleLabelsBtn').addEventListener('click', (e) => {
       showLabels = !showLabels;
@@ -1185,6 +1196,7 @@
         document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
         activeCat = btn.dataset.cat;
+        selectNextAvailableCard();
         renderCards();
       });
     });
@@ -1195,6 +1207,7 @@
 
     document.getElementById('searchInput').addEventListener('input', (e) => {
       searchQuery = e.target.value;
+      selectNextAvailableCard();
       renderCards();
     });
 
