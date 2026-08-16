@@ -246,6 +246,18 @@ body.kpss-faint .leaflet-interactive{ opacity:0.55; }
   padding:8px 13px; border-radius:10px; font-size:11.5px; font-weight:700; color:var(--muted); z-index:600;
 }
 
+.kalkinma-select-wrap{
+  display:none; position:absolute; top:14px; left:50%; transform:translateX(-50%); z-index:600;
+  background:rgba(15,23,42,.92); border:1px solid rgba(56,189,248,.35); border-radius:12px;
+  padding:8px 10px; backdrop-filter:blur(8px); box-shadow:0 10px 26px rgba(0,0,0,.4);
+  align-items:center; gap:6px;
+}
+.kalkinma-select-wrap select{
+  background:transparent; border:0; color:#e2e8f0; font-weight:700; font-size:12px; outline:none; cursor:pointer;
+  max-width:210px;
+}
+.kalkinma-select-wrap select option{ background:#0f172a; color:#e2e8f0; }
+
 /* ============ RESULTS SCREEN ============ */
 #screen-results{ overflow-y:auto; align-items:center; padding:30px 16px; }
 .results-card{
@@ -290,12 +302,30 @@ body.kpss-faint .leaflet-interactive{ opacity:0.55; }
   #printNote{ display:block !important; position:absolute; top:0; left:0; width:100%; color:#000; background:#fff; padding:24px; }
 }
 
+.search-cats-row, .cards-container, .hud-left, .hud-right{
+  -webkit-mask-image: linear-gradient(to right, black 92%, transparent 100%);
+  mask-image: linear-gradient(to right, black 92%, transparent 100%);
+}
+
 @media (max-width:760px){
   .stat-grid{ grid-template-columns:1fr 1fr; }
-  .search-box, .filter-btn{ display:none; }
+  .search-box{ display:none; }
   .atlas-panel{ width:calc(100% - 28px); }
-  .hud-top{ gap:6px; }
-  .stat-pill{ padding:5px 10px; font-size:11px; }
+
+  .game-hud{ padding:8px 10px; gap:6px; }
+  .hud-top{ gap:5px; flex-wrap:nowrap; }
+  .hud-left, .hud-right{
+    flex-wrap:nowrap; overflow-x:auto; padding-bottom:2px; gap:5px;
+  }
+  .hud-left::-webkit-scrollbar, .hud-right::-webkit-scrollbar{ display:none; }
+  .icon-btn{ padding:6px 9px; font-size:10.5px; gap:4px; min-height:30px; flex-shrink:0; }
+  .stat-pill{ padding:5px 9px; font-size:10.5px; gap:4px; flex-shrink:0; }
+  .icon-btn.joker{ padding:6px 8px; font-size:10.5px; }
+
+  .search-cats-row{ gap:6px; }
+  .filter-btn{ padding:6px 11px; font-size:10.5px; flex-shrink:0; }
+
+  .card{ min-width:132px; max-width:154px; padding:9px 10px; }
 }
 </style>
 </head>
@@ -378,6 +408,11 @@ body.kpss-faint .leaflet-interactive{ opacity:0.55; }
 
   <div id="mapWrap">
     <div id="map"></div>
+    <div class="kalkinma-select-wrap" id="kalkinmaSelectWrap">
+      <select id="kalkinmaSelect">
+        <option value="">🏗️ Kalkınma Projeleri</option>
+      </select>
+    </div>
     <div class="atlas-panel" id="atlasPanel">
       <div class="atlas-panel-head">
         <h3 id="atlasTitle">İl seçin</h3>
@@ -496,16 +531,32 @@ const rawItems = [
   ["Ramsar","Meke Krater Gölü",["Konya"]],["Ramsar","Yumurtalık Lagünleri",["Adana"]],["Ramsar","Kızören Obruğu",["Konya"]],
   ["Ramsar","Kuyucuk Gölü",["Kars"]],["Ramsar","Nemrut Gölü",["Bitlis"]],
 
-  ["UNESCO","Divriği Ulu Camii ve Darüşşifası",["Sivas"]],["UNESCO","İstanbul'un Tarihi Alanları",["İstanbul"]],
-  ["UNESCO","Hattuşa (Boğazköy) - Hitit Başkenti",["Çorum"]],["UNESCO","Nemrut Dağı",["Adıyaman"]],
-  ["UNESCO","Xanthos-Letoon",["Antalya","Muğla"]],["UNESCO","Safranbolu Şehri",["Karabük"]],
-  ["UNESCO","Troya Arkeolojik Alanı",["Çanakkale"]],["UNESCO","Edirne Selimiye Camii ve Külliyesi",["Edirne"]],
-  ["UNESCO","Çatalhöyük Neolitik Alanı",["Konya"]],["UNESCO","Bergama Çok Katmanlı Kültürel Peyzaj Alanı",["İzmir"]],
-  ["UNESCO","Bursa ve Cumalıkızık: Osmanlı İmparatorluğunun Doğuşu",["Bursa"]],["UNESCO","Diyarbakır Kalesi ve Hevsel Bahçeleri Kültürel Peyzajı",["Diyarbakır"]],
-  ["UNESCO","Efes",["İzmir"]],["UNESCO","Ani Arkeolojik Alanı",["Kars"]],["UNESCO","Afrodisias",["Aydın"]],
-  ["UNESCO","Göbeklitepe",["Şanlıurfa"]],["UNESCO","Arslantepe Höyüğü",["Malatya"]],["UNESCO","Gordion",["Ankara"]],
-  ["UNESCO","Anadolu'nun Orta Çağ Dönemi Ahşap Hipostil Camileri",["Afyonkarahisar","Ankara","Eskişehir","Kastamonu","Konya"]],
-  ["UNESCO","Sardes Antik Kenti ve Bintepeler Lidya Tümülüsleri",["Manisa"]],
+  ["UNESCO", "Divriği Ulu Camii ve Darüşşifası", ["Sivas"]],
+  ["UNESCO", "İstanbul’un Tarihi Alanları", ["İstanbul"]],
+  ["UNESCO", "Göreme Millî Parkı ve Kapadokya", ["Nevşehir"]],
+  ["UNESCO", "Hattuşa (Boğazköy) - Hitit Başkenti", ["Çorum"]],
+  ["UNESCO", "Nemrut Dağı", ["Adıyaman"]],
+  ["UNESCO", "Hierapolis-Pamukkale", ["Denizli"]],
+  ["UNESCO", "Xanthos-Letoon", ["Antalya", "Muğla"]],
+  ["UNESCO", "Safranbolu Şehri", ["Karabük"]],
+  ["UNESCO", "Troya Arkeolojik Alanı", ["Çanakkale"]],
+  ["UNESCO", "Edirne Selimiye Camii ve Külliyesi", ["Edirne"]],
+  ["UNESCO", "Çatalhöyük Neolitik Alanı", ["Konya"]],
+  ["UNESCO", "Bergama Çok Katmanlı Kültürel Peyzaj Alanı", ["İzmir"]],
+  ["UNESCO", "Bursa ve Cumalıkızık: Osmanlı İmparatorluğunun Doğuşu", ["Bursa"]],
+  ["UNESCO", "Diyarbakır Kalesi ve Hevsel Bahçeleri Kültürel Peyzajı", ["Diyarbakır"]],
+  ["UNESCO", "Efes", ["İzmir"]],
+  ["UNESCO", "Ani Arkeolojik Alanı", ["Kars"]],
+  ["UNESCO", "Afrodisias", ["Aydın"]],
+  ["UNESCO", "Göbeklitepe", ["Şanlıurfa"]],
+  ["UNESCO", "Arslantepe Höyüğü", ["Malatya"]],
+  ["UNESCO", "Gordion", ["Ankara"]],
+  ["UNESCO", "Eşrefoğlu Camii (Ahşap Hipostil Cami)", ["Konya"]],
+  ["UNESCO", "Mahmut Bey Camii (Ahşap Hipostil Cami)", ["Kastamonu"]],
+  ["UNESCO", "Sivrihisar Ulu Camii (Ahşap Hipostil Cami)", ["Eskişehir"]],
+  ["UNESCO", "Afyonkarahisar Ulu Camii (Ahşap Hipostil Cami)", ["Afyonkarahisar"]],
+  ["UNESCO", "Arslanhane (Ahi Şerafeddin) Camii (Ahşap Hipostil Cami)", ["Ankara"]],
+  ["UNESCO", "Sardes Antik Kenti ve Bintepeler Lidya Tümülüsleri", ["Manisa"]],
 
   ["Cittaslow","1-Seferihisar",["İzmir"]],["Cittaslow","2-Akyaka",["Muğla"]],["Cittaslow","3-Gökçeada",["Çanakkale"]],
   ["Cittaslow","4-Yenipazar",["Aydın"]],["Cittaslow","5-Vize",["Kırklareli"]],["Cittaslow","6-Perşembe",["Ordu"]],
@@ -912,6 +963,7 @@ function startGame(mode, cats){
   wrongCounts={}; searchQuery=''; activeCat='all'; totalAttempts=0; totalCorrectAttempts=0; gameEnded=false;
   jokers={fifty:3, radar:3}; riddleRevealed={}; correctTimestamps=[]; sessionNewBadges=[];
   hotseat={ players:[{name:'Oyuncu 1',score:0},{name:'Oyuncu 2',score:0}], turn:0 };
+  currentHighlightedRegion="";
   document.getElementById('searchInput').value='';
 
   const stored = sessionStorage.getItem('retryItems');
@@ -955,6 +1007,8 @@ function startGame(mode, cats){
 
   document.getElementById('atlasPanel').style.display = 'none';
   document.getElementById('atlasHint').style.display = mode==='atlas' ? 'block' : 'none';
+  document.getElementById('kalkinmaSelectWrap').style.display = mode==='atlas' ? 'flex' : 'none';
+  document.getElementById('kalkinmaSelect').value = '';
   document.getElementById('searchCatsRow').style.display = mode==='atlas' ? 'none' : 'flex';
   document.getElementById('cards').style.display = mode==='atlas' ? 'none' : 'flex';
 
@@ -1084,7 +1138,10 @@ function showAtlasInfo(provinceName, gateName){
   }
   title.textContent=provinceName;
   const relevant=rawItems.filter(it=> it[2].some(p=>norm(p)===norm(provinceName)) );
-  if(relevant.length===0){ panel.innerHTML='<div class="atlas-empty">Bu ile ait kayıtlı özel bir veri bulunamadı.</div>'; return; }
+  if(relevant.length===0){
+    panel.innerHTML='<div class="atlas-empty">Bu ile ait kayıtlı özel bir veri bulunamadı.</div>';
+    return;
+  }
   const groups={};
   relevant.forEach(it=>{ (groups[it[0]]=groups[it[0]]||[]).push(it); });
   let html='';
@@ -1586,6 +1643,24 @@ document.querySelectorAll('.tileToggleBtn').forEach(btn=> btn.addEventListener('
 document.getElementById('atlasCloseBtn').addEventListener('click', ()=>{
   document.getElementById('atlasPanel').style.display='none';
 });
+
+/* ============ KALKINMA PROJELERİ DROPDOWN ============ */
+(function setupKalkinmaSelect(){
+  const select=document.getElementById('kalkinmaSelect');
+  const projectNames={
+    GAP:'GAP (Güneydoğu Anadolu)', DOKAP:'DOKAP (Doğu Karadeniz)', YHGP:'YHGP (Yeşilırmak Havzası)',
+    DAP:'DAP (Doğu Anadolu)', KOP:'KOP (Konya Ovası)', ZBK:'ZBK (Zonguldak-Bartın-Karabük)'
+  };
+  Object.keys(developmentProjects).forEach(key=>{
+    const opt=document.createElement('option');
+    opt.value=key; opt.textContent=projectNames[key]||key;
+    select.appendChild(opt);
+  });
+  select.addEventListener('change', ()=>{
+    currentHighlightedRegion=select.value;
+    provinceLayers.forEach(l=>updateProvinceStyle(l));
+  });
+})();
 
 /* ============ BAŞLANGIÇ ============ */
 document.addEventListener('DOMContentLoaded', ()=>{
