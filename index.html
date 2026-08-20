@@ -136,6 +136,7 @@ button{font-family:inherit;}
 }
 .hud-top{ display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap; }
 .hud-left, .hud-right{ display:flex; align-items:center; gap:6px; flex-wrap:wrap; }
+
 .icon-btn{
   border:0; background:rgba(255,255,255,0.06); color:var(--text); border-radius:9px;
   padding:7px 11px; font-size:11.5px; font-weight:700; cursor:pointer; display:flex; align-items:center; gap:5px;
@@ -160,26 +161,6 @@ button{font-family:inherit;}
   font-size:12px; font-weight:800; display:none; box-shadow:0 4px 12px rgba(245,158,11,.35);
 }
 
-.hotseat-bar{ display:none; gap:8px; }
-.hotseat-player{
-  flex:1; padding:8px 12px; border-radius:10px; background:rgba(255,255,255,0.04);
-  border:2px solid transparent; font-size:12px; font-weight:700; display:flex; justify-content:space-between; align-items:center;
-}
-.hotseat-player.turn{ border-color:#38bdf8; background:rgba(56,189,248,0.12); box-shadow:0 0 14px rgba(56,189,248,0.25); }
-.hotseat-player .p-score{ color:#38bdf8; font-weight:800; }
-
-.riddle-panel{
-  display:none; background:rgba(139,92,246,0.1); border:1px solid rgba(139,92,246,0.35);
-  border-radius:12px; padding:10px 14px; font-size:12.5px; font-weight:600; color:#e9d5ff; gap:8px;
-  flex-direction:column;
-}
-.riddle-panel .rl{ display:flex; justify-content:space-between; align-items:center; gap:10px; }
-.riddle-next-btn{
-  background:rgba(139,92,246,0.25); border:1px solid rgba(139,92,246,0.5); color:#e9d5ff;
-  padding:6px 12px; border-radius:8px; font-size:11px; font-weight:800; cursor:pointer;
-}
-.riddle-next-btn:disabled{ opacity:0.35; cursor:not-allowed; }
-
 .search-cats-row{ display:flex; gap:8px; overflow-x:auto; padding-bottom:2px; }
 .search-box{ position:relative; width:150px; flex-shrink:0; }
 .search-box input{
@@ -193,7 +174,50 @@ button{font-family:inherit;}
 }
 .filter-btn.active{ background:linear-gradient(135deg,var(--accent),#7c3aed); color:#fff; border-color:var(--accent); }
 
-.cards-container{ display:flex; gap:8px; overflow-x:auto; padding:10px 12px; scroll-behavior:smooth; flex-shrink:0; }
+/* ============ YENİ EKLENEN LAYOUT SİSTEMİ ============ */
+#game-main-area {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  overflow: hidden;
+}
+
+#cards-wrapper {
+  background: linear-gradient(180deg, var(--panel) 0%, rgba(15,23,42,0.9) 100%);
+  border-bottom: 2px solid rgba(99,102,241,0.12);
+  box-shadow: 0 4px 14px rgba(0,0,0,0.3);
+  z-index: 15;
+}
+
+/* Turistik Mod İçin Özel Sağ Panel Görünümü */
+/* Telefondaki turistik mod düzeni - GÜNCELLENEN KISIM */
+#game-main-area.tourist-layout {
+  flex-direction: row-reverse; /* Harita solda, Kartlar sağda */
+}
+#game-main-area.tourist-layout #cards-wrapper {
+  width: 290px;
+  height: 100%;
+  border-bottom: none;
+  border-left: 2px solid rgba(99,102,241,0.12);
+  flex-shrink: 0;
+}
+#game-main-area.tourist-layout .cards-container {
+  flex-direction: column;
+  overflow-x: hidden;
+  overflow-y: auto;
+  height: 100%;
+  align-items: center;
+  padding-bottom: 30px;
+  -webkit-mask-image: linear-gradient(to bottom, black 92%, transparent 100%);
+  mask-image: linear-gradient(to bottom, black 92%, transparent 100%);
+}
+#game-main-area.tourist-layout .card.tourist-card {
+  min-width: 95%;
+  max-width: 95%;
+  margin-bottom: 4px;
+}
+
+.cards-container{ display:flex; gap:8px; overflow-x:auto; padding:10px 12px; scroll-behavior:smooth; flex-shrink:0; align-items: stretch; }
 .card{
   background:var(--card); border:1.5px solid rgba(255,255,255,0.08); border-radius:11px; padding:10px 11px;
   cursor:pointer; display:flex; flex-direction:column; gap:4px; min-width:150px; max-width:180px; flex-shrink:0;
@@ -203,13 +227,48 @@ button{font-family:inherit;}
 .card.selected{ border:2px solid #38bdf8 !important; background:linear-gradient(135deg, rgba(56,189,248,.14), rgba(30,41,59,.8)); box-shadow:0 0 16px rgba(56,189,248,.3); }
 .card.wrong-shake{ animation:shake .4s ease-in-out; border-color:#ef4444 !important; }
 @keyframes shake{ 0%,100%{transform:translateX(0);} 20%,60%{transform:translateX(-4px);} 40%,80%{transform:translateX(4px);} }
-.tag{ font-size:8.5px; font-weight:800; text-transform:uppercase; padding:2px 6px; border-radius:4px; color:#fff; width:fit-content; letter-spacing:.4px; }
+
+.tag{ font-size:8.5px; font-weight:800; text-transform:uppercase; padding:2px 6px; border-radius:4px; color:#fff; width:fit-content; letter-spacing:.4px; flex-shrink:0; }
 .tag-milli{background:var(--cat-milli);} .tag-ramsar{background:var(--cat-ramsar);} .tag-unesco{background:var(--cat-unesco);}
 .tag-ticaret{background:var(--cat-ticaret);} .tag-kapi{background:var(--cat-kapi);} .tag-cittaslow{background:var(--cat-cittaslow);}
-.tag-kalkinma{background:var(--cat-kalkinma); color:#0f172a;}
+.tag-kalkinma{background:var(--cat-kalkinma); color:#0f172a;} .tag-tourist{background:#ec4899;}
+
 .card-title{ font-size:12px; font-weight:700; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
 .card-progress{ font-size:9.5px; color:#38bdf8; font-weight:700; }
-.card-hint-text{ font-size:9.5px; color:#fca5a5; background:rgba(239,68,68,.15); padding:3px 6px; border-radius:4px; }
+.card-hint-text{ font-size:9.5px; color:#fca5a5; background:rgba(239,68,68,.15); padding:3px 6px; border-radius:4px; margin-top:auto;}
+
+/* Turistik Yerler Özel Kart Modeli */
+.card.tourist-card {
+  min-width: 250px;
+  max-width: 280px;
+  max-height: 240px;
+}
+.tourist-ul {
+  list-style: none;
+  padding: 0; margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  overflow-y: auto;
+  flex: 1;
+  padding-right: 4px;
+}
+.tourist-ul::-webkit-scrollbar { width: 4px; }
+.tourist-ul li {
+  font-size: 10px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.06);
+  padding: 5px 7px;
+  border-radius: 6px;
+  line-height: 1.35;
+  color: #cbd5e1;
+}
+.tourist-ul li strong {
+  color: #38bdf8;
+  display: block;
+  font-size: 11px;
+  margin-bottom: 2px;
+}
 
 #mapWrap{ position:relative; flex:1; width:100%; background:#090d16; }
 #map{ height:100%; width:100%; background:#090d16; }
@@ -290,7 +349,6 @@ body.kpss-faint .leaflet-interactive{ opacity:0.55; }
 .end-btn-note{ background:linear-gradient(135deg,#0ea5e9,#0369a1); color:#fff; box-shadow:0 6px 16px rgba(14,165,233,.3);}
 .end-btn-restart{ background:linear-gradient(135deg,var(--accent),#7c3aed); color:#fff; box-shadow:0 6px 16px rgba(99,102,241,.3); }
 .end-btn-menu{ background:rgba(255,255,255,.06); color:var(--muted); border:1px solid rgba(255,255,255,.1); }
-.winner-banner{ text-align:center; font-weight:800; font-size:15px; color:#fde68a; margin-bottom:16px; background:rgba(251,191,36,.1); border:1px solid rgba(251,191,36,.3); border-radius:12px; padding:10px; }
 
 #confettiCanvas{ display:none; position:fixed; inset:0; pointer-events:none; z-index:3000; }
 
@@ -302,7 +360,7 @@ body.kpss-faint .leaflet-interactive{ opacity:0.55; }
   #printNote{ display:block !important; position:absolute; top:0; left:0; width:100%; color:#000; background:#fff; padding:24px; }
 }
 
-.search-cats-row, .cards-container, .hud-left, .hud-right{
+.search-cats-row, .hud-left, .hud-right{
   -webkit-mask-image: linear-gradient(to right, black 92%, transparent 100%);
   mask-image: linear-gradient(to right, black 92%, transparent 100%);
 }
@@ -311,7 +369,6 @@ body.kpss-faint .leaflet-interactive{ opacity:0.55; }
   .stat-grid{ grid-template-columns:1fr 1fr; }
   .search-box{ display:none; }
   .atlas-panel{ width:calc(100% - 28px); }
-
   .game-hud{ padding:8px 10px; gap:6px; }
   .hud-top{ gap:5px; flex-wrap:nowrap; }
   .hud-left, .hud-right{
@@ -321,16 +378,111 @@ body.kpss-faint .leaflet-interactive{ opacity:0.55; }
   .icon-btn{ padding:6px 9px; font-size:10.5px; gap:4px; min-height:30px; flex-shrink:0; }
   .stat-pill{ padding:5px 9px; font-size:10.5px; gap:4px; flex-shrink:0; }
   .icon-btn.joker{ padding:6px 8px; font-size:10.5px; }
-
   .search-cats-row{ gap:6px; }
   .filter-btn{ padding:6px 11px; font-size:10.5px; flex-shrink:0; }
-
   .card{ min-width:132px; max-width:154px; padding:9px 10px; }
+  
+  /* MOBİL + SADECE TURİSTİK MOD:
+     Kartları kısa tutuyoruz; haritaya mümkün olduğunca fazla alan bırakıyoruz. */
+  #game-main-area.tourist-layout {
+    flex-direction: column;
+  }
+  #game-main-area.tourist-layout #cards-wrapper {
+    width: 100%;
+    height: 132px;
+    max-height: 132px;
+    border-left: none;
+    border-bottom: 2px solid rgba(99,102,241,0.12);
+    flex-shrink: 0;
+  }
+  #game-main-area.tourist-layout .cards-container {
+    flex-direction: row;
+    overflow-x: auto;
+    overflow-y: hidden;
+    height: 100%;
+    padding: 6px 8px 8px;
+    gap: 7px;
+    align-items: stretch;
+    -webkit-mask-image: linear-gradient(to right, black 94%, transparent 100%);
+    mask-image: linear-gradient(to right, black 94%, transparent 100%);
+  }
+
+  /* Şehir adı mobilde görünür; masaüstü görünümü etkilenmez. */
+  #game-main-area.tourist-layout .tourist-city-title {
+    display: block;
+    font-size: 10px;
+    line-height: 1.15;
+    font-weight: 800;
+    color: #f8fafc;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-bottom: 2px;
+  }
+
+  #game-main-area.tourist-layout .card.tourist-card {
+    min-width: 158px;
+    max-width: 158px;
+    width: 158px;
+    height: 118px;
+    max-height: 118px;
+    padding: 6px 7px;
+    margin-bottom: 0;
+    gap: 3px;
+    border-radius: 9px;
+  }
+
+  #game-main-area.tourist-layout .tourist-ul {
+    gap: 2px;
+    overflow: hidden;
+    padding-right: 0;
+  }
+
+  #game-main-area.tourist-layout .tourist-ul li {
+    min-height: 17px;
+    padding: 2px 4px;
+    border-radius: 4px;
+    font-size: 8px;
+    line-height: 1.15;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  #game-main-area.tourist-layout .tourist-ul li strong {
+    display: inline;
+    font-size: 8.5px;
+    margin: 0;
+    color: #38bdf8;
+  }
+
+  #game-main-area.tourist-layout .tourist-ul li strong::after {
+    content: " — ";
+    color: #64748b;
+  }
+
+  /* Açıklamalar mobilde gizli: sadece yer isimleri kalıyor. */
+  #game-main-area.tourist-layout .tourist-place-desc {
+    display: none;
+  }
+
+  #game-main-area.tourist-layout .tag {
+    font-size: 7px;
+    padding: 2px 5px;
+  }
+
+  #game-main-area.tourist-layout .card-hint-text {
+    font-size: 7.5px;
+    padding: 2px 4px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  
 }
 </style>
 </head>
 <body>
-
 <canvas id="confettiCanvas"></canvas>
 
 <!-- ===================== MENU SCREEN ===================== -->
@@ -338,7 +490,7 @@ body.kpss-faint .leaflet-interactive{ opacity:0.55; }
   <div class="menu-hero">
     <span class="glyph">🗺️</span>
     <h1>Türkiye Coğrafya Akademisi</h1>
-    <p>Türkiye coğrafyasını eğlenerek öğren, KPSS ve ÖSYM sınavlarına hazırlan. İl, milli park, sınır kapısı ve daha fazlasını haritada keşfet.</p>
+    <p>Türkiye coğrafyasını eğlenerek öğren. İl, milli park, sınır kapısı ve turistik merkezleri haritada keşfet.</p>
     <div class="badge-strip" id="heroStats"></div>
   </div>
 
@@ -346,7 +498,7 @@ body.kpss-faint .leaflet-interactive{ opacity:0.55; }
     <div class="section-title">Oyun Modu Seç</div>
     <div class="mode-grid" id="modeGrid"></div>
 
-    <div class="section-title">Kategori Seç</div>
+    <div class="section-title">Kategori Seç (Klasik/Zaman Modu için)</div>
     <div class="cat-grid" id="catGrid"></div>
 
     <div class="section-title">Rozetlerin</div>
@@ -378,19 +530,9 @@ body.kpss-faint .leaflet-interactive{ opacity:0.55; }
       </div>
     </div>
 
-    <div class="hotseat-bar" id="hotseatBar">
-      <div class="hotseat-player" id="hsP0"><span>🔵 Oyuncu 1</span><span class="p-score">0</span></div>
-      <div class="hotseat-player" id="hsP1"><span>🔴 Oyuncu 2</span><span class="p-score">0</span></div>
-    </div>
-
-    <div class="riddle-panel" id="riddlePanel">
-      <div class="rl"><strong id="riddleClue">İpucu bekleniyor...</strong></div>
-      <button class="riddle-next-btn" id="riddleNextBtn">💡 Sonraki İpucu</button>
-    </div>
-
     <div class="search-cats-row" id="searchCatsRow">
       <div class="search-box">
-        <svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+        <svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 14z"/></svg>
         <input type="text" id="searchInput" placeholder="Arama yap...">
       </div>
       <button class="filter-btn active" data-cat="all">Tümü</button>
@@ -402,32 +544,36 @@ body.kpss-faint .leaflet-interactive{ opacity:0.55; }
       <button class="filter-btn" data-cat="Serbest Bölge">Ticaret</button>
       <button class="filter-btn" data-cat="Sınır Kapısı">🚪 Sınır Kapısı</button>
     </div>
-
-    <div id="cards" class="cards-container"></div>
   </div>
 
-  <div id="mapWrap">
-    <div id="map"></div>
-    <div class="kalkinma-select-wrap" id="kalkinmaSelectWrap">
-      <select id="kalkinmaSelect">
-        <option value="">🏗️ Kalkınma Projeleri</option>
-      </select>
+  <!-- EKLENEN ANA YAPI (Cards ve Map buraya taşındı) -->
+  <div id="game-main-area">
+    <div id="cards-wrapper">
+      <div id="cards" class="cards-container"></div>
     </div>
-    <div class="atlas-panel" id="atlasPanel">
-      <div class="atlas-panel-head">
-        <h3 id="atlasTitle">İl seçin</h3>
-        <button class="atlas-close-btn" id="atlasCloseBtn">✕ Anladım</button>
+
+    <div id="mapWrap">
+      <div id="map"></div>
+      <div class="kalkinma-select-wrap" id="kalkinmaSelectWrap">
+        <select id="kalkinmaSelect">
+          <option value="">🏗️ Kalkınma Projeleri</option>
+        </select>
       </div>
-      <div id="atlasBody"><div class="atlas-empty">Bir ile tıklayarak o ile ait tüm coğrafi bilgileri görüntüleyin.</div></div>
+      <div class="atlas-panel" id="atlasPanel">
+        <div class="atlas-panel-head">
+          <h3 id="atlasTitle">İl seçin</h3>
+          <button class="atlas-close-btn" id="atlasCloseBtn">✕ Anladım</button>
+        </div>
+        <div id="atlasBody"><div class="atlas-empty">Bir ile tıklayarak o ile ait tüm coğrafi bilgileri görüntüleyin.</div></div>
+      </div>
+      <div class="atlas-hint" id="atlasHint" style="display:none;">📖 Keşif Modu — bir ile tıkla</div>
     </div>
-    <div class="atlas-hint" id="atlasHint" style="display:none;">📖 Keşif Modu — bir ile tıkla</div>
   </div>
 </div>
 
 <!-- ===================== RESULTS SCREEN ===================== -->
 <div id="screen-results" class="screen">
   <div class="results-card">
-    <div class="winner-banner" id="winnerBanner" style="display:none;"></div>
     <div class="results-head">
       <span class="results-emoji" id="endEmoji">🏆</span>
       <div class="results-title">Oyun Sonu Karnesi</div>
@@ -461,9 +607,6 @@ body.kpss-faint .leaflet-interactive{ opacity:0.55; }
 <div id="printNote"></div>
 
 <script>
-/* =====================================================================
-   VERİ SETLERİ (orijinal veri korunmuştur)
-===================================================================== */
 function loadScriptOnce(src){
   return new Promise((resolve,reject)=>{
     const s=document.createElement('script'); s.src=src;
@@ -482,6 +625,9 @@ async function loadLeaflet(){
   return false;
 }
 
+/* =====================================================================
+   VERİ SETLERİ (Klasik Modlar İçin)
+===================================================================== */
 const developmentProjects = {
   "GAP": ["Adıyaman", "Batman", "Diyarbakır", "Gaziantep", "Kilis", "Mardin", "Siirt", "Şanlıurfa", "Şırnak"],
   "DOKAP": ["Amasya", "Artvin", "Bayburt", "Giresun", "Gümüşhane", "Ordu", "Rize", "Samsun", "Tokat", "Trabzon", "Çorum"],
@@ -499,31 +645,59 @@ const rawItems = [
   ["Kalkınma Projesi", "KOP (Konya Ovası)", developmentProjects["KOP"]],
   ["Kalkınma Projesi", "ZBK (Zonguldak-Bartın-Karabük)", developmentProjects["ZBK"]],
 
-  ["Milli Park","Nemrut Dağı",["Adıyaman","Malatya"]],["Milli Park","Akdağ",["Afyonkarahisar","Denizli"]],
-  ["Milli Park","Başkomutan",["Afyonkarahisar","Kütahya","Uşak"]],["Milli Park","Ağrı Dağı",["Ağrı","Iğdır"]],
-  ["Milli Park","Soğuksu",["Ankara"]],["Milli Park","Sakarya Meydan Muharebesi",["Ankara"]],
-  ["Milli Park","Sarıçalı Dağı",["Ankara"]],["Milli Park","Güllük Dağı - Termessos",["Antalya"]],
-  ["Milli Park","Beydağları Sahil",["Antalya"]],["Milli Park","Altınbeşik Mağarası",["Antalya"]],
-  ["Milli Park","Köprülü Kanyon",["Antalya","Isparta"]],["Milli Park","Hatila Vadisi",["Artvin"]],
-  ["Milli Park","Kaçkar Dağları",["Rize"]],["Milli Park","Dilek Yarımadası - Büyük Menderes Deltası",["Aydın"]],
-  ["Milli Park","Kuşcenneti",["Balıkesir"]],["Milli Park","Kazdağı",["Balıkesir"]],
-  ["Milli Park","Kop Dağı Müdafaası",["Bayburt","Erzurum"]],["Milli Park","Yedigöller",["Bolu"]],
-  ["Milli Park","Abant Gölü",["Bolu"]],["Milli Park","Uludağ",["Bursa"]],
-  ["Milli Park","Troya",["Çanakkale"]],["Milli Park","Boğazköy – Alacahöyük",["Çorum"]],
-  ["Milli Park","Honaz Dağı",["Denizli"]],["Milli Park","Gala Gölü",["Edirne"]],
-  ["Milli Park","Nene Hatun",["Erzurum"]],["Milli Park","Hakkari Cilo ve Sat Dağları",["Hakkari"]],
-  ["Milli Park","Kızıldağ",["Isparta"]],["Milli Park","Kovada Gölü",["Isparta"]],
-  ["Milli Park","Geben Vadisi",["Kahramanmaraş"]],["Milli Park","Sarıkamış - Allahuekber Dağları",["Kars","Erzurum"]],
-  ["Milli Park","Küre Dağları",["Kastamonu","Bartın"]],["Milli Park","Ilgaz Dağı",["Kastamonu","Çankırı"]],
-  ["Milli Park","İstiklal Yolu",["Kastamonu","Çankırı"]],["Milli Park","Sultan Sazlığı",["Kayseri"]],
-  ["Milli Park","İğneada Longoz Ormanları",["Kırklareli"]],["Milli Park","Beyşehir Gölü",["Konya"]],
-  ["Milli Park","Derebucak Çamlık Mağaraları",["Konya"]],["Milli Park","Spil Dağı",["Manisa"]],
-  ["Milli Park","Marmaris",["Muğla"]],["Milli Park","Saklıkent",["Muğla","Antalya"]],
-  ["Milli Park","Malazgirt Meydan Muharebesi",["Muş"]],["Milli Park","Aladağlar",["Niğde","Adana","Kayseri"]],
-  ["Milli Park","Karatepe - Aslantaş",["Osmaniye"]],["Milli Park","Karagöl – Sahara",["Rize","Artvin"]],
-  ["Milli Park","Botan Vadisi",["Siirt"]],["Milli Park","Divriği",["Sivas"]],
-  ["Milli Park","Tek Tek Dağları",["Şanlıurfa"]],["Milli Park","Altındere Vadisi",["Trabzon"]],
-  ["Milli Park","Munzur Vadisi",["Tunceli"]],["Milli Park","Yozgat Çamlığı",["Yozgat"]],
+  ["Milli Park","Nemrut Dağı",["Adıyaman","Malatya"]],
+  ["Milli Park","Akdağ",["Afyonkarahisar","Denizli"]],
+  ["Milli Park","Başkomutan",["Afyonkarahisar","Kütahya","Uşak"]],
+  ["Milli Park","Ağrı Dağı",["Ağrı","Iğdır"]],
+  ["Milli Park","Soğuksu",["Ankara"]],
+  ["Milli Park","Sakarya Meydan Muharebesi",["Ankara"]],
+  ["Milli Park","Sarıçalı Dağı",["Ankara"]],
+  ["Milli Park","Güllük Dağı - Termessos",["Antalya"]],
+  ["Milli Park","Beydağları Sahil",["Antalya"]],
+  ["Milli Park","Altınbeşik Mağarası",["Antalya"]],
+  ["Milli Park","Köprülü Kanyon",["Antalya","Isparta"]],
+  ["Milli Park","Hatila Vadisi",["Artvin"]],
+  ["Milli Park","Kaçkar Dağları",["Rize"]],
+  ["Milli Park","Dilek Yarımadası - Büyük Menderes Deltası",["Aydın"]],
+  ["Milli Park","Kuşcenneti",["Balıkesir"]],
+  ["Milli Park","Kazdağı",["Balıkesir"]],
+  ["Milli Park","Kop Dağı Müdafaası",["Bayburt","Erzurum"]],
+  ["Milli Park","Yedigöller",["Bolu"]],
+  ["Milli Park","Abant Gölü",["Bolu"]],
+  ["Milli Park","Uludağ",["Bursa"]],
+  ["Milli Park","Troya",["Çanakkale"]],
+  ["Milli Park","Boğazköy – Alacahöyük",["Çorum"]],
+  ["Milli Park","Honaz Dağı",["Denizli"]],
+  ["Milli Park","Gala Gölü",["Edirne"]],
+  ["Milli Park","Nene Hatun",["Erzurum"]],
+  ["Milli Park","Hakkari Cilo ve Sat Dağları",["Hakkari"]],
+  ["Milli Park","Kızıldağ",["Isparta"]],
+  ["Milli Park","Kovada Gölü",["Isparta"]],
+  ["Milli Park","Geben Vadisi",["Kahramanmaraş"]],
+  ["Milli Park","Sarıkamış - Allahuekber Dağları",["Kars","Erzurum"]],
+  ["Milli Park","Küre Dağları",["Kastamonu","Bartın"]],
+  ["Milli Park","Ilgaz Dağı",["Kastamonu","Çankırı"]],
+  ["Milli Park","İstiklal Yolu",["Kastamonu","Çankırı"]],
+  ["Milli Park","Sultan Sazlığı",["Kayseri"]],
+  ["Milli Park","İğneada Longoz Ormanları",["Kırklareli"]],
+  ["Milli Park","Beyşehir Gölü",["Konya"]],
+  ["Milli Park","Derebucak Çamlık Mağaraları",["Konya"]],
+  ["Milli Park","Spil Dağı",["Manisa"]],
+  ["Milli Park","Marmaris",["Muğla"]],
+  ["Milli Park","Saklıkent",["Muğla","Antalya"]],
+  ["Milli Park","Malazgirt Meydan Muharebesi",["Muş"]],
+  ["Milli Park","Aladağlar",["Niğde","Adana","Kayseri"]],
+  ["Milli Park","Karatepe - Aslantaş",["Osmaniye"]],
+  ["Milli Park","Karagöl – Sahara",["Rize","Artvin"]],
+  ["Milli Park","Botan Vadisi",["Siirt"]],
+  ["Milli Park","Divriği",["Sivas"]],
+  ["Milli Park","Tek Tek Dağları",["Şanlıurfa"]],
+  ["Milli Park","Altındere Vadisi",["Trabzon"]],
+  ["Milli Park","Munzur Vadisi",["Tunceli"]],
+  ["Milli Park","Yozgat Çamlığı",["Yozgat"]],
+  ["Milli Park","Kuzey Ege Deniz",["Çanakkale","Tekirdağ"]],
+  ["Milli Park","Fethiye - Kaş Deniz",["Muğla","Antalya"]],
+  ["Milli Park","Nemrut Kalderası",["Bitlis"]],
 
   ["Ramsar","Göksu Deltası",["Mersin"]],["Ramsar","Burdur Gölü",["Burdur"]],["Ramsar","Seyfe Gölü",["Kırşehir"]],
   ["Ramsar","Manyas Kuşgölü",["Balıkesir"]],["Ramsar","Sultan Sazlığı",["Kayseri"]],["Ramsar","Kızılırmak Deltası",["Samsun"]],
@@ -597,10 +771,6 @@ const rawItems = [
   ["Sınır Kapısı","Yayladağı",["Hatay"],"Suriye"]
 ];
 
-function shuffleArray(a){ const arr=[...a]; for(let i=arr.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [arr[i],arr[j]]=[arr[j],arr[i]]; } return arr; }
-
-const countryColors = { "Bulgaristan":"#3b82f6","Yunanistan":"#ec4899","Gürcistan":"#eab308","Ermenistan":"#f97316","İran":"#a855f7","Irak":"#14b8a6","Suriye":"#10b981","Nahçıvan":"#06b6d4" };
-
 const borderGateCoords = {
   "İpsala": { lat: 40.918, lng: 26.319, country: "Yunanistan", prov: "Edirne" },
   "Uzunköprü 🚂": { lat: 41.272, lng: 26.680, country: "Yunanistan", prov: "Edirne" },
@@ -616,172 +786,111 @@ const borderGateCoords = {
   "Gürbulak": { lat: 39.412, lng: 44.377, country: "İran", prov: "Ağrı" },
   "Kapıköy 🚂": { lat: 38.514, lng: 44.372, country: "İran", prov: "Van" },
   "Esendere": { lat: 37.712, lng: 44.573, country: "İran", prov: "Hakkari" },
-  "Derecik": { lat: 37.042, lng: 44.362, country: "Irak", prov: "Hakkari" },
-  "Üzümlü": { lat: 37.039, lng: 44.225, country: "Irak", prov: "Hakkari" },
   "Habur": { lat: 37.152, lng: 42.563, country: "Irak", prov: "Şırnak" },
   "Alican": { lat: 40.122, lng: 44.028, country: "Ermenistan", prov: "Iğdır" },
   "Dilucu": { lat: 39.789, lng: 44.783, country: "Nahçıvan", prov: "Iğdır" },
   "Nusaybin 🚂": { lat: 37.067, lng: 41.218, country: "Suriye", prov: "Mardin" },
-  "Ceylanpınar": { lat: 36.838, lng: 39.998, country: "Suriye", prov: "Şanlıurfa" },
-  "Akçakale": { lat: 36.703, lng: 38.948, country: "Suriye", prov: "Şanlıurfa" },
-  "Çobanbey 🚂": { lat: 36.671, lng: 37.498, country: "Suriye", prov: "Gaziantep" },
-  "Mürşitpınar 🚂": { lat: 36.885, lng: 38.351, country: "Suriye", prov: "Şanlıurfa" },
-  "Karkamış": { lat: 36.833, lng: 38.016, country: "Suriye", prov: "Gaziantep" },
-  "Öncüpınar": { lat: 36.648, lng: 37.082, country: "Suriye", prov: "Kilis" },
-  "Zeytindalı": { lat: 36.471, lng: 36.578, country: "Suriye", prov: "Hatay" },
-  "Cilvegözü": { lat: 36.239, lng: 36.657, country: "Suriye", prov: "Hatay" },
-  "Yayladağı": { lat: 35.903, lng: 35.972, country: "Suriye", prov: "Hatay" }
+  "Cilvegözü": { lat: 36.239, lng: 36.657, country: "Suriye", prov: "Hatay" }
 };
-
-const facts = {
-    // KALKINMA PROJELERİ
-  "GAP (Güneydoğu Anadolu)": "🏗️ Türkiye'nin İLK ve EN BÜYÜK bölgesel kalkınma projesidir. Fırat ve Dicle nehirleri üzerindeki sulama ve hidroelektrik santralleri kapsar.",
-  "DOKAP (Doğu Karadeniz)": "🏔️ Karadeniz'in dik coğrafyasında Ulaşım, Yeşil Yol (Yaylalar Arası Turizm) ve su ürünleri altyapısını güçlendirmeyi hedefler.",
-  "YHGP (Yeşilırmak Havzası)": "🌊 Yeşilırmak ve kollarındaki erozyon, su kirliliği ve sel taşkınlarını önleme odaklı çevresel kalkınma projesidir.",
-  "DAP (Doğu Anadolu)": "🏔️ Yüzölçümü EN GENİŞ kalkınma projesidir. Otlak alanları ve mera hayvancılığı ile tarımsal altyapıyı destekler.",
-  "KOP (Konya Ovası)": "🌾 Göksu Nehri'nin sularını Mavi Tünel Projesi ile Konya Ovası'na aktararak yeraltı su seviyesinin düşmesini önlemeyi amaçlar.",
-  "ZBK (Zonguldak-Bartın-Karabük)": "⛏️ Demir-çelik ve taş kömürüne dayalı ağır sanayinin modernize edilmesi ve bölge ekonomisinin çeşitlendirilmesini amaçlar.",
-
-  // MİLLİ PARKLAR
-  "Yozgat Çamlığı": "🌲 Türkiye'nin İLAN EDİLEN İLK MİLLİ PARKI'dır (1958). Karaçam türü ve mikroklima alanı ile ünlüdür.",
-  "Ağrı Dağı": "🏔️ Türkiye'nin EN BÜYÜK MİLLİ PARKI ve en yüksek zirvesidir (5.137 m). Volkanik yapısıyla dikkat çeker.",
-  "Marmaris": "🏖️ Türkiye'nin ziyaretçi sayısı ve kıyı turizm potansiyeli en yüksek milli parklarındandır.",
-  "Botan Vadisi": "🏞️ Siirt sınırlarında yer alan derin kanyon yapısı ve tarihi İpek Yolu güzergahı barındıran milli parktır.",
-  "Nemrut Dağı": "🗿 Kommagene Krallığı'na ait tümülüs ve dev tanrı heykellerinin yer aldığı UNESCO kültürel mirasıdır.",
-  "Uludağ": "🎿 Türkiye'de kış turizminin ilk merkezi ve granit batolit kütlesi üzerinde oluşmuş biyoçeşitlilik alanıdır.",
-  "İğneada Longoz Ormanları": "🌊 Karadeniz kıyısında tatlı su ve deniz ekosisteminin birleştiği Avrupa'nın en büyük subasar (longoz) ormanıdır.",
-  "Başkomutan": "⚔️ Kütahya-Afyonkarahisar-Uşak üçgeninde Büyük Taarruz'un zaferle sonuçlandığı tarihi milli parktır.",
-  "İstiklal Yolu": "📜 Kurtuluş Savaşı'nda İnebolu Limanı'ndan Ankara'ya cephane taşınan tarihi lojistik güzergahtır.",
-  "Karatepe - Aslantaş": "🦁 Osmaniye'de yer alan, Türkiye'nin İLK AÇIK HAVA MÜZESİ niteliğindeki milli parkıdır.",
-  "Altınbeşik Mağarası": "🚣 Türkiye'nin en büyük, Avrupa'nın 3. büyük yeraltı gölü mağarasına ev sahipliği yapar.",
-  "Soğuksu": "🌲 Ankara'nın Kızılcahamam ilçesinde volkanik arazi yapısına ve şifalı kaplıcalara sahip milli parktır.",
-  "Sakarya Meydan Muharebesi": "⚔️ Polatlı ve Haymana bölgesinde 'Subaylar Savaşı' olarak bilinen tarihi alan milli parkıdır.",
-  "Sarıçalı Dağı": "🌲 Ankara Nallıhan'da asırlık anıt ağaçları barındıran milli parktır.",
-  "Güllük Dağı - Termessos": "🏛️ Büyük İskender'in kuşatıp alamadığı tek kent olan antik Termessos kentine ev sahipliği yapar.",
-  "Beydağları Sahil": "🌊 Çıralı, Olimpos ve Yanartaş (Chimaera) gibi doğal ve tarihi değerleri içinde barındırır.",
-  "Köprülü Kanyon": "🚣 Türkiye'nin en popüler rafting rotasına ve doğal kanyon oluşumuna sahiptir.",
-  "Hatila Vadisi": "🌿 Artvin'de dik vadi yamaçları, zengin bitki örtüsü ve cam seyir terası ile ünlüdür.",
-  "Kaçkar Dağları": "🏔️ Rize sınırlarında buzul gölleri (sirk gölleri), yaylaları ve ormangülü (komar) bitkisiyle tanınır.",
-  "Dilek Yarımadası - Büyük Menderes Deltası": "🦆 Akdeniz foku ve flamingoların yaşadığı hem karasal hem denizel koruma alanıdır.",
-  "Kuşcenneti": "🕊️ Manyas Gölü kıyısında yer alan, Uluslararası A Sınıfı diplomaya sahip göçmen kuş merkezidir.",
-  "Kazdağı": "🍃 Mitolojide 'Ida Dağı' olarak geçen, Türkiye'nin oksijen oranı en yüksek alanlarındandır.",
-  "Kop Dağı Müdafaası": "⚔️ I. Dünya Savaşı'nda Doğu Cephesi'nde kahramanca savunmanın yapıldığı tarihi milli parktır.",
-  "Yedigöller": "🍁 Heyelan set gölleri (Büyükgöl, Seringöl vb.) ve sonbahar renk paletiyle ünlü doğa harikasıdır.",
-  "Abant Gölü": "🌊 Heyelan seti ile oluşmuş, nilüfer çiçekleri ve Abant alabalığı ile tescilli tatlı su gölüdür.",
-  "Troya": "🐎 Çanakkale Boğazı girişinde yer alan 5000 yıllık tarihe sahip efsanevi antik kenttir.",
-  "Boğazköy – Alacahöyük": "📜 Hitit İmparatorluğu'nun başkenti Hattuşa ve Kadeş Antlaşması tabletlerinin bulunduğu alandır.",
-  "Honaz Dağı": "🏔️ Denizli'de yer alan Ege Bölgesi'nin EN YÜKSEK NOKTASI'dır (2.571 m).",
-  "Gala Gölü": "🦆 Edirne'de Meriç Deltası üzerinde yer alan önemli sulak alan ve kuş cennetidir.",
-  "Nene Hatun": "⚔️ 93 Harbi'nde Erzurum Aziziye Tabyaları'nda kahramanlaşan Nene Hatun anısına ilan edilmiştir.",
-  "Hakkari Cilo ve Sat Dağları": "🏔️ Türkiye'nin ikinci yüksek zirvesi Uludoruk ve aktif buzul kütlelerinin bulunduğu alandır.",
-  "Kızıldağ": "🌲 Isparta Beyşehir kıyısında yüksek oksijen oranı nedeniyle solunum hastaları için şifa merkezidir.",
-  "Kovada Gölü": "🛶 Karstik çöküntü sonucu oluşmuş, Beyşehir Gölü'nün fazla sularını taşıyan doğal göldür.",
-  "Sarıkamış - Allahuekber Dağları": "❄️ Sarıkamış Şehitleri anısına adanan ve dünyada nadir görülen kristal kar yapısına sahip milli parktır.",
-  "Küre Dağları": "🏞️ WWF tarafından Avrupa Ormanları 'Acil Korunması Gereken 100 Sıcak Noktası'ndan biri seçilmiştir.",
-  "Ilgaz Dağı": "🎿 Çankırı-Kastamonu sınırında kış sporları ve ladin/göknar ormanlarıyla tanınan milli parktır.",
-  "Sultan Sazlığı": "🦅 Tatlı ve tuzlu su ekosistemlerini yan yana barındıran iç Anadolu'nun en önemli sulak alanıdır.",
-  "Beyşehir Gölü": "⛵ Türkiye'nin EN BÜYÜK TATLI SU GÖLÜ ve milli park alanıdır.",
-  "Spil Dağı": "🌷 Manisa'da yılkı atları ve dünyaca ünlü endemik Manisa Lalesi ile tanınan dağdır.",
-  "Malazgirt Meydan Muharebesi": "⚔️ 1071 yılında Anadolu'nun kapılarını Türklere açan tarihi meydan muharebesi alanıdır.",
-  "Aladağlar": "🧗 Niğde, Adana ve Kayseri sınırlarında Türkiye'nin 'Alpler'i kabul edilen dağcılık merkezidir.",
-  "Botan Vadisi": "🏞️ Siirt'te yer alan, dik kanyon kayalıkları ve tarihi İpek Yolu duraklarına ev sahipliği yapan vadidir.",
-  "Munzur Vadisi": "🌊 Tunceli'de yer alan, akarsu kaynakları (Munzur Gözeleri) ve zengin florasıyla Doğu'nun saklı cennetidir.",
-
-  // RAMSAR ALANLARI
-  "Göksu Deltası": "🦆 Türkiye'nin İLAN EDİLEN İLK RAMSAR ALANI'dır (1994 - Mersin). Göçmen kuşların mola noktasıdır.",
-  "Kızılırmak Deltası": "🌾 Türkiye'nin yüzölçümü EN BÜYÜK RAMSAR ALANI'dır (Samsun). Yaban hayatı koruma merkezidir.",
-  "Burdur Gölü": "💧 Karstik yapılı, suyu acı ve sodyumlu olan, nesli tehlikedeki 'Dikkuyruk' ördeklerinin ana vatanıdır.",
-  "Seyfe Gölü": "🦩 Kırşehir'de yer alan ve binlerce flamingo kolonisine ev sahipliği yapan sığ tuzlu göldür.",
-  "Manyas Kuşgölü": "🕊️ Balıkesir'de Türkiye'nin ilk tescillenen uluslararası kuş cennetidir.",
-  "Akyatan Lagünü": "🌊 Adana kıyısında Çukurova'nın en büyük doğal lagün gölüdür; yeşil deniz kaplumbağaları yumurtlama alanıdır.",
-  "Uluabat Gölü": "🐟 Bursa'da Ramsar alanı olan, ötrofikasyon riski altındaki sığ tatlı su gölüdür.",
-  "Gediz Deltası": "🦩 İzmir şehir merkezine çok yakın, flamingo ve pelikanların Türkiye'deki ana kuluçka alanıdır.",
-  "Meke Krater Gölü": "🧿 'Dünyanın Nazar Boncuğu' olarak bilinen, iç içe geçmiş volkanik maar gölüdür.",
-  "Yumurtalık Lagünleri": "🌾 Çukurova deltalarında denizle birleşen lagün, kumul ve halofit (tuzcul) bitki örtüsü alanıdır.",
-  "Kızören Obruğu": "🕳️ Konya Ovası'nda karstik erime sonucu oluşmuş en derin ve en belirgin obruk gölüdür.",
-  "Kuyucuk Gölü": "🦆 Kars'ta Doğu Anadolu'nun en önemli kuş halkalama ve gözlem merkezlerindendir.",
-  "Nemrut Gölü": "🌋 Bitlis'te Nemrut Volkanı patlamasıyla oluşan Türkiye'nin en büyük kaldera gölüdür.",
-
-  // UNESCO DÜNYA MİRASLARI
-  "Divriği Ulu Camii ve Darüşşifası": "🕌 Türkiye'nin UNESCO Listesi'ne giren İLK KÜLTÜREL VARLIĞI'dır (1985 - Sivas). Taş işçiliği muazzamdır.",
-  "İstanbul'un Tarihi Alanları": "🏛️ Tarihi Yarımada, Suriçi, Süleymaniye, Zeyrek ve Zeytinburnu surlarını kapsayan Dünya Mirasıdır.",
-  "Hattuşa (Boğazköy) - Hitit Başkenti": "🏺 Çorum'da Hitit İmparatorluğu'nun başkenti, Yazılıkaya açık hava tapınağı ve Kadeş tabletinin evidir.",
-  "Xanthos-Letoon": "🏛️ Muğla-Antalya sınırında antik Likya Uygarlığı'nın idari ve dini merkezidir.",
-  "Safranbolu Şehri": "🏠 Karabük'te Osmanlı sivil mimarisini günümüze taşıyan ahşap konaklarıyla tescillidir.",
-  "Edirne Selimiye Camii ve Külliyesi": "🕌 Mimar Sinan'ın 'Ustalık Eserim' dediği, Osmanlı mimarisinin zirve noktasıdır.",
-  "Çatalhöyük Neolitik Alanı": "🏠 Konya'da insanlığın sokaksız, bitişik nizam evlerde ilk toplu yerleşime geçtiği köydür.",
-  "Bergama Çok Katmanlı Kültürel Peyzaj Alanı": "📜 İzmir'de Parşömen kağıdının icat edildiği ve tıp merkezi Asklepion'un bulunduğu antik kenttir.",
-  "Bursa ve Cumalıkızık: Osmanlı İmparatorluğunun Doğuşu": "🍇 Osmanlı'nın ilk başkenti Bursa ve erken dönem Osmanlı erken mimarisine sahip vadideki köydür.",
-  "Diyarbakır Kalesi ve Hevsel Bahçeleri Kültürel Peyzajı": "🏰 Çin Seddi'nden sonraki en uzun tarihi surlar ve Dicle Nehri kıyısındaki Hevsel Bahçeleridir.",
-  "Efes": "🏛️ İzmir'de Meryem Ana Evi, Celsus Kütüphanesi ve Artemis Tapınağı'nı içeren dünya mirasıdır.",
-  "Ani Arkeolojik Alanı": "🏰 Kars sınırında '1001 Kiliseli Şehir' olarak bilinen, İpek Yolu üzerindeki Orta Çağ kentidir.",
-  "Afrodisias": "🗿 Aydın'da Roma döneminin en ünlü mermer heykelcilik mektebine ev sahipliği yapan antik kenttir.",
-  "Göbeklitepe": "🏛️ Şanlıurfa'da tarihin bilinen İLK VE EN ESKİ İBADETHANESİ kabul edilen neolitik tapınaktır (~12.000 yıl).",
-  "Arslantepe Höyüğü": "🧱 Malatya'da dünyada bilinen ilk devlet bürokrasisi ve kerpiç saray kompleksinin bulunduğu höyüktür.",
-  "Gordion": "📜 Ankara Polatlı'da Frigya Krallığı'nın başkenti ve Kral Midas'ın tümülüsünün bulunduğu alandır (2023).",
-  "Anadolu'nun Orta Çağ Dönemi Ahşap Hipostil Camileri": "🕌 Afyon, Ankara, Eskişehir, Kastamonu ve Konya'daki Selçuklu/Beylikler dönemi ahşap direkli camilerdir (2023).",
-  "Sardes Antik Kenti ve Bintepeler Lidya Tümülüsleri": "🪙 Manisa Salihli'de tarihte İLK PARAYI basan Lidya Krallığı'nın başkentidir (2025 UNESCO).",
-
-  // CITTASLOW (SAKİN ŞEHİRLER)
-  "1-Seferihisar": "🐌 Türkiye'nin İLK Sakin Şehri unvanını alan ilçesidir (2009 - İzmir). Salyangoz logosu simgesidir.",
-  "2-Akyaka": "🐌 Muğla'da Azmak Nehir mimarisi, mimari dokusu ve doğasıyla sakin şehir seçilmiştir.",
-  "3-Gökçeada": "🏝️ Çanakkale'de yer alan Dünyanın İLK VE TEK Sakin Adası (Cittaslow Island) unvanlı yerdir.",
-  "4-Yenipazar": "🐌 Aydın'da pide kültürü ve Yörük Ali Efe müzesi ile sakin kent ağına katılmıştır.",
-  "5-Vize": "🏰 Kırklareli'de Trakya'nın tek sakin şehri olup antik tiyatro ve kaya manastırlarına sahiptir.",
-  "6-Perşembe": "⚓ Ordu'da Vona Feneri ve Yason Burnu ile Karadeniz'in sakil sakin limanıdır.",
-  "7-Yalvaç": "🏛️ Isparta'da Pisidia Antiocheia antik kenti ile tarihi ve sakin yaşam alanıdır.",
-  "8-Halfeti": "🌹 Şanlıurfa'da Birecik Barajı altında kalan 'Batık Şehir' ve sadece burada yetişen 'Karagül' ile ünlüdür.",
-  "9-Şavşat": "🌲 Artvin'de Karagöl müthiş doğası, ahşap mimarisi ile Doğu Karadeniz sakin kentidir.",
-  "10-Uzundere": "🌊 Erzurum'da Tortum Şelalesi ve Pehlivanlı beldesi ile sakin şehir seçilmiştir.",
-  "11-Göynük": "🏠 Bolu'da Akşemseddin Hazretleri türbesi ve geleneksel Osmanlı konaklarıyla tanınır.",
-  "12-Gerze": "⚓ Sinop'ta ahşap evleri, sakin sahil şeridi ve yöresel el sanatlarıyla Cittaslow listesindedir.",
-  "13-Eğirdir": "🚣 Isparta'da Can Ada, Yeşil Ada ve elma bahçeleriyle tatlı su gölü kıyısında yer alır.",
-  "14-Mudurnu": "🏠 Bolu'da tarihi İpek Yolu üzerinde Ahilik kültürünü yaşatan sakin kenttir.",
-  "15-Köyceğiz": "🐢 Muğla'da Köyceğiz Gölü, Sultaniye Kaplıcaları ve sığla ormanları ile tanınır.",
-  "16-Ahlat": "🪦 Bitlis'te Selçuklu Meydan Mezarlığı (dünyanın en büyük Türk-İslam mezarlığı) ile tescillidir.",
-  "17-Güdül": "🏠 Ankara'nın leblebisi ve İn-Önü kaya mağaraları ile bilinen ilk sakin ilçesidir.",
-  "18-Arapgir": "🍇 Malatya'da köprüleri, kanyonları ve mor reyhanı ile tanınan sakin kenttir.",
-  "19-Foça": "⚓ İzmir'de taş evleri, siren kayalıkları ve Akdeniz foklarıyla bilinen antik Phokaia kentidir.",
-  "20-Kemaliye": "🏔️ Erzincan'da Karanlık Kanyon, Taş Yolu ve gurbet türküleriyle ünlü Doğu sakin şehridir.",
-  "21-Finike": "portakal 🍊 Antalya'da portakalı, antik kentleri ve bakir koylarıyla tanınan sahil ilçesidir.",
-  "22-Şarköy": "🍷 Tekirdağ'da bağ rotası, zeytinciliği ve uzun kumsallarıyla Marmara sakin kentidir.",
-  "23-İznik": "🏺 Bursa'da çinileri, Hristiyanlık için tarihi konsil toplantısının yapıldığı göl kıyısı kenttir.",
-  "24-Safranbolu": "🏠 UNESCO Dünya Mirası olan Safranbolu, aynı zamanda Türkiye'nin tescilli Sakin Şehirlerindendir.",
-  "25-Daday": "🐎 Kastamonu'da at çiftlikleri, ahşap mimarisi ve etli ekmeği ile sakin yaşam beldesidir.",
-  "26-İbradı": "🏠 Antalya'da 'Düğmeli Evler' ve Altınbeşik Mağarası'na ev sahipliği yapan ilçedir.",
-  "27-Demre": "🏛️ Antalya'da Noel Baba (St. Nicholas) Kilisesi ve Myra Antik Kenti ile ünlüdür.",
-  "28-Çameli": "🏔️ Denizli'de yayla turizmi, paragliding ve yürüyüş rotalarıyla tescilli sakin ilçedir.",
-  "29-Ortahisar": "🏰 Nevşehir Kapadokya bölgesinde yer alan Türkiye'nin SON tescillenen (29.) Sakin Şehridir.",
-
-  // SERBEST BÖLGELER
-  "Mersin Serbest Bölgesi": "🏬 Türkiye'nin İLAN EDİLEN İLK SERBEST BÖLGESİ'dir (1985). Akdeniz ticaret merkezidir.",
-  "Ege Serbest Bölgesi": "🏭 İzmir Gaziemir'de yer alan, Türkiye'de en yüksek işlem hacmine ve istihdama sahip serbest bölgedir.",
-  "Yumurtalık Serbest Bölgesi": "⚓ Adana'da ağır sanayi, enerji ve kimya odaklı Türkiye'nin büyük serbest bölgelerindendir.",
-  "TÜBİTAK MAM Teknoloji Serbest Bölgesi": "💻 Kocaeli'de yüksek teknoloji ve Ar-Ge odaklı kurulan özel teknoloji serbest bölgesidir.",
-  "İstanbul İhtisas Serbest Bölgesi": "💎 İstanbul Atatürk Havalimanı yanında kuyumculuk, döviz ve yazılım/hizmet ihracatı odaklıdır.",
-
-  // SINIR KAPILARI
-  "Kapıkule 🚂": "🚂 Bulgaristan'a açılan, Türkiye ve Avrupa'nın EN YOĞUN kara ve demiryolu sınır kapısıdır (Edirne).",
-  "İpsala": "🚗 Yunanistan ile aramızdaki en önemli kara hudut kapısıdır (Edirne - Meriç Nehri üstü).",
-  "Uzunköprü 🚂": "🚂 Yunanistan ile aramızdaki aktif demiryolu bağlantısını sağlayan sınır kapısıdır (Edirne).",
-  "Sarp": "🚶 Gürcistan'a açılan, Türk vatandaşlarının KİMLİKLE (pasaportsuz) geçebildiği Karadeniz sınır kapısıdır (Artvin).",
-  "Habur": "🚛 Irak'a açılan, Türkiye'nin Ortadoğu ticaretinde en yüksek tır trafiğine sahip sınır kapısıdır (Şırnak).",
-  "Gürbulak": "🚛 İran ile en köklü ve en yüksek ticaret hacmine sahip ana kara sınır kapısıdır (Ağrı).",
-  "Kapıköy 🚂": "🚂 Van'da yer alan, İran ile aktif demiryolu ve karayolu geçişi sağlanan sınır kapısıdır.",
-  "Dilucu": "🇦🇿 Türkiye'nin Azerbaycan (Nahçıvan Özerk Cumhuriyeti) ile TEK doğrudan kara sınır kapısıdır (Iğdır).",
-  "Nusaybin 🚂": "🚂 Mardin'de Suriye sınırında yer alan, demiryolu bağlantısı da bulunan sınır kapısıdır.",
-  "Cilvegözü": "🚛 Hatay'da Suriye'ye açılan ve insani yardım lojistiğinde en aktif kullanılan sınır kapısıdır."
-};
-
+const countryColors = { "Bulgaristan":"#3b82f6","Yunanistan":"#ec4899","Gürcistan":"#eab308","Ermenistan":"#f97316","İran":"#a855f7","Irak":"#14b8a6","Suriye":"#10b981","Nahçıvan":"#06b6d4" };
 
 /* =====================================================================
-   OYUN MODU TANIMLARI
+   YENİ MOD: TURİSTİK YERLER (Şehirlere Göre)
+===================================================================== */
+const touristData = {
+  "Adana": ["Akyatan Lagünü - Büyük Kuş Cenneti", "Taş Köprü - Antik Roma Köprüsü", "Tekir Yaylası - Serin Çam Ormanları", "Varda Köprüsü - Tarihi Alman Köprüsü", "Yılankale - Şahmeran Efsanesi Kalesi", "Yumurtalık Lagünü - Doğal Sit Alanı"],
+  "Adıyaman": ["Abuzer Gaffari Türbesi - Önemli İnanç Merkezi", "Cendere Köprüsü - Antik Roma Köprüsü", "Karakuş Tümülüsü - Tarihi Anıt Mezar", "Menzil Köyü - İnanç Turizmi Merkezi", "Nemrut Dağı - UNESCO / Dev Heykeller", "Perre Antik Kenti - Tarihi Nekropol Alanı", "Pirin Mağaraları - Antik Kaya Mezarları"],
+  "Afyonkarahisar": ["Asar Kalesi - Sarp Tarihi Kale", "Başkomutan Tarihi Milli Parkı - Kurtuluş Savaşı Şehitliği", "Frig Vadisi - Antik Kaya Yerleşimi", "Kocatepe Anıtı - Büyük Taarruz Anıtı", "Sandıklı Kaplıcaları - Şifalı Termal Sular", "Sultan Divanı - Tarihi Mevlevihane"],
+  "Ağrı": ["Ağrı Dağı - Türkiye'nin Zirvesi", "Anzavur Tepe Patnos Kalesi - Urartu Kalıntıları", "Diyadin Kaplıcaları - Şifalı Termal Alan", "İshakpaşa Sarayı - Görkemli Osmanlı Sarayı", "Meteor Çukuru - Doğal Meteor Krateri"],
+  "Aksaray": ["Acemhöyük - Antik Ticaret Merkezi", "Ihlara Vadisi - Tarihi Doğal Kanyon", "Narlıgöl - Volkanik Krater Gölü", "Ziga Kaplıcaları - Şifalı Termal Merkez"],
+  "Amasya": ["Amasya Harşena Kalesi - Tarihi Şehir Kalesi", "Ferhat ile Şirin Müzesi - Efsanevi Aşk Müzesi", "Kralkaya Mezarlıkları - Pontus Anıt Mezarları", "Sultan Beyazıt Külliyesi - Tarihi Osmanlı Külliyesi"],
+  "Ankara": ["Anadolu Medeniyetleri Müzesi - Kapsamlı Tarih Müzesi", "Ankara Kalesi - Tarihi Şehir Surları", "Anıtkabir - Ata'nın İstirahatgahı", "Beypazarı Termalleri - Şifalı Kaplıcalar", "Elmadağ Kayak Merkezi - Kış Sporları Tesisleri", "Gordion - Antik Frig Başkenti", "Roma Hamamı - Antik Roma Kalıntısı", "Soğuksu Milli Parkı - Çam Ormanları Merkezi"],
+  "Antalya": ["Alanya Kalesi - Tarihi Yarımada Kalesi", "Altınbeşik Mağarası - Devasa Yeraltı Gölü", "Aspendos Antik Tiyatrosu - Antik Roma Tiyatrosu", "Beldibi Mağarası - Antik Çağ Mağarası", "Damlataş Mağarası - Şifalı Doğal Mağara", "Düden / Kurşunlu Şelaleleri - Doğal Şelaleler", "Karain Mağarası - İlk Çağ Yerleşimi", "Kekova - Batık Antik Şehir", "Köprülü Kanyon - Doğal Rafting Merkezi", "Noel Baba Müzesi - Tarihi Hac Kilisesi", "Olimpos / Patara / Perge - Antik Liman Şehirleri", "Termessos Antik Kenti - Sarp Dağ Şehri", "Yivli Minare - Tarihi Selçuklu Eseri"],
+  "Ardahan": ["Aktaş Gölü - Tektonik Sınır Gölü", "Çıldır Gölü - Donan Kış Gölü", "Damal Atatürk Silueti - Doğal Doğa Olayı", "Şeytan Kalesi - Sarp Uçurum Kalesi"],
+  "Artvin": ["Camili Macaheli - Biyosfer Rezerv Alanı", "Cehennem Kanyonu - Sarp Doğa Harikası", "Hatilla Vadisi - Cam Seyir Terası", "Kafkasör Yaylası - Geleneksel Yeşil Yayla", "Karagöl-Sahara - Orman İçi Göl"],
+  "Aydın": ["Afrodisias Antik Kenti - Antik Mermer Kenti", "Apollon Tapınağı Didim - Görkemli Antik Tapınak", "Dilek Yarımadası - Doğal Kıyı Parkı", "Güvercinada Kalesi - Tarihi Ada Kalesi", "Milet Antik Kenti - Antik Felsefe Şehri"],
+  "Balıkesir": ["Avşa / Cunda Adaları - Popüler Turistik Adalar", "Gönen Kaplıcaları - Şifalı Termal Merkez", "Kaz Dağları - Doğal Oksijen Deposu", "Manyas Kuş Cenneti - Ünlü Kuş Gözlem Alanı"],
+  "Bartın": ["Amasra - Tarihi Liman Kasabası", "Güzelcehisar Lav Sütunları - Volkanik Doğal Sütunlar", "İnkumu Plajı - Popüler Kumlu Sahil"],
+  "Batman": ["Er-Rızk Camisi - Tarihi İslami Eser", "Hallançemi Höyüğü - İlk Yerleşim Kazıları", "Hasankeyf Antik Kenti - Tarihi Mağara Şehri", "Zeynel Bey Türbesi - Tarihi Anıt Mezar"],
+  "Bayburt": ["Baksı Müzesi - Çağdaş Sanat Müzesi", "Bayburt Kalesi - Tarihi Savunma Kalesi", "Dede Korkut Türbesi - Efsanevi Anıt Mezar"],
+  "Bilecik": ["Ertuğrul Gazi Türbesi - Osmanlı Kurucu Türbesi", "Metristepe Zafer Anıtı - Kurtuluş Savaşı Anıtı", "Şeyh Edebali Türbesi - Tarihi İnanç Merkezi"],
+  "Bingöl": ["Buban Peribacaları - Doğal Kaya Oluşumları", "Çır Şelalesi - Sarp Kayalık Şelalesi", "Yüzen Adalar - Hareketli Doğal Adalar"],
+  "Bitlis": ["Ahlat Selçuklu Mezarlığı - Tarihi Açık Hava Müzesi", "Aygır Gölü - Volkanik Krater Gölü", "İhlasiye Medresesi - Tarihi Selçuklu Medresesi", "Nemrut Kalderası - Volkanik Doğa Harikası"],
+  "Bolu": ["Abant Gölü - Doğal Orman Gölü", "Göynük / Mudurnu - Tarihi Osmanlı Evleri", "Kartalkaya Kayak Merkezi - Kış Turizm Merkezi", "Yedigöller Milli Parkı - Yedi Tabiat Gölü"],
+  "Burdur": ["Hacılar Harabeleri - Antik Kazı Alanı", "İnsuyu Mağarası - Sarkıt ve Dikit Mağarası", "Kibyra Antik Kenti - Gladyatörler Şehri", "Sagalassos Antik Kenti - Antik Dağ Şehri", "Salda Gölü - Türkiye'nin Maldivleri"],
+  "Bursa": ["Cumalıkızık Köyü - UNESCO Osmanlı Köyü", "İznik Ayasofya Camii - Tarihi İbadethane", "Oylat Kaplıcaları - Şifalı Termal Merkez", "Tirilye - Tarihi Sahil Kasabası", "Ulu Cami - Tarihi Osmanlı Camisi", "Uludağ Milli Parkı - Popüler Kayak Merkezi", "Yeşil Türbe - Görkemli Çinili Türbe"],
+  "Çanakkale": ["Assos Antik Kenti - Antik Liman Şehri", "Bozcaada / Gökçeada - Popüler Turistik Adalar", "Gelibolu Tarihi Milli Parkı - Çanakkale Şehitliği", "Truva Antik Kenti - Efsanevi Antik Şehir"],
+  "Çankırı": ["Ilgaz Kayak Merkezi - Kış Sporları Merkezi", "Sakaeli Peri Bacaları - Doğal Kaya Oluşumları", "Tuz Mağarası - Şifalı Yeraltı Mağarası"],
+  "Çorum": ["Alacahöyük - Antik Hitit Şehri", "Hattuşa Antik Kenti - UNESCO Hitit Başkenti", "İncesu Kanyonu - Doğal Yürüyüş Rotası"],
+  "Denizli": ["Afrodisias Antik Kenti - Antik Mermer Şehri", "Hierapolis ve Pamukkale - Travertenler ve Antik Kent", "Honaz Dağı Milli Parkı - Yüksek Zirve Parkı", "Laodikya Antik Kenti - Tarihi İncil Şehri"],
+  "Diyarbakır": ["Çayönü Höyüğü - İlk Tarım Yerleşimi", "Diyarbakır Kalesi - Tarihi Şehir Surları", "Hasan Paşa Hanı - Tarihi Osmanlı Hanı", "Malabadi Köprüsü - Tarihi Taş Köprü", "Zerzevan Kalesi - Antik Roma Garnizonu"],
+  "Düzce": ["Akçakoca Evleri - Geleneksel Ahşap Evler", "Aydınpınar Şelaleleri - Orman İçi Şelaleler", "Topuk Yaylası - Doğal Kamp Alanı", "Yılançatı Kanyonu - Doğal Yürüyüş Kanyonu"],
+  "Edirne": ["Edirne Sarayı - Tarihi Osmanlı Sarayı", "Rüstempaşa Kervansarayı - Tarihi Konaklama Yeri", "Selimiye Camii - Mimar Sinan'ın Başyapıtı", "Uzunköprü - Tarihi Uzun Taş Köprü"],
+  "Elâzığ": ["Buzluk Mağarası - Doğal Buz Mağarası", "Harput Antik Kalesi - Tarihi Urartu Kalesi", "Karaleylek Kanyonu - Fırat Üzerinde Kanyon"],
+  "Erzincan": ["Girlevik Şelalesi - Devasa Doğal Şelale", "Kemaliye Tarihi Evleri - Geleneksel Taş Evler", "Mama Hatun Külliyesi - Tarihi Türbe ve Külliye", "Otlukbeli Gölü - Doğal Traverten Gölü"],
+  "Erzurum": ["Çifte Minareli Medrese - İkonik Selçuklu Eseri", "Narman Peribacaları - Kırmızı Peri Bacaları", "Nene Hatun Milli Parkı - Tarihi Savaş Alanı", "Palandöken Kayak Merkezi - Kış Turizm Merkezi", "Tortum Şelalesi - Görkemli Doğal Şelale"],
+  "Eskişehir": ["Midas Anıtı - Antik Frig Anıtı", "Odunpazarı Tarihi Evleri - Restore Osmanlı Evleri", "Porsuk Çayı - Şehir İçi Kanallar", "Yunus Emre Türbesi - Tasavvuf Anıt Mezarı"],
+  "Gaziantep": ["Antep Kalesi - Tarihi Şehir Kalesi", "Bakırcılar Çarşısı - Geleneksel Tarihi Çarşı", "Rumkale - Tarihi Fırat Kalesi", "Zeugma Mozaik Müzesi - Dünyaca Ünlü Mozaikler"],
+  "Giresun": ["Giresun Adası - Tarihi ve Doğal Ada", "Kümbet Yaylası - Popüler Doğal Yayla", "Mavi Göl - Turkuaz Renkli Göl"],
+  "Gümüşhane": ["Karaca Mağarası - Damlataş Yeraltı Mağarası", "Örümcek Ormanları - Anıt Ağaç Ormanı", "Tomara Şelalesi - Kaynaktan Fışkıran Şelale", "Torul Cam Teras - Kanyon Manzaralı Teras"],
+  "Hakkâri": ["Cennet Cehennem Vadisi - Zıtlıklar Vadisi", "Cilo ve Sat Dağları - Buzul Gölleri", "Zap Suyu - Ekstrem Rafting Alanı"],
+  "Hatay": ["Habib-i Neccar Camii - Anadolu'nun İlk Camisi", "Saint Pierre Kilisesi - İlk Hristiyanlık Kiliselerinden", "Titus Tüneli - Antik Roma Mühendisliği"],
+  "Iğdır": ["Aras Nehri - Sınır Boyu Akarsu", "Gökkuşağı Tepeleri - Renkli Doğal Tepeler", "Harmandöven Kervansarayı - Tarihi İpek Yolu Hanı", "Tuzluca Mağaraları - Şifalı Tuz Galerileri"],
+  "Isparta": ["Davraz Kayak Merkezi - Göle Nazır Kayak Tesisleri", "Eğirdir Gölü - Büyük Tatlı Su Gölü", "Kovada Gölü - Orman İçi Doğal Göl", "Kuyucuk Lavanta - Kokulu Mor Tarlalar", "Pisidia Antiokheia - Antik Hac Merkezi"],
+  "İstanbul": ["Ayasofya-i Kebîr - Dünyaca Ünlü İbadethane", "Dolmabahçe / Topkapı - İhtişamlı Osmanlı Sarayları", "Galata Kulesi - İkonik Tarihi Kule", "Kapalıçarşı - Tarihi Kapalı Çarşı", "Kız Kulesi - Boğazın İkonik Kulesi", "Sultan Ahmet Camii - Tarihi Mavi Cami", "Yerebatan Sarnıcı - Antik Yeraltı Sarnıcı"],
+  "İzmir": ["Agora Antik Kenti - Antik Şehir Merkezi", "Bergama Antik Kenti - UNESCO Tarihi Şehri", "Efes Antik Kenti - Antik Roma Başkenti", "İzmir Saat Kulesi - Şehrin İkonik Simgesi", "Meryem Ana Evi - Kutsal Hac Noktası", "Seferihisar / Şirince - Tarihi Şirin Kasabalar"],
+  "Kahramanmaraş": ["Döngel Mağaraları - Doğal Mağaralar Sistemi", "Yassı Höyük - Antik Kazı Alanı"],
+  "Karabük": ["Safranbolu Tarihi Evleri - UNESCO Mirası Konaklar", "Yenice Ormanları - Anıt Ormanlar"],
+  "Karaman": ["Ermenek Kanyonu - Doğal Tekne Rotası", "İncesu Mağarası - Şifalı Sarkıt Mağarası", "Taşkale Ambarları - Tarihi Kaya Ambarları"],
+  "Kars": ["Ani Antik Kenti - 1001 Kiliseli Şehir", "Katherina Av Köşkü - Tarihi Ahşap Köşk", "Kuyucuk Gölü - Göçmen Kuş Cenneti", "Sarıkamış Kayak Merkezi - Kristal Karlı Tesisler"],
+  "Kastamonu": ["Cide Kıyıları - El Değmemiş Sahil Şeridi", "Ilgaz Dağı - Kayak ve Doğa Parkı", "Valla Kanyonu - Dünyanın En Derin Kanyonlarından"],
+  "Kayseri": ["Erciyes Kayak Merkezi - Volkanik Kayak Tesisleri", "Gevher Nesibe Şifahanesi - Tarihi Tıp Merkezi", "Kapuzbaşı Şelaleleri - Görkemli Kaynak Şelaleleri", "Kültepe Kaniş Karum - Antik Ticaret Merkezi", "Sultan Sazlığı - Kuş Cenneti Sulak Alan"],
+  "Kırıkkale": ["Çeşnigir Köprüsü - Tarihi Taş Köprü", "MKE Silah Müzesi - Tarihi Silah Müzesi"],
+  "Kırklareli": ["Dupnisa Mağarası - Trakya'nın Turistik Mağarası", "İğneada Longoz - Subasar Orman Ekosistemi", "Lüleburgaz Külliyesi - Tarihi Sinan Eseri"],
+  "Kırşehir": ["Ahi Evran Türbesi - Tarihi Ahilik Merkezi", "Cacabey Medresesi - İlk Astronomi Okulu", "Mucur Yeraltı Şehri - Antik Sığınak Şehri"],
+  "Kilis": ["Oylum Höyük - Tarihi Kazı Alanı", "Ravanda Kalesi - Yüksek Tepe Kalesi", "Tarihi Sabunhane - Geleneksel Taş Yapı"],
+  "Kocaeli": ["Ballıkayalar Parkı - Doğal Kanyon ve Park", "Kartepe Kayak Merkezi - Göle Yakın Kış Tesisleri", "Pembe Kayalıklar - İlginç Jeolojik Oluşum"],
+  "Konya": ["Alaaddin Cami - Tarihi Selçuklu Camisi", "Çatalhöyük - İnsanlığın İlk Yerleşimlerinden", "Meke Krater Gölü - Volkanik Krater Gölü", "Mevlana Müzesi - Tarihi Tasavvuf Merkezi"],
+  "Kütahya": ["Aizanoi Antik Kenti - Antik Roma Şehri", "Çinili Cami - Çini Kaplı Benzersiz Cami", "Yoncalı Kaplıcaları - Şifalı Termal Merkez"],
+  "Malatya": ["Arslantepe Höyüğü - UNESCO Antik Yerleşimi", "Levent Vadisi - Cam Teraslı Kanyon", "Somuncu Baba Külliyesi - Doğal ve Mistik Külliye"],
+  "Manisa": ["Kuladokya Peri Bacaları - Volkanik Peri Bacaları", "Lidya Bintepeler - Antik Anıt Mezarlar", "Sardes Antik Kenti - Tarihi Lidya Başkenti", "Spil Dağı - Yılkı Atları Parkı"],
+  "Mardin": ["Dara Antik Kenti - Mezopotamya'nın Antik Şehri", "Deyrulzafaran Manastırı - Tarihi Süryani Manastırı", "Kasımiye Medresesi - Görkemli Tarihi Medrese", "Mardin Taş Evleri - Tarihi Taş Mimari"],
+  "Mersin": ["Astım Mağarası - Şifalı Yeraltı Mağarası", "Cennet ve Cehennem - Dev Doğal Çukurlar", "Eshab-ı Kehf - Yedi Uyurlar Mağarası", "Kızkalesi - Deniz Ortasında Tarihi Kale", "Saint Paul Müzesi - Tarihi İnanç Merkezi"],
+  "Muğla": ["Bodrum Kalesi - Sualtı Arkeoloji Müzesi", "Datça / Fethiye Koyları - Mavi Yolculuk Durakları", "İztuzu Plajı - Caretta Caretta Sahili", "Kelebekler Vadisi - Eşsiz Doğal Vadi", "Knidos / Letoon / Stratonikeia - Görkemli Antik Kentler", "Ölüdeniz Lagünü - Dünyaca Ünlü Plaj"],
+  "Muş": ["Malazgirt Milli Parkı - Tarihi Savaş Meydanı", "Murat Köprüsü - Tarihi Taş Köprü"],
+  "Nevşehir": ["Derinkuyu / Kaymaklı - Gizemli Yeraltı Şehirleri", "Göreme Milli Parkı - Peribacaları Vadisi", "Kapadokya Peribacaları - UNESCO Doğa Harikası", "Uçhisar Kalesi - Doğal Kaya Kalesi"],
+  "Niğde": ["Aladağlar Milli Parkı - Dağcılık ve Trekking", "Gümüşler Manastırı - Kaya Oyma Tarihi Manastır", "Tyana Antik Kenti - Antik Su Kemerleri"],
+  "Ordu": ["Boztepe - Panoramik Şehir Manzarası", "Perşembe Yaylası - Doğal Menderesler", "Yason Burnu - Tarihi Yarımada Kilisesi"],
+  "Osmaniye": ["Karatepe-Aslantaş - Antik Hitit Kalesi", "Zorkun Yaylası - Popüler Orman Yaylası"],
+  "Rize": ["Ayder Yaylası - Doğal Termal Yayla", "Kaçkar Dağları - Buzul Gölleri ve Zirveler", "Palovit Şelalesi - Görkemli Doğal Şelale", "Zilkale - Sarp Vadi Kalesi"],
+  "Sakarya": ["Acarlar Longozu - Subasar Orman Gölü", "Justinianus Köprüsü - Antik Roma Köprüsü", "Sapanca Gölü - Popüler Mesire Gölü"],
+  "Samsun": ["Gazi Müzesi - Tarihi Milli Mücadele Müzesi", "Kızılırmak Deltası - Geniş Sulak Kuş Alanı", "Şahinkaya Kanyonu - Tekne Turlu Dar Kanyon"],
+  "Siirt": ["Botan Vadisi - Doğa Sporları Vadisi", "Tillo Işık Hadisesi - Tarihi Astronomi Mimari", "Veysel Karani Türbesi - Önemli İnanç Merkezi"],
+  "Sinop": ["Balatlar Kilisesi - Antik Roma Kompleksi", "Erfelek Şelaleleri - Ardışık Doğal Şelaleler", "Hamsilos Koyu - Türkiye'nin Tek Fiyordu", "Tarihi Sinop Cezaevi - Tarihi Zindan ve Müze"],
+  "Sivas": ["Altınkale Travertenleri - Sarı Termal Travertenler", "Divriği Ulu Camii - UNESCO Şaheseri Cami", "Sivas Kongre Binası - Tarihi Cumhuriyet Müzesi"],
+  "Şanlıurfa": ["Balıklıgöl - Tarihi ve Kutsal Göl", "Göbeklitepe - Tarihin Sıfır Noktası", "Halfeti Batık Şehir - Sular Altındaki Saklı Kent", "Harran Kümbet Evleri - Geleneksel Kerpiç Evler"],
+  "Şırnak": ["Cudi Dağı - Dini ve Doğal Zirve", "Dirheler Dev Evler - Tarihi Mağara Yapıları", "Kırmızı Medrese Cizre - Tarihi Eğitim Merkezi"],
+  "Tekirdağ": ["Hora Feneri - Tarihi Deniz Feneri", "Rakoczi Müzesi - Restore Edilmiş Tarihi Konak", "Uçmakdere Paraşüt - Ekstrem Spor Merkezi"],
+  "Tokat": ["Ballıca Mağarası - Şifalı Sarkıt Mağarası", "Niksar Kalesi - Tarihi İhtişamlı Kale", "Zinav Gölü - Orman İçi Tabiat Gölü"],
+  "Trabzon": ["Atatürk Köşkü - Çam Ormanında Tarihi Köşk", "Sümela Manastırı - Sarp Kayalık Manastırı", "Uzungöl Tabiat Parkı - İkonik Doğal Göl"],
+  "Tunceli": ["Düzgün Baba Ziyareti - Kutsal Dağ Zirvesi", "Munzur Gözeleri - Efsanevi Su Kaynakları", "Munzur Vadisi - Geniş Tabiat Parkı"],
+  "Uşak": ["Clandras Köprüsü - Antik Su Kemeri", "Taşyaran Vadisi - Doğal Kaya Kanyonu", "Ulubey Kanyonu - Dev Doğal Kanyon"],
+  "Van": ["Akdamar Adası Kilisesi - Göl Ortasında Tarihi Kilise", "Başkale Travertenleri - Şifalı Beyaz Travertenler", "Muradiye Şelalesi - Görkemli Geniş Şelale", "Van Kalesi - Tarihi Urartu Kalesi", "Vanadokya - Doğal Peri Bacaları"],
+  "Yalova": ["Atatürk Yürüyen Köşk - Tarihi Simgesel Köşk", "Erikli Şelalesi - Orman İçi Şelale", "Termal Kaplıcaları - Tarihi Şifalı Hamamlar"],
+  "Yozgat": ["Alişar Höyüğü - Antik Yerleşim Alanı", "Kazankaya Kanyonu - Görkemli Nehir Kanyonu", "Yozgat Çamlığı - İlk Milli Park"],
+  "Zonguldak": ["Cehennemağzı Mağaraları - Mitolojik Yeraltı Mağarası", "Zonguldak Maden Müzesi - Tarihi Endüstri Müzesi"]
+};
+
+/* =====================================================================
+   OYUN MODLARI
 ===================================================================== */
 const GAME_MODES = [
-  { id:'timeAttack', emoji:'⏳', name:'Zamana Karşı', desc:'60 saniyelik geri sayım. Doğruda +3sn, yanlışta -5sn.' },
-  { id:'classic', emoji:'🗺️', name:'Klasik Eşleştirme', desc:'Zaman baskısı yok, kendi hızında rahatça öğren.' },
-  { id:'atlas', emoji:'📖', name:'Keşif & Atlas', desc:'Puansız çalışma modu. İle tıkla, tüm bilgileri gör.' }
+  { id:'timeAttack', emoji:'⏳', name:'Zamana Karşı', desc:'60 saniyelik süre baskısıyla bilgini test et.' },
+  { id:'classic', emoji:'🗺️', name:'Klasik Eşleştirme', desc:'Zaman baskısı yok, tek tek ögeleri haritada bul.' },
+  { id:'tourist', emoji:'🏛️', name:'Turistik Şehirler', desc:'Karttaki tüm turistik yerleri oku, hangi şehir olduğunu bul.' },
+  { id:'atlas', emoji:'📖', name:'Keşif & Atlas', desc:'Serbest mod. İle tıkla, tüm bilgileri rahatça öğren.' }
 ];
+
 const CATEGORIES = [
   { id:'all', name:'Tümü', color:'#6366f1' },
   { id:'Kalkınma Projesi', name:'Kalkınma', color:'var(--cat-kalkinma)' },
@@ -789,7 +898,6 @@ const CATEGORIES = [
   { id:'Ramsar', name:'Ramsar', color:'var(--cat-ramsar)' },
   { id:'UNESCO', name:'UNESCO', color:'var(--cat-unesco)' },
   { id:'Cittaslow', name:'Sakin Şehir', color:'var(--cat-cittaslow)' },
-  { id:'Serbest Bölge', name:'Ticaret', color:'var(--cat-ticaret)' },
   { id:'Sınır Kapısı', name:'Sınır Kapısı', color:'var(--cat-kapi)' }
 ];
 const BADGE_DEFS = [
@@ -801,37 +909,29 @@ const BADGE_DEFS = [
 /* =====================================================================
    DURUM (STATE)
 ===================================================================== */
+function shuffleArray(a){ const arr=[...a]; for(let i=arr.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [arr[i],arr[j]]=[arr[j],arr[i]]; } return arr; }
+function norm(s){
+  return s.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLocaleLowerCase('tr-TR')
+    .replaceAll('\u2019',"'").replaceAll('ı','i').replaceAll('ğ','g')
+    .replaceAll('ü','u').replaceAll('ş','s').replaceAll('ö','o').replaceAll('ç','c')
+    .replaceAll('â','a').replaceAll('î','i');
+}
+function getProvinceName(p){ return p.ADI || p.adi || p.name || p.NAME_1 || p.province || p.il; }
+
 let currentScreen='menu';
 let selectedMode='classic';
 let selectedCats=new Set(['all']);
-
 let items=[]; let matched=new Set(); let projectMatchedProvinces={};
 let score=0, combo=0, maxCombo=0, selectedItem=null, wrongCounts={};
-let searchQuery=''; let activeCat='all';
-let totalAttempts=0, totalCorrectAttempts=0, gameEnded=false, gameStartTime=0, isRetryMode=false;
-
-let jokers={fifty:3, radar:3};
-let riddleRevealed={};
-let hotseat={ players:[{name:'Oyuncu 1',score:0},{name:'Oyuncu 2',score:0}], turn:0 };
-let correctTimestamps=[];
-let sessionNewBadges=[];
-
+let searchQuery='', activeCat='all', totalAttempts=0, totalCorrectAttempts=0;
+let gameEnded=false, gameStartTime=0;
+let jokers={fifty:3, radar:3}, correctTimestamps=[], sessionNewBadges=[];
 let timeAttackActive=false, timeAttackRemaining=60, timeAttackInterval=null;
-const TIME_ATTACK_START=60;
 
-const STORAGE_KEY='trGeoAcademyV2';
-function loadStore(){
-  try{ return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {badges:[], highScores:{}}; }
-  catch(e){ return {badges:[], highScores:{}}; }
-}
+const STORAGE_KEY='trGeoAcademyV3';
+function loadStore(){ try{ return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {badges:[], highScores:{}}; }catch(e){ return {badges:[], highScores:{}}; } }
 function saveStore(store){ try{ localStorage.setItem(STORAGE_KEY, JSON.stringify(store)); }catch(e){} }
 let store=loadStore();
-
-function norm(s){
-  return s.toLocaleLowerCase('tr-TR').replaceAll('\u2019',"'").replaceAll('ı','i').replaceAll('ğ','g')
-    .replaceAll('ü','u').replaceAll('ş','s').replaceAll('ö','o').replaceAll('ç','c');
-}
-function getProvinceName(p){ return p.ADI || p.adi || p.name || p.NAME_1 || p.province || p.il; }
 
 /* =====================================================================
    SES MOTORU
@@ -872,7 +972,7 @@ function playTick(urgent=false){ playTone(urgent?880:660,'square',0.08,0,0.14); 
 function playBadgeSound(){ [659.25,880,1174.66].forEach((f,i)=>playTone(f,'sine',0.3,i*0.13,0.18)); }
 
 /* =====================================================================
-   EKRAN GEÇİŞLERİ
+   MENÜ VE OYUN GEÇİŞLERİ
 ===================================================================== */
 function showScreen(name){
   currentScreen=name;
@@ -881,16 +981,12 @@ function showScreen(name){
   if(name==='menu') renderMenu();
 }
 
-/* =====================================================================
-   MENÜ EKRANI
-===================================================================== */
 function renderMenu(){
   const heroStats=document.getElementById('heroStats');
-  const totalBadges=BADGE_DEFS.length, earned=store.badges.length;
+  const earned=store.badges.length;
   heroStats.innerHTML = `
-    <div class="hero-pill">🏅 Rozet: <val>${earned}/${totalBadges}</val></div>
-    <div class="hero-pill">📚 ${rawItems.length} Coğrafi Öğe</div>
-    <div class="hero-pill">🗂️ ${CATEGORIES.length-1} Kategori</div>
+    <div class="hero-pill">🏅 Rozet: <val>${earned}/${BADGE_DEFS.length}</val></div>
+    <div class="hero-pill">📚 ${rawItems.length} Doğal Öğe & ${Object.keys(touristData).length} Turistik Şehir</div>
   `;
 
   const modeGrid=document.getElementById('modeGrid');
@@ -926,6 +1022,14 @@ function renderMenu(){
     });
     catGrid.appendChild(chip);
   });
+  
+  // Sadece turistik mod seçilmemişse kategorileri göster
+  const catTitle = document.querySelectorAll('.section-title')[1];
+  if(selectedMode === 'tourist' || selectedMode === 'atlas') {
+     catGrid.style.display = 'none'; catTitle.style.display = 'none';
+  } else {
+     catGrid.style.display = 'flex'; catTitle.style.display = 'flex';
+  }
 
   const badgesRow=document.getElementById('badgesRow');
   badgesRow.innerHTML='';
@@ -938,98 +1042,100 @@ function renderMenu(){
   });
 }
 
-document.getElementById('startGameBtn').addEventListener('click', ()=>{
-  startGame(selectedMode, selectedCats);
-});
+document.getElementById('startGameBtn').addEventListener('click', ()=>startGame(selectedMode, selectedCats));
 
 /* =====================================================================
    OYUN MOTORU
 ===================================================================== */
-let map, provinceLayers=[], borderMarkers={}, activePopup=null, dragItem=null, currentTileKey='dark', tileLayers={};
-let currentHighlightedRegion="";
+let map, provinceLayers=[], borderMarkers={}, activePopup=null, currentTileKey='dark', tileLayers={}, currentHighlightedRegion="";
 
-function buildItemPool(cats){
-  let pool = rawItems;
-  if(!(cats.size===1 && cats.has('all'))){
-    pool = rawItems.filter(it=>cats.has(it[0]));
+function buildItemPool(cats, mode){
+  if (mode === 'tourist') {
+     // Turistik Yerler için JSON'dan yeni item seti oluştur
+     return Object.keys(touristData).map(city => {
+         return ["Turistik", "Turistik Yerler", [city], touristData[city]];
+     });
   }
-  return pool;
+  if(!(cats.size===1 && cats.has('all'))){
+    return rawItems.filter(it=>cats.has(it[0]));
+  }
+  return rawItems;
 }
 
 function startGame(mode, cats){
   selectedMode=mode;
-  // reset state
   matched=new Set(); projectMatchedProvinces={}; score=0; combo=0; maxCombo=0; selectedItem=null;
   wrongCounts={}; searchQuery=''; activeCat='all'; totalAttempts=0; totalCorrectAttempts=0; gameEnded=false;
-  jokers={fifty:3, radar:3}; riddleRevealed={}; correctTimestamps=[]; sessionNewBadges=[];
-  hotseat={ players:[{name:'Oyuncu 1',score:0},{name:'Oyuncu 2',score:0}], turn:0 };
-  currentHighlightedRegion="";
+  jokers={fifty:3, radar:3}; correctTimestamps=[]; sessionNewBadges=[]; currentHighlightedRegion="";
   document.getElementById('searchInput').value='';
 
   const stored = sessionStorage.getItem('retryItems');
   if(stored){
     try{
       const parsed=JSON.parse(stored); sessionStorage.removeItem('retryItems');
-      if(Array.isArray(parsed) && parsed.length>0){ items=shuffleArray(parsed); isRetryMode=true; }
-      else { items=shuffleArray(buildItemPool(cats)); isRetryMode=false; }
-    }catch(e){ items=shuffleArray(buildItemPool(cats)); isRetryMode=false; }
+      if(Array.isArray(parsed) && parsed.length>0){ items=shuffleArray(parsed); }
+      else { items=shuffleArray(buildItemPool(cats, mode)); }
+    }catch(e){ items=shuffleArray(buildItemPool(cats, mode)); }
   } else {
-    items=shuffleArray(buildItemPool(cats)); isRetryMode=false;
+    items=shuffleArray(buildItemPool(cats, mode));
   }
 
   setupHudForMode(mode);
   showScreen('game');
-
   gameStartTime=Date.now();
 
   if(!map){
     loadLeaflet().then(ready=>{
-      if(!ready){
-        document.getElementById('map').innerHTML='<div style="display:flex;align-items:center;justify-content:center;height:100%;padding:24px;text-align:center;color:#fca5a5;font-weight:700;font-size:13px;">⚠️ Harita kütüphanesi yüklenemedi. İnternet bağlantınızı kontrol edin.</div>';
-        return;
-      }
-      loadScriptOnce('./turkiye.js').catch(()=>{}).finally(()=>{
-        initMap();
-        afterMapReady();
-      });
+      if(!ready){ document.getElementById('map').innerHTML='⚠️ Harita kütüphanesi yüklenemedi.'; return; }
+      loadScriptOnce('./turkiye.js').catch(()=>{}).finally(()=>{ initMap(); });
     });
-  } else {
-    resetMapState();
-    afterMapReady();
-  }
+  } else { resetMapState(); }
 
-  if(mode==='timeAttack') startTimeAttack();
-  else stopTimeAttack();
-
-  document.body.classList.toggle('kpss-faint', mode==='kpss');
-  if(mode==='kpss'){ showLabels=false; document.body.classList.add('hide-labels'); }
-  else { showLabels=true; document.body.classList.remove('hide-labels'); }
-
-  document.getElementById('atlasPanel').style.display = 'none';
-  document.getElementById('atlasHint').style.display = mode==='atlas' ? 'block' : 'none';
-  document.getElementById('kalkinmaSelectWrap').style.display = mode==='atlas' ? 'flex' : 'none';
-  document.getElementById('kalkinmaSelect').value = '';
-  document.getElementById('searchCatsRow').style.display = mode==='atlas' ? 'none' : 'flex';
-  document.getElementById('cards').style.display = mode==='atlas' ? 'none' : 'flex';
+  if(mode==='timeAttack') startTimeAttack(); else stopTimeAttack();
+  
+  showLabels=true; document.body.classList.remove('hide-labels');
+  document.querySelector('.toggleLabelsBtn').textContent = '🏷️ İsimler';
 
   selectNextAvailableCard();
   renderCards();
 }
 
-function afterMapReady(){
-  if(selectedMode!=='atlas'){
-    // reapply matched styling not needed on fresh game
-  }
-}
-
 function setupHudForMode(mode){
   document.querySelector('.timerPill').style.display = mode==='timeAttack' ? 'flex' : 'none';
-  document.getElementById('hotseatBar').style.display = mode==='hotseat' ? 'flex' : 'none';
-  document.getElementById('riddlePanel').style.display = mode==='riddle' ? 'flex' : 'none';
   document.getElementById('jokerFifty').style.display = mode==='atlas' ? 'none' : 'flex';
   document.getElementById('jokerRadar').style.display = mode==='atlas' ? 'none' : 'flex';
   updateJokerUI();
-  updateHotseatUI();
+  
+  const searchRow = document.getElementById('searchCatsRow');
+  const catFilters = document.querySelectorAll('.filter-btn');
+  if(mode === 'atlas') {
+     searchRow.style.display = 'none';
+  } else if (mode === 'tourist') {
+     searchRow.style.display = 'flex';
+     catFilters.forEach(b => b.style.display = 'none'); // Sadece aramayı göster, kategorileri gizle
+  } else {
+     searchRow.style.display = 'flex';
+     catFilters.forEach(b => b.style.display = 'inline-block');
+  }
+  
+  // -- EKLENEN KISIM: Turistik Mod Düzeni --
+  const mainArea = document.getElementById('game-main-area');
+  if(mode === 'tourist') {
+      mainArea.classList.add('tourist-layout');
+  } else {
+      mainArea.classList.remove('tourist-layout');
+  }
+  
+  // Leaflet haritası kapsayıcı boyutları değiştiği için güncellemeye ihtiyaç duyar. 
+  if(typeof map !== 'undefined' && map) {
+      setTimeout(() => map.invalidateSize(), 350); 
+  }
+  // ----------------------------------------
+
+  document.getElementById('atlasPanel').style.display = 'none';
+  document.getElementById('atlasHint').style.display = mode==='atlas' ? 'block' : 'none';
+  document.getElementById('kalkinmaSelectWrap').style.display = mode==='atlas' ? 'flex' : 'none';
+  document.getElementById('cards-wrapper').style.display = mode==='atlas' ? 'none' : 'block';
 }
 
 function updateJokerUI(){
@@ -1039,23 +1145,11 @@ function updateJokerUI(){
   document.getElementById('jokerRadar').disabled = jokers.radar<=0;
 }
 
-function updateHotseatUI(){
-  const p0=document.getElementById('hsP0'), p1=document.getElementById('hsP1');
-  p0.querySelector('.p-score').textContent=hotseat.players[0].score;
-  p1.querySelector('.p-score').textContent=hotseat.players[1].score;
-  p0.classList.toggle('turn', hotseat.turn%2===0);
-  p1.classList.toggle('turn', hotseat.turn%2===1);
-}
-
 function resetMapState(){
-  Object.values(borderMarkers).forEach(m=>map.removeLayer(m));
-  borderMarkers={};
-  provinceLayers.forEach(l=>{ l.unbindTooltip(); map.removeLayer(l); });
-  provinceLayers=[];
+  Object.values(borderMarkers).forEach(m=>map.removeLayer(m)); borderMarkers={};
+  provinceLayers.forEach(l=>{ l.unbindTooltip(); map.removeLayer(l); }); provinceLayers=[];
   map.eachLayer(l=>{ if(l instanceof L.Marker || (l._path && l.options && l.options.className==='matched-dot')) { try{map.removeLayer(l);}catch(e){} } });
-  // Re-init geojson + border points fresh
-  addGeoJsonLayer();
-  renderBorderPoints();
+  addGeoJsonLayer(); renderBorderPoints();
 }
 
 function initMap(){
@@ -1064,8 +1158,7 @@ function initMap(){
   tileLayers.dark=L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}{r}.png',{maxZoom:10,subdomains:'abcd'});
   tileLayers.topo=L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png',{maxZoom:17,subdomains:'abc'});
   tileLayers.dark.addTo(map);
-  addGeoJsonLayer();
-  renderBorderPoints();
+  addGeoJsonLayer(); renderBorderPoints();
 }
 
 function addGeoJsonLayer(){
@@ -1078,7 +1171,7 @@ function addGeoJsonLayer(){
         const name=getProvinceName(feature.properties);
         layer.provinceName=name; provinceLayers.push(layer);
         layer.bindTooltip(name,{permanent:true, direction:'center', className:'province-label', opacity:0.95});
-        layer.on('mouseover', ()=>{ if((dragItem!==null||selectedItem!==null) && selectedMode!=='atlas'){ layer.setStyle({fillColor:'#6366f1', fillOpacity:0.8, weight:2}); } });
+        layer.on('mouseover', ()=>{ if((selectedItem!==null) && selectedMode!=='atlas'){ layer.setStyle({fillColor:'#6366f1', fillOpacity:0.8, weight:2}); } });
         layer.on('mouseout', ()=> updateProvinceStyle(layer));
         layer.on('click', (e)=>{
           if(selectedMode==='atlas'){ showAtlasInfo(name); return; }
@@ -1087,7 +1180,7 @@ function addGeoJsonLayer(){
       }
     }).addTo(map);
     map.fitBounds(geoJsonLayer.getBounds(), {padding:isMobile?[5,5]:[10,10]});
-  }catch(err){ console.error('Harita hatası:', err); }
+  }catch(err){ console.error(err); }
 }
 
 function toggleTileLayer(){
@@ -1103,8 +1196,7 @@ function toggleTileLayer(){
 
 function updateProvinceStyle(layer){
   if(currentHighlightedRegion && developmentProjects[currentHighlightedRegion]){
-    const regionProvs=developmentProjects[currentHighlightedRegion];
-    if(regionProvs.some(p=>norm(p)===norm(layer.provinceName))){
+    if(developmentProjects[currentHighlightedRegion].some(p=>norm(p)===norm(layer.provinceName))){
       layer.setStyle({fillColor:'#10b981', fillOpacity:0.85, weight:2, color:'#34d399'}); return;
     }
   }
@@ -1113,10 +1205,9 @@ function updateProvinceStyle(layer){
 
 function renderBorderPoints(){
   const isMobile=window.innerWidth<=1000;
-  const markerRadius=isMobile?8:6;
   Object.keys(borderGateCoords).forEach(gateName=>{
     const data=borderGateCoords[gateName];
-    const marker=L.circleMarker([data.lat,data.lng],{radius:markerRadius, fillColor:'#ffffff', color:'#000000', weight:2, opacity:1, fillOpacity:0.95}).addTo(map);
+    const marker=L.circleMarker([data.lat,data.lng],{radius:isMobile?8:6, fillColor:'#ffffff', color:'#000000', weight:2, opacity:1, fillOpacity:0.95}).addTo(map);
     marker.gateName=gateName; borderMarkers[gateName]=marker;
     marker.on('click', ()=>{
       if(selectedMode==='atlas'){ showAtlasInfo(null, gateName); return; }
@@ -1125,7 +1216,6 @@ function renderBorderPoints(){
   });
 }
 
-/* ============ ATLAS MODU ============ */
 function showAtlasInfo(provinceName, gateName){
   const panel=document.getElementById('atlasBody');
   const title=document.getElementById('atlasTitle');
@@ -1137,137 +1227,147 @@ function showAtlasInfo(provinceName, gateName){
     return;
   }
   title.textContent=provinceName;
-  const relevant=rawItems.filter(it=> it[2].some(p=>norm(p)===norm(provinceName)) );
-  if(relevant.length===0){
-    panel.innerHTML='<div class="atlas-empty">Bu ile ait kayıtlı özel bir veri bulunamadı.</div>';
-    return;
-  }
-  const groups={};
-  relevant.forEach(it=>{ (groups[it[0]]=groups[it[0]]||[]).push(it); });
   let html='';
-  Object.keys(groups).forEach(cat=>{
-    html+=`<div class="atlas-group"><div class="atlas-group-title">${cat}</div>`;
-    groups[cat].forEach(it=>{
-      const fact=facts[it[1]];
-      html+=`<div class="atlas-entry">${it[1]}${it[3]?` (${it[3]})`:''}${fact?`<br><span style="color:#94a3b8;font-weight:500;font-size:10.5px;">${fact}</span>`:''}</div>`;
-    });
-    html+='</div>';
-  });
+  
+  // Turistik Yerler Atlası
+  if (touristData[provinceName]) {
+      html += `<div class="atlas-group"><div class="atlas-group-title">Turistik Yerler</div>`;
+      touristData[provinceName].forEach(p => {
+          let parts = p.split(' - ');
+          if(parts.length > 1) {
+              html += `<div class="atlas-entry"><strong style="color:#38bdf8">${parts[0]}</strong> <br><span style="font-size:10px;color:#94a3b8">${parts[1]}</span></div>`;
+          } else {
+              html += `<div class="atlas-entry"><strong style="color:#38bdf8">${p}</strong></div>`;
+          }
+      });
+      html += `</div>`;
+  }
+
+  // Diğer Özellikler
+  const relevant=rawItems.filter(it=> it[2].some(p=>norm(p)===norm(provinceName)) );
+  if(relevant.length > 0){
+      const groups={}; relevant.forEach(it=>{ (groups[it[0]]=groups[it[0]]||[]).push(it); });
+      Object.keys(groups).forEach(cat=>{
+        html+=`<div class="atlas-group"><div class="atlas-group-title">${cat}</div>`;
+        groups[cat].forEach(it=>{
+          html+=`<div class="atlas-entry">${it[1]}${it[3]?` (${it[3]})`:''}</div>`;
+        });
+        html+='</div>';
+      });
+  }
+  
+  if(!html) html='<div class="atlas-empty">Bu ile ait veri bulunamadı.</div>';
   panel.innerHTML=html;
 }
 
 /* ============ KART LİSTESİ ============ */
-function itemDisplayTitle(i, x){
-  if(selectedMode==='kpss'){
-    return getItemHints(x)[0];
-  }
-  if(selectedMode==='riddle'){
-    const level=riddleRevealed[i]||0;
-    return level===0 ? '❓ Gizli — ipucu iste' : getItemHints(x)[Math.min(level-1,2)];
-  }
-  return x[1];
-}
-
-function getItemHints(item){
-  const [cat,name,provs,extra]=item;
-  const factText=facts[name];
-  let h1,h2,h3;
-  if(cat==='Sınır Kapısı'){
-    h1=`Bu sınır kapısı ${extra} ile komşudur.`;
-    h2=`Bulunduğu il: ${provs[0][0]}... ile başlıyor (${provs[0].length} harf).`;
-    h3=factText || `Cevap: ${name}`;
-  } else if(cat==='Kalkınma Projesi'){
-    h1=`Bölgesel kalkınma projesi, ${provs.length} ili kapsıyor.`;
-    h2=factText || `Kapsadığı illerden biri: ${provs[0]}`;
-    h3=`Cevap: ${name}`;
-  } else {
-    h1=`Kategori: ${cat}. ${provs.length>1? provs.length+' ili ilgilendiriyor.':'Tek bir ile özgü.'}`;
-    h2=factText || `İlgili il(ler): ${provs.join(', ')}`;
-    h3=`Cevap: ${name}`;
-  }
-  return [h1,h2,h3];
-}
-
 function selectNextAvailableCard(){
   const availableIndices=[];
   items.forEach((x,idx)=>{
     if(!matched.has(idx)){
-      if(activeCat!=='all' && x[0]!==activeCat) return;
-      if(searchQuery && !norm(x[1]).includes(norm(searchQuery))) return;
+      if(selectedMode !== 'tourist' && activeCat!=='all' && x[0]!==activeCat) return;
+      if(searchQuery) {
+          if (x[0] === 'Turistik') {
+              const match = x[3].some(p => norm(p).includes(norm(searchQuery))) || norm(x[2][0]).includes(norm(searchQuery));
+              if(!match) return;
+          } else {
+              if(!norm(x[1]).includes(norm(searchQuery))) return;
+          }
+      }
       availableIndices.push(idx);
     }
   });
   if(availableIndices.length>0){
     selectedItem=availableIndices[0];
-    if(selectedMode==='riddle') updateRiddlePanel();
     setTimeout(()=>{ const el=document.querySelector(`.card[data-i="${selectedItem}"]`); if(el) el.scrollIntoView({behavior:'smooth', block:'nearest', inline:'center'}); }, 50);
   } else { selectedItem=null; }
 }
-
-function updateRiddlePanel(){
-  if(selectedMode!=='riddle' || selectedItem===null) return;
-  const level=riddleRevealed[selectedItem]||0;
-  const clueEl=document.getElementById('riddleClue');
-  const item=items[selectedItem];
-  if(level===0){ clueEl.textContent='İpucu almak için butona bas.'; }
-  else{ clueEl.textContent=getItemHints(item)[Math.min(level-1,2)]; }
-  document.getElementById('riddleNextBtn').disabled = level>=3;
-}
-
-document.getElementById('riddleNextBtn').addEventListener('click', ()=>{
-  if(selectedItem===null) return;
-  riddleRevealed[selectedItem]=Math.min((riddleRevealed[selectedItem]||0)+1, 3);
-  updateRiddlePanel();
-  renderCards();
-});
 
 function renderCards(){
   const container=document.getElementById('cards');
   container.innerHTML='';
   items.forEach((x,i)=>{
     if(matched.has(i)) return;
-    if(activeCat!=='all' && x[0]!==activeCat) return;
-    if(searchQuery && !norm(x[1]).includes(norm(searchQuery))) return;
+    if(selectedMode !== 'tourist' && activeCat!=='all' && x[0]!==activeCat) return;
+    if(searchQuery) {
+          if (x[0] === 'Turistik') {
+              const match = x[3].some(p => norm(p).includes(norm(searchQuery))) || norm(x[2][0]).includes(norm(searchQuery));
+              if(!match) return;
+          } else {
+              if(!norm(x[1]).includes(norm(searchQuery))) return;
+          }
+    }
 
     const card=document.createElement('div');
     card.className=`card ${selectedItem===i?'selected':''}`;
     card.dataset.i=i;
 
-    let tagClass='tag-milli';
-    if(x[0]==='Ramsar') tagClass='tag-ramsar';
-    if(x[0]==='UNESCO') tagClass='tag-unesco';
-    if(x[0]==='Cittaslow') tagClass='tag-cittaslow';
-    if(x[0]==='Serbest Bölge') tagClass='tag-ticaret';
-    if(x[0]==='Sınır Kapısı') tagClass='tag-kapi';
-    if(x[0]==='Kalkınma Projesi') tagClass='tag-kalkinma';
-
-    let progressHTML='';
-    if(x[0]==='Kalkınma Projesi'){
-      const foundSet=projectMatchedProvinces[i]||new Set();
-      progressHTML=`<div class="card-progress">📍 Bulunan: ${foundSet.size} / ${x[2].length} Şehir</div>`;
-    }
-
     let hintHTML='';
-    if(selectedMode!=='kpss' && selectedMode!=='riddle' && wrongCounts[i]>=3){
-      const detail=x[3] ? `${x[3]} (${x[2].join('/')})` : x[2].join(' / ');
-      hintHTML=`<div class="card-hint-text">💡 ${detail}</div>`;
+    if(wrongCounts[i]>=3){
+      const detail = x[0] === 'Turistik' ? 'Bu şehir: ' + x[2][0] : (x[3] ? `${x[3]} (${x[2].join('/')})` : x[2].join(' / '));
+      hintHTML=`<div class="card-hint-text">💡 İpucu: ${detail}</div>`;
     }
 
-    card.innerHTML=`
-      <span class="tag ${tagClass}">${x[0]}</span>
-      <div class="card-title" title="${itemDisplayTitle(i,x)}">${itemDisplayTitle(i,x)}</div>
-      ${progressHTML}${hintHTML}
-    `;
-    card.addEventListener('click', ()=>{
-      selectedItem = (selectedItem===i) ? null : i;
-      if(selectedMode==='riddle') updateRiddlePanel();
-      renderCards();
-    });
+    // Turistik Yerler Özel Kart Görünümü
+    if (x[0] === 'Turistik') {
+        const places = x[3];
+        let listHTML = '<ul class="tourist-ul">';
+        places.forEach(p => {
+           let parts = p.split(' - ');
+           if(parts.length > 1) {
+              listHTML += `<li><strong>${parts[0]}</strong><span class="tourist-place-desc">${parts.slice(1).join(' - ')}</span></li>`;
+           } else {
+              listHTML += `<li><strong>${p}</strong></li>`;
+           }
+        });
+        listHTML += '</ul>';
+        
+        card.innerHTML = `<span class="tag tag-tourist">🏛️ Turistik</span><div class="tourist-city-title"></div>${listHTML}${hintHTML}`;
+        card.classList.add('tourist-card');
+    } else {
+        // Klasik Kart Görünümü
+        let tagClass='tag-milli';
+        if(x[0]==='Ramsar') tagClass='tag-ramsar';
+        if(x[0]==='UNESCO') tagClass='tag-unesco';
+        if(x[0]==='Cittaslow') tagClass='tag-cittaslow';
+        if(x[0]==='Serbest Bölge') tagClass='tag-ticaret';
+        if(x[0]==='Sınır Kapısı') tagClass='tag-kapi';
+        if(x[0]==='Kalkınma Projesi') tagClass='tag-kalkinma';
+
+        let progressHTML='';
+        if(x[0]==='Kalkınma Projesi'){
+          const foundSet=projectMatchedProvinces[i]||new Set();
+          progressHTML=`<div class="card-progress">📍 Bulunan: ${foundSet.size} / ${x[2].length} Şehir</div>`;
+        }
+
+        card.innerHTML=`
+          <span class="tag ${tagClass}">${x[0]}</span>
+          <div class="card-title" title="${x[1]}">${x[1]}</div>
+          ${progressHTML}${hintHTML}
+        `;
+    }
+    
+    card.addEventListener('click', ()=>{ selectedItem = (selectedItem===i) ? null : i; renderCards(); });
     container.appendChild(card);
   });
 
   document.querySelectorAll('.score-val').forEach(el=>el.textContent=score);
-  document.querySelectorAll('.left-val').forEach(el=>el.textContent=items.length-matched.size);
+  
+  // Kalan hesaplaması Kalkınma projesi de dahil netleştiriliyor
+  let remainingTotal = 0;
+  if(selectedMode === 'classic' || selectedMode === 'timeAttack') {
+       items.forEach((it, idx) => {
+           if(it[0] === 'Kalkınma Projesi') {
+               const foundSet = projectMatchedProvinces[idx] || new Set();
+               remainingTotal += Math.max(0, it[2].length - foundSet.size);
+           } else if (!matched.has(idx)) {
+               remainingTotal += 1;
+           }
+       });
+  } else {
+       remainingTotal = items.length - matched.size;
+  }
+  document.querySelectorAll('.left-val').forEach(el=>el.textContent = remainingTotal);
 
   if(combo>1){
     document.getElementById('comboPill').style.display='flex';
@@ -1286,7 +1386,7 @@ function showMapPopup(latlng,message,type='success',duration=3000){
 
 function attemptMatch(itemIndex, layer, latlng, hitGateName=null){
   if(gameEnded) return;
-  const [cat,name,provs,country]=items[itemIndex];
+  const [cat,name,provs,extra]=items[itemIndex];
   let ok=false;
   totalAttempts++;
 
@@ -1296,8 +1396,6 @@ function attemptMatch(itemIndex, layer, latlng, hitGateName=null){
   } else if(layer){
     ok=provs.some(p=>norm(p)===norm(layer.provinceName));
   }
-
-  const hotseatPlayer = selectedMode==='hotseat' ? hotseat.players[hotseat.turn%2] : null;
 
   if(ok){
     totalCorrectAttempts++;
@@ -1312,7 +1410,7 @@ function attemptMatch(itemIndex, layer, latlng, hitGateName=null){
         return;
       }
       foundSet.add(matchedProvReal);
-      registerCorrect(hotseatPlayer);
+      registerCorrect();
       L.marker(latlng,{icon:L.divIcon({className:'matched-dot',iconSize:[12,12],iconAnchor:[6,6]}), interactive:false})
         .addTo(map).bindTooltip(`${name} (${matchedProvReal})`, {direction:'top', offset:[0,-6]});
       const remaining=provs.length-foundSet.size;
@@ -1320,90 +1418,69 @@ function attemptMatch(itemIndex, layer, latlng, hitGateName=null){
         matched.add(itemIndex);
         showMapPopup(latlng, `Tebrikler! ${name} projesinin TÜM şehirlerini tamamladınız!`, 'success', 3000);
         selectNextAvailableCard();
-      } else {
-        showMapPopup(latlng, `Doğru! ${matchedProvReal} (${name}). Kalan: ${remaining}`, 'success', 2000);
-      }
+      } else { showMapPopup(latlng, `Doğru! ${matchedProvReal} (${name}). Kalan: ${remaining}`, 'success', 2000); }
     } else {
-      matched.add(itemIndex);
-      registerCorrect(hotseatPlayer);
-      const infoLabel = country ? `${country} (${provs[0]})` : (layer ? layer.provinceName : provs[0]);
+      matched.add(itemIndex); registerCorrect();
+      
       if(cat==='Sınır Kapısı' && borderMarkers[name]){
-        const marker=borderMarkers[name]; const color=countryColors[country]||'#10b981';
+        const marker=borderMarkers[name]; const color=countryColors[extra]||'#10b981';
         marker.setStyle({fillColor:color, color:'#ffffff', radius:8});
-        marker.bindTooltip(`<b>${name}</b> (${country} - ${provs[0]})`, {direction:'top', offset:[0,-8]});
+        marker.bindTooltip(`<b>${name}</b> (${extra} - ${provs[0]})`, {direction:'top', offset:[0,-8]});
+        showMapPopup(latlng, `Doğru! ${name} → ${extra} (${provs[0]})`, 'success', 2000);
+      } else if (cat==='Turistik') {
+        L.marker(latlng,{icon:L.divIcon({className:'matched-dot',iconSize:[12,12],iconAnchor:[6,6]}), interactive:false})
+          .addTo(map).bindTooltip(provs[0], {direction:'top', offset:[0,-6]});
+        layer.setStyle({fillColor:'#ec4899', fillOpacity:0.85, weight:2});
+        showMapPopup(latlng, `Harika! Aranan Şehir: ${provs[0]} 🏛️`, 'success', 2000);
       } else if(layer){
         L.marker(latlng,{icon:L.divIcon({className:'matched-dot',iconSize:[12,12],iconAnchor:[6,6]}), interactive:false})
           .addTo(map).bindTooltip(name, {direction:'top', offset:[0,-6]});
         layer.setStyle({fillColor:'#10b981', fillOpacity:0.85, weight:2});
-      }
-      const specialFact=facts[name];
-      if(specialFact && selectedMode!=='kpss'){
-        showMapPopup(latlng, `Doğru! ${name} <br><span style="font-size:10px;font-weight:normal;color:#cbd5e1">${specialFact}</span>`, 'success', 3000);
-      } else {
-        showMapPopup(latlng, `Doğru! ${name} → ${infoLabel}`, 'success', 2000);
+        showMapPopup(latlng, `Doğru! ${name} → ${layer.provinceName}`, 'success', 2000);
       }
       selectNextAvailableCard();
     }
-
-    dragItem=null;
-    if(selectedMode==='hotseat') advanceHotseatTurn();
     renderCards();
     checkFastBadge();
 
     if(matched.size===items.length){ setTimeout(()=>endGame('complete'), 800); }
 
   } else {
-    combo=0;
-    wrongCounts[itemIndex]=(wrongCounts[itemIndex]||0)+1;
-    playWrongSound();
+    combo=0; wrongCounts[itemIndex]=(wrongCounts[itemIndex]||0)+1; playWrongSound();
     if(selectedMode==='timeAttack') adjustTimeAttack(-5);
-
     const cardEl=document.querySelector(`.card[data-i="${itemIndex}"]`);
     if(cardEl){ cardEl.classList.add('wrong-shake'); setTimeout(()=>cardEl.classList.remove('wrong-shake'), 400); }
 
     const targetName = layer ? layer.provinceName : (hitGateName || 'Yanlış Nokta');
-    if(selectedMode!=='kpss' && selectedMode!=='riddle' && wrongCounts[itemIndex]>=3){
-      const targetDetail = country ? `${country} - ${provs.join('/')}` : provs.join(' / ');
-      showMapPopup(latlng, `Yanlış (${targetName})!<br>💡 İpucu: ${name} → ${targetDetail}`, 'danger', 3000);
-    } else {
-      showMapPopup(latlng, `Yanlış (${targetName}). Aranan: ${name}`, 'danger', 2000);
-    }
-    if(selectedMode==='hotseat') advanceHotseatTurn();
+    if(wrongCounts[itemIndex]>=3){
+       if (cat === 'Turistik') showMapPopup(latlng, `Yanlış (${targetName})!<br>💡 İpucu: Şehir "${provs[0]}" idi.`, 'danger', 3000);
+       else {
+           const targetDetail = extra ? `${extra} - ${provs.join('/')}` : provs.join(' / ');
+           showMapPopup(latlng, `Yanlış (${targetName})!<br>💡 İpucu: ${name} → ${targetDetail}`, 'danger', 3000);
+       }
+    } else { showMapPopup(latlng, `Yanlış (${targetName}). Tekrar dene!`, 'danger', 2000); }
     renderCards();
   }
 }
 
-function registerCorrect(hotseatPlayer){
+function registerCorrect(){
   score++; combo++; if(combo>maxCombo) maxCombo=combo;
   playCorrectSound(combo);
   correctTimestamps.push(Date.now());
-  if(hotseatPlayer){ hotseatPlayer.score++; updateHotseatUI(); }
+  if(selectedMode==='timeAttack') adjustTimeAttack(+3);
 }
 
 function checkFastBadge(){
-  const now=Date.now();
-  correctTimestamps=correctTimestamps.filter(t=> now-t <= 10000);
-  if(correctTimestamps.length>=5 && !store.badges.includes('isik')){
-    awardBadge('isik');
-  }
+  const now=Date.now(); correctTimestamps=correctTimestamps.filter(t=> now-t <= 10000);
+  if(correctTimestamps.length>=5 && !store.badges.includes('isik')) awardBadge('isik');
 }
-
-function advanceHotseatTurn(){
-  hotseat.turn++;
-  updateHotseatUI();
-}
-
 function awardBadge(id){
   if(store.badges.includes(id)) return;
-  store.badges.push(id); saveStore(store); sessionNewBadges.push(id);
-  playBadgeSound();
+  store.badges.push(id); saveStore(store); sessionNewBadges.push(id); playBadgeSound();
 }
 
 /* ============ JOKERLER ============ */
-document.getElementById('jokerFifty').addEventListener('click', useFiftyFifty);
-document.getElementById('jokerRadar').addEventListener('click', useRadar);
-
-function useFiftyFifty(){
+document.getElementById('jokerFifty').addEventListener('click', ()=>{
   if(jokers.fifty<=0 || selectedItem===null || selectedMode==='atlas') return;
   jokers.fifty--; updateJokerUI();
   const item=items[selectedItem]; const provs=item[2];
@@ -1411,16 +1488,15 @@ function useFiftyFifty(){
   const targetLayers=provinceLayers.filter(l=>provs.some(p=>norm(p)===norm(l.provinceName)));
   if(targetLayers.length===0) return;
   const centers=targetLayers.map(l=>l.getBounds().getCenter());
-  const avgLat=centers.reduce((s,c)=>s+c.lat,0)/centers.length;
-  const avgLng=centers.reduce((s,c)=>s+c.lng,0)/centers.length;
-  const dists=provinceLayers.map(l=>{ const c=l.getBounds().getCenter(); return {l, d:Math.hypot(c.lat-avgLat,c.lng-avgLng)}; });
+  const avgLat=centers.reduce((s,c)=>s+c.lat,0)/centers.length, avgLng=centers.reduce((s,c)=>s+c.lng,0)/centers.length;
+  const dists=provinceLayers.map(l=>({l, d:Math.hypot(l.getBounds().getCenter().lat-avgLat, l.getBounds().getCenter().lng-avgLng)}));
   dists.sort((a,b)=>a.d-b.d);
   const keepCount=Math.max(10, Math.round(provinceLayers.length*0.35));
   dists.forEach((entry,idx)=>{ if(idx>=keepCount){ entry.l.setStyle({fillOpacity:0.12, fillColor:'#0f172a'}); } });
   setTimeout(()=>{ provinceLayers.forEach(l=>updateProvinceStyle(l)); }, 6000);
-}
+});
 
-function useRadar(){
+document.getElementById('jokerRadar').addEventListener('click', ()=>{
   if(jokers.radar<=0 || selectedItem===null || selectedMode==='atlas') return;
   jokers.radar--; updateJokerUI();
   const item=items[selectedItem]; const [cat,name,provs]=item;
@@ -1434,16 +1510,14 @@ function useRadar(){
   const circle=L.circle(center,{radius:60000, color:'#38bdf8', fillColor:'#38bdf8', fillOpacity:0.25, weight:2}).addTo(map);
   let pulses=0;
   const pulseInt=setInterval(()=>{
-    pulses++;
-    circle.setStyle({fillOpacity: pulses%2===0?0.25:0.05});
+    pulses++; circle.setStyle({fillOpacity: pulses%2===0?0.25:0.05});
     if(pulses>=8){ clearInterval(pulseInt); map.removeLayer(circle); }
   }, 400);
-}
+});
 
-/* ============ ZAMANA KARŞI MODU ============ */
+/* ============ ZAMAN MODU ============ */
 function startTimeAttack(){
-  timeAttackActive=true; timeAttackRemaining=TIME_ATTACK_START;
-  updateTimerDisplay();
+  timeAttackActive=true; timeAttackRemaining=60; updateTimerDisplay();
   if(timeAttackInterval) clearInterval(timeAttackInterval);
   timeAttackInterval=setInterval(()=>{
     timeAttackRemaining--; updateTimerDisplay();
@@ -1451,13 +1525,9 @@ function startTimeAttack(){
     if(timeAttackRemaining<=0){ clearInterval(timeAttackInterval); endGame('timeout'); }
   }, 1000);
 }
-function stopTimeAttack(){
-  timeAttackActive=false; if(timeAttackInterval) clearInterval(timeAttackInterval);
-}
+function stopTimeAttack(){ timeAttackActive=false; if(timeAttackInterval) clearInterval(timeAttackInterval); }
 function adjustTimeAttack(delta){
-  if(!timeAttackActive) return;
-  timeAttackRemaining=Math.max(0, timeAttackRemaining+delta);
-  updateTimerDisplay();
+  if(!timeAttackActive) return; timeAttackRemaining=Math.max(0, timeAttackRemaining+delta); updateTimerDisplay();
   if(timeAttackRemaining<=0){ clearInterval(timeAttackInterval); endGame('timeout'); }
 }
 function updateTimerDisplay(){
@@ -1467,10 +1537,9 @@ function updateTimerDisplay(){
   document.querySelectorAll('.timerPill').forEach(p=>p.classList.toggle('urgent', timeAttackRemaining<=10));
 }
 
-/* ============ OYUN SONU ============ */
+/* ============ OYUN SONU VE ANALİZ ============ */
 function endGame(reason){
-  if(gameEnded) return;
-  gameEnded=true;
+  if(gameEnded) return; gameEnded=true;
   if(timeAttackInterval) clearInterval(timeAttackInterval);
 
   const elapsedSec=Math.floor((Date.now()-gameStartTime)/1000);
@@ -1478,42 +1547,34 @@ function endGame(reason){
   const ss=(elapsedSec%60).toString().padStart(2,'0');
   const accuracy=totalAttempts>0 ? Math.round((totalCorrectAttempts/totalAttempts)*100) : 100;
 
-  // badge checks
   const catsInPlay=new Set(items.map(i=>i[0]));
   if(catsInPlay.has('Sınır Kapısı')){
     const gateItems=items.map((it,idx)=>({it,idx})).filter(o=>o.it[0]==='Sınır Kapısı');
-    const allGatesPerfect = gateItems.every(o=> matched.has(o.idx) && !wrongCounts[o.idx]);
-    if(gateItems.length>0 && allGatesPerfect) awardBadge('sinir');
+    if(gateItems.length>0 && gateItems.every(o=> matched.has(o.idx) && !wrongCounts[o.idx])) awardBadge('sinir');
   }
   if(catsInPlay.has('Ramsar') && catsInPlay.has('Milli Park')){
     const natureItems=items.map((it,idx)=>({it,idx})).filter(o=>o.it[0]==='Ramsar'||o.it[0]==='Milli Park');
     if(natureItems.length>0 && natureItems.every(o=>matched.has(o.idx))) awardBadge('doga');
   }
+
   document.getElementById('endTimeVal').textContent=`${mm}:${ss}`;
   document.getElementById('endAccuracyVal').textContent=`${accuracy}%`;
   document.getElementById('endScoreVal').textContent=score;
   document.getElementById('endComboVal').textContent=maxCombo;
   document.getElementById('endEmoji').textContent = reason==='timeout' ? '⏰' : '🏆';
-  document.getElementById('endReasonText').textContent = reason==='timeout' ? 'Süre doldu!' : 'Tüm eşleştirmeleri tamamladın!';
-
-  const winnerBanner=document.getElementById('winnerBanner');
-  if(selectedMode==='hotseat'){
-    const p0=hotseat.players[0], p1=hotseat.players[1];
-    winnerBanner.style.display='block';
-    if(p0.score===p1.score) winnerBanner.textContent=`🤝 Berabere! (${p0.score} - ${p1.score})`;
-    else{
-      const winner=p0.score>p1.score?p0:p1;
-      winnerBanner.textContent=`🏆 Kazanan: ${winner.name} (${p0.score} - ${p1.score})`;
-    }
-  } else { winnerBanner.style.display='none'; }
+  document.getElementById('endReasonText').textContent = reason==='timeout' ? 'Süre doldu!' : 'Harikasın, tümünü tamamladın!';
 
   const weakEntries=Object.entries(wrongCounts).filter(([idx,c])=>c>0).sort((a,b)=>b[1]-a[1]).slice(0,5)
-    .map(([idx,count])=>({name:items[idx][1], cat:items[idx][0], count}));
+    .map(([idx,count])=>{
+        let nameToDisplay = items[idx][1];
+        if (items[idx][0] === 'Turistik') nameToDisplay = `Turistik Yerler (${items[idx][2][0]})`;
+        return {name:nameToDisplay, cat:items[idx][0], count};
+    });
+    
   const weakList=document.getElementById('endWeakList');
   weakList.innerHTML='';
-  if(weakEntries.length===0){
-    weakList.innerHTML='<li class="weak-empty">Harika! Hiç yanlışın yok. 🌟</li>';
-  } else {
+  if(weakEntries.length===0){ weakList.innerHTML='<li class="weak-empty">Harika! Hiç yanlışın yok. 🌟</li>'; }
+  else {
     weakEntries.forEach(w=>{
       const li=document.createElement('li');
       li.innerHTML=`<span class="weak-name">${w.name}</span><span class="weak-cat">${w.cat}</span><span class="weak-count">${w.count} yanlış</span>`;
@@ -1521,18 +1582,15 @@ function endGame(reason){
     });
   }
 
-  const newBadgesWrap=document.getElementById('newBadgesWrap');
-  const newBadgesRow=document.getElementById('newBadgesRow');
+  const newBadgesWrap=document.getElementById('newBadgesWrap'), newBadgesRow=document.getElementById('newBadgesRow');
   if(sessionNewBadges.length>0){
     newBadgesWrap.style.display='block'; newBadgesRow.innerHTML='';
     sessionNewBadges.forEach(id=>{
       const def=BADGE_DEFS.find(b=>b.id===id);
-      const el=document.createElement('div');
-      el.className='badge-item earned';
+      const el=document.createElement('div'); el.className='badge-item earned';
       el.innerHTML=`<span class="badge-icon">${def.icon}</span><span>${def.name}</span>`;
       newBadgesRow.appendChild(el);
     });
-    launchConfetti();
   } else { newBadgesWrap.style.display='none'; }
 
   const hasWrongItems=Object.values(wrongCounts).some(c=>c>0);
@@ -1542,10 +1600,9 @@ function endGame(reason){
   if(score>prevBest){ store.highScores[selectedMode]=score; saveStore(store); }
 
   buildPrintNote(weakEntries, accuracy, mm, ss);
-
   showScreen('results');
   playFanfare();
-  if(sessionNewBadges.length===0) launchConfetti();
+  launchConfetti();
 }
 
 function buildPrintNote(weakEntries, accuracy, mm, ss){
@@ -1554,15 +1611,22 @@ function buildPrintNote(weakEntries, accuracy, mm, ss){
   const allWrong=Object.entries(wrongCounts).filter(([idx,c])=>c>0).sort((a,b)=>b[1]-a[1]);
   allWrong.forEach(([idx,count])=>{
     const it=items[idx];
-    const detail = it[3] ? `${it[3]} — ${it[2].join(' / ')}` : it[2].join(' / ');
-    rows += `<tr><td style="padding:8px;border:1px solid #ccc;">${it[1]}</td><td style="padding:8px;border:1px solid #ccc;">${it[0]}</td><td style="padding:8px;border:1px solid #ccc;">${detail}</td><td style="padding:8px;border:1px solid #ccc;">${count}</td></tr>`;
+    let subject = it[1];
+    let detail = it[3] ? `${it[3]} — ${it[2].join(' / ')}` : it[2].join(' / ');
+    
+    if (it[0] === 'Turistik') {
+        subject = 'Turistik: ' + it[3].map(p=>p.split(' - ')[0]).join(', ');
+        detail = it[2][0]; // Sadece şehir adını doğru cevap yap
+    }
+    
+    rows += `<tr><td style="padding:8px;border:1px solid #ccc;">${subject}</td><td style="padding:8px;border:1px solid #ccc;">${it[0]}</td><td style="padding:8px;border:1px solid #ccc;">${detail}</td><td style="padding:8px;border:1px solid #ccc;">${count}</td></tr>`;
   });
   el.innerHTML = `
     <h1 style="font-size:22px;margin-bottom:4px;">🗺️ Türkiye Coğrafya Akademisi — Ders Notu</h1>
     <p style="color:#555;margin-bottom:16px;">Süre: ${mm}:${ss} • Doğruluk: %${accuracy} • Skor: ${score}</p>
     ${rows ? `<table style="border-collapse:collapse;width:100%;font-size:13px;">
-      <thead><tr><th style="padding:8px;border:1px solid #ccc;text-align:left;">Konu</th><th style="padding:8px;border:1px solid #ccc;text-align:left;">Kategori</th><th style="padding:8px;border:1px solid #ccc;text-align:left;">Doğru Cevap</th><th style="padding:8px;border:1px solid #ccc;text-align:left;">Yanlış Sayısı</th></tr></thead>
-      <tbody>${rows}</tbody></table>` : '<p>Hiç yanlış yapılmadı — tebrikler!</p>'}
+      <thead><tr><th style="padding:8px;border:1px solid #ccc;text-align:left;">Konu/Soru</th><th style="padding:8px;border:1px solid #ccc;text-align:left;">Kategori</th><th style="padding:8px;border:1px solid #ccc;text-align:left;">Doğru Cevap</th><th style="padding:8px;border:1px solid #ccc;text-align:left;">Yanlış Sayısı</th></tr></thead>
+      <tbody>${rows}</tbody></table>` : '<p>Harika! Hata yapılmadı.</p>'}
   `;
 }
 
@@ -1570,7 +1634,7 @@ function launchConfetti(){
   const canvas=document.getElementById('confettiCanvas');
   canvas.style.display='block'; canvas.width=window.innerWidth; canvas.height=window.innerHeight;
   const ctx=canvas.getContext('2d');
-  const colors=['#6366f1','#38bdf8','#10b981','#f59e0b','#ef4444','#14b8a6','#8b5cf6'];
+  const colors=['#6366f1','#38bdf8','#10b981','#f59e0b','#ef4444','#ec4899','#8b5cf6'];
   const particles=[]; const count=140;
   for(let i=0;i<count;i++){
     particles.push({ x:Math.random()*canvas.width, y:-20-Math.random()*canvas.height*0.5, w:6+Math.random()*6, h:8+Math.random()*8,
@@ -1591,34 +1655,21 @@ function launchConfetti(){
   draw();
 }
 
-/* ============ RESULTS EKRANI BUTONLARI ============ */
+/* ============ DİĞER KONTROLLER ============ */
 document.getElementById('retryWrongBtn').addEventListener('click', ()=>{
   const wrongItems=Object.keys(wrongCounts).filter(idx=>wrongCounts[idx]>0).map(idx=>items[idx]);
   if(wrongItems.length===0) return;
   sessionStorage.setItem('retryItems', JSON.stringify(wrongItems));
   startGame(selectedMode, selectedCats);
 });
-document.getElementById('playAgainBtn').addEventListener('click', ()=>{
-  sessionStorage.removeItem('retryItems');
-  startGame(selectedMode, selectedCats);
-});
-document.getElementById('toMenuBtn').addEventListener('click', ()=>{
-  sessionStorage.removeItem('retryItems');
-  stopTimeAttack();
-  showScreen('menu');
-});
+document.getElementById('playAgainBtn').addEventListener('click', ()=>{ sessionStorage.removeItem('retryItems'); startGame(selectedMode, selectedCats); });
+document.getElementById('toMenuBtn').addEventListener('click', ()=>{ sessionStorage.removeItem('retryItems'); stopTimeAttack(); showScreen('menu'); });
 document.getElementById('printNoteBtn').addEventListener('click', ()=>{ window.print(); });
-document.getElementById('backToMenuBtn').addEventListener('click', ()=>{
-  sessionStorage.removeItem('retryItems');
-  stopTimeAttack();
-  showScreen('menu');
-});
+document.getElementById('backToMenuBtn').addEventListener('click', ()=>{ sessionStorage.removeItem('retryItems'); stopTimeAttack(); showScreen('menu'); });
 
-/* ============ HUD KONTROLLERİ ============ */
 document.querySelectorAll('.toggleLabelsBtn').forEach(btn=>{
   btn.addEventListener('click', ()=>{
-    showLabels=!showLabels;
-    document.body.classList.toggle('hide-labels', !showLabels);
+    showLabels=!showLabels; document.body.classList.toggle('hide-labels', !showLabels);
     btn.textContent = showLabels ? '🏷️ İsimler' : '🏷️ Gizli';
   });
 });
@@ -1629,31 +1680,16 @@ document.querySelectorAll('.filter-btn').forEach(btn=>{
     selectNextAvailableCard(); renderCards();
   });
 });
-document.getElementById('searchInput').addEventListener('input', (e)=>{
-  searchQuery=e.target.value; selectNextAvailableCard(); renderCards();
-});
-document.querySelectorAll('.soundToggle').forEach(btn=>{
-  btn.addEventListener('click', ()=>{
-    soundEnabled=!soundEnabled;
-    document.querySelectorAll('.soundToggle').forEach(b=>b.textContent=soundEnabled?'🔊':'🔇');
-  });
-});
+document.getElementById('searchInput').addEventListener('input', (e)=>{ searchQuery=e.target.value; selectNextAvailableCard(); renderCards(); });
+document.querySelectorAll('.soundToggle').forEach(btn=>{ btn.addEventListener('click', ()=>{ soundEnabled=!soundEnabled; document.querySelectorAll('.soundToggle').forEach(b=>b.textContent=soundEnabled?'🔊':'🔇'); }); });
 document.querySelectorAll('.tileToggleBtn').forEach(btn=> btn.addEventListener('click', toggleTileLayer));
+document.getElementById('atlasCloseBtn').addEventListener('click', ()=>{ document.getElementById('atlasPanel').style.display='none'; });
 
-document.getElementById('atlasCloseBtn').addEventListener('click', ()=>{
-  document.getElementById('atlasPanel').style.display='none';
-});
-
-/* ============ KALKINMA PROJELERİ DROPDOWN ============ */
 (function setupKalkinmaSelect(){
   const select=document.getElementById('kalkinmaSelect');
-  const projectNames={
-    GAP:'GAP (Güneydoğu Anadolu)', DOKAP:'DOKAP (Doğu Karadeniz)', YHGP:'YHGP (Yeşilırmak Havzası)',
-    DAP:'DAP (Doğu Anadolu)', KOP:'KOP (Konya Ovası)', ZBK:'ZBK (Zonguldak-Bartın-Karabük)'
-  };
+  const projectNames={ GAP:'GAP (Güneydoğu Anadolu)', DOKAP:'DOKAP (Doğu Karadeniz)', YHGP:'YHGP (Yeşilırmak Havzası)', DAP:'DAP (Doğu Anadolu)', KOP:'KOP (Konya Ovası)', ZBK:'ZBK (Zonguldak-Bartın-Karabük)' };
   Object.keys(developmentProjects).forEach(key=>{
-    const opt=document.createElement('option');
-    opt.value=key; opt.textContent=projectNames[key]||key;
+    const opt=document.createElement('option'); opt.value=key; opt.textContent=projectNames[key]||key;
     select.appendChild(opt);
   });
   select.addEventListener('change', ()=>{
@@ -1662,10 +1698,7 @@ document.getElementById('atlasCloseBtn').addEventListener('click', ()=>{
   });
 })();
 
-/* ============ BAŞLANGIÇ ============ */
-document.addEventListener('DOMContentLoaded', ()=>{
-  renderMenu();
-});
+document.addEventListener('DOMContentLoaded', ()=>renderMenu());
 </script>
 </body>
 </html>
