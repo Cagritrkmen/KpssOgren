@@ -189,10 +189,9 @@ button{font-family:inherit;}
   z-index: 15;
 }
 
-/* Turistik Mod İçin Özel Sağ Panel Görünümü */
-/* Telefondaki turistik mod düzeni - GÜNCELLENEN KISIM */
+/* Turistik ve Baraj Mod İçin Özel Sağ Panel Görünümü */
 #game-main-area.tourist-layout {
-  flex-direction: row-reverse; /* Harita solda, Kartlar sağda */
+  flex-direction: row-reverse;
 }
 #game-main-area.tourist-layout #cards-wrapper {
   width: 290px;
@@ -237,7 +236,7 @@ button{font-family:inherit;}
 .card-progress{ font-size:9.5px; color:#38bdf8; font-weight:700; }
 .card-hint-text{ font-size:9.5px; color:#fca5a5; background:rgba(239,68,68,.15); padding:3px 6px; border-radius:4px; margin-top:auto;}
 
-/* Turistik Yerler Özel Kart Modeli */
+/* Turistik ve Baraj Yerler Özel Kart Modeli */
 .card.tourist-card {
   min-width: 250px;
   max-width: 280px;
@@ -270,8 +269,10 @@ button{font-family:inherit;}
   margin-bottom: 2px;
 }
 
-#mapWrap{ position:relative; flex:1; width:100%; background:#090d16; }
+#mapWrap{ position:relative; flex:1; width:100%; background:#090d16; overflow: hidden; }
 #map{ height:100%; width:100%; background:#090d16; }
+
+/* Harita İçi Etiket ve Çizgiler */
 .province-label{ background:transparent !important; border:0 !important; box-shadow:none !important; color:#94a3b8 !important;
   font-weight:700 !important; font-size:8.5px !important; text-shadow:0 1px 3px rgba(0,0,0,.9); pointer-events:none; }
 body.hide-labels .province-label{ display:none !important; }
@@ -282,6 +283,11 @@ body.kpss-faint .leaflet-interactive{ opacity:0.55; }
 .leaflet-popup-content{ margin:8px 12px !important; font-size:11.5px !important; font-weight:700 !important; }
 .popup-success{ color:#34d399; } .popup-danger{ color:#f87171; }
 .matched-dot{ width:12px; height:12px; border-radius:50%; background:#10b981; border:2px solid #fff; box-shadow:0 0 8px rgba(16,185,129,.8); }
+
+/* Nehir Vektör Efektleri */
+.river-line { transition: stroke-width 0.2s ease, stroke 0.2s ease; cursor: pointer; }
+.river-line:hover { stroke-width: 8px !important; stroke: #60a5fa !important; filter: drop-shadow(0 0 4px rgba(96,165,250,0.8)); }
+.river-line.matched { stroke: #10b981 !important; stroke-width: 6px !important; pointer-events: none; }
 
 .atlas-panel{
   display:none; position:absolute; right:14px; top:14px; width:290px; max-height:calc(100% - 28px);
@@ -371,9 +377,7 @@ body.kpss-faint .leaflet-interactive{ opacity:0.55; }
   .atlas-panel{ width:calc(100% - 28px); }
   .game-hud{ padding:8px 10px; gap:6px; }
   .hud-top{ gap:5px; flex-wrap:nowrap; }
-  .hud-left, .hud-right{
-    flex-wrap:nowrap; overflow-x:auto; padding-bottom:2px; gap:5px;
-  }
+  .hud-left, .hud-right{ flex-wrap:nowrap; overflow-x:auto; padding-bottom:2px; gap:5px; }
   .hud-left::-webkit-scrollbar, .hud-right::-webkit-scrollbar{ display:none; }
   .icon-btn{ padding:6px 9px; font-size:10.5px; gap:4px; min-height:30px; flex-shrink:0; }
   .stat-pill{ padding:5px 9px; font-size:10.5px; gap:4px; flex-shrink:0; }
@@ -382,96 +386,19 @@ body.kpss-faint .leaflet-interactive{ opacity:0.55; }
   .filter-btn{ padding:6px 11px; font-size:10.5px; flex-shrink:0; }
   .card{ min-width:132px; max-width:154px; padding:9px 10px; }
   
-  /* MOBİL + SADECE TURİSTİK MOD:
-     Kartları kısa tutuyoruz; haritaya mümkün olduğunca fazla alan bırakıyoruz. */
-  /* MOBİL + SADECE TURİSTİK MOD:
-     Kartlar dikey kaydırılabilir, haritaya geniş alan bırakır. */
-  #game-main-area.tourist-layout {
-    flex-direction: column;
-  }
-  #game-main-area.tourist-layout #cards-wrapper {
-    width: 100%;
-    height: 140px;
-    max-height: 140px;
-    border-left: none;
-    border-bottom: 2px solid rgba(99,102,241,0.12);
-    flex-shrink: 0;
-  }
-  #game-main-area.tourist-layout .cards-container {
-    flex-direction: row;
-    overflow-x: auto;
-    overflow-y: hidden;
-    height: 100%;
-    padding: 6px 8px 8px;
-    gap: 8px;
-    align-items: stretch;
-    -webkit-mask-image: linear-gradient(to right, black 94%, transparent 100%);
-    mask-image: linear-gradient(to right, black 94%, transparent 100%);
-  }
-  #game-main-area.tourist-layout .tourist-city-title {
-    display: none;
-  }
-  #game-main-area.tourist-layout .card.tourist-card {
-    min-width: 165px;
-    max-width: 165px;
-    width: 165px;
-    height: 100%;
-    max-height: 100%;
-    padding: 6px 7px;
-    margin-bottom: 0;
-    gap: 3px;
-    border-radius: 9px;
-    display: flex;
-    flex-direction: column;
-  }
-  #game-main-area.tourist-layout .tourist-ul {
-    gap: 3px;
-    overflow-y: auto;
-    overflow-x: hidden;
-    padding-right: 2px;
-    flex: 1;
-    touch-action: pan-y;
-    -webkit-overflow-scrolling: touch;
-  }
-  #game-main-area.tourist-layout .tourist-ul::-webkit-scrollbar {
-    width: 3px;
-  }
-  #game-main-area.tourist-layout .tourist-ul::-webkit-scrollbar-thumb {
-    background: rgba(255,255,255,0.2);
-    border-radius: 3px;
-  }
-  #game-main-area.tourist-layout .tourist-ul li {
-    min-height: auto;
-    padding: 3px 5px;
-    border-radius: 4px;
-    font-size: 9px;
-    line-height: 1.2;
-    white-space: normal;
-    word-break: break-word;
-    flex-shrink: 0;
-  }
-  #game-main-area.tourist-layout .tourist-ul li strong {
-    display: inline;
-    font-size: 9px;
-    margin: 0;
-    color: #38bdf8;
-  }
-  #game-main-area.tourist-layout .tourist-place-desc {
-    display: none;
-  }
-  #game-main-area.tourist-layout .tag {
-    font-size: 7.5px;
-    padding: 2px 5px;
-  }
-  #game-main-area.tourist-layout .card-hint-text {
-    font-size: 7.5px;
-    padding: 2px 4px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    flex-shrink: 0;
-  }
-  
+  #game-main-area.tourist-layout { flex-direction: column; }
+  #game-main-area.tourist-layout #cards-wrapper { width: 100%; height: 140px; max-height: 140px; border-left: none; border-bottom: 2px solid rgba(99,102,241,0.12); flex-shrink: 0; }
+  #game-main-area.tourist-layout .cards-container { flex-direction: row; overflow-x: auto; overflow-y: hidden; height: 100%; padding: 6px 8px 8px; gap: 8px; align-items: stretch; -webkit-mask-image: linear-gradient(to right, black 94%, transparent 100%); mask-image: linear-gradient(to right, black 94%, transparent 100%); }
+  #game-main-area.tourist-layout .tourist-city-title { display: none; }
+  #game-main-area.tourist-layout .card.tourist-card { min-width: 165px; max-width: 165px; width: 165px; height: 100%; max-height: 100%; padding: 6px 7px; margin-bottom: 0; gap: 3px; border-radius: 9px; display: flex; flex-direction: column; }
+  #game-main-area.tourist-layout .tourist-ul { gap: 3px; overflow-y: auto; overflow-x: hidden; padding-right: 2px; flex: 1; touch-action: pan-y; -webkit-overflow-scrolling: touch; }
+  #game-main-area.tourist-layout .tourist-ul::-webkit-scrollbar { width: 3px; }
+  #game-main-area.tourist-layout .tourist-ul::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 3px; }
+  #game-main-area.tourist-layout .tourist-ul li { min-height: auto; padding: 3px 5px; border-radius: 4px; font-size: 9px; line-height: 1.2; white-space: normal; word-break: break-word; flex-shrink: 0; }
+  #game-main-area.tourist-layout .tourist-ul li strong { display: inline; font-size: 9px; margin: 0; color: #38bdf8; }
+  #game-main-area.tourist-layout .tourist-place-desc { display: none; }
+  #game-main-area.tourist-layout .tag { font-size: 7.5px; padding: 2px 5px; }
+  #game-main-area.tourist-layout .card-hint-text { font-size: 7.5px; padding: 2px 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; flex-shrink: 0; }
 }
 </style>
 </head>
@@ -483,7 +410,7 @@ body.kpss-faint .leaflet-interactive{ opacity:0.55; }
   <div class="menu-hero">
     <span class="glyph">🗺️</span>
     <h1>Türkiye Coğrafya Akademisi</h1>
-    <p>Türkiye coğrafyasını eğlenerek öğren. İl, milli park, sınır kapısı ve turistik merkezleri haritada keşfet.</p>
+    <p>Türkiye coğrafyasını eğlenerek öğren. İl, milli park, turistik merkezleri ve akarsuları haritada keşfet.</p>
     <div class="badge-strip" id="heroStats"></div>
   </div>
 
@@ -539,7 +466,6 @@ body.kpss-faint .leaflet-interactive{ opacity:0.55; }
     </div>
   </div>
 
-  <!-- EKLENEN ANA YAPI (Cards ve Map buraya taşındı) -->
   <div id="game-main-area">
     <div id="cards-wrapper">
       <div id="cards" class="cards-container"></div>
@@ -547,6 +473,7 @@ body.kpss-faint .leaflet-interactive{ opacity:0.55; }
 
     <div id="mapWrap">
       <div id="map"></div>
+
       <div class="kalkinma-select-wrap" id="kalkinmaSelectWrap">
         <select id="kalkinmaSelect">
           <option value="">🏗️ Kalkınma Projeleri</option>
@@ -637,7 +564,6 @@ const rawItems = [
   ["Kalkınma Projesi", "DAP (Doğu Anadolu)", developmentProjects["DAP"]],
   ["Kalkınma Projesi", "KOP (Konya Ovası)", developmentProjects["KOP"]],
   ["Kalkınma Projesi", "ZBK (Zonguldak-Bartın-Karabük)", developmentProjects["ZBK"]],
-
   ["Milli Park","Nemrut Dağı",["Adıyaman","Malatya"]],
   ["Milli Park","Akdağ",["Afyonkarahisar","Denizli"]],
   ["Milli Park","Başkomutan",["Afyonkarahisar","Kütahya","Uşak"]],
@@ -691,13 +617,11 @@ const rawItems = [
   ["Milli Park","Kuzey Ege Deniz",["Çanakkale","Tekirdağ"]],
   ["Milli Park","Fethiye - Kaş Deniz",["Muğla","Antalya"]],
   ["Milli Park","Nemrut Kalderası",["Bitlis"]],
-
   ["Ramsar","Göksu Deltası",["Mersin"]],["Ramsar","Burdur Gölü",["Burdur"]],["Ramsar","Seyfe Gölü",["Kırşehir"]],
   ["Ramsar","Manyas Kuşgölü",["Balıkesir"]],["Ramsar","Sultan Sazlığı",["Kayseri"]],["Ramsar","Kızılırmak Deltası",["Samsun"]],
   ["Ramsar","Akyatan Lagünü",["Adana"]],["Ramsar","Uluabat Gölü",["Bursa"]],["Ramsar","Gediz Deltası",["İzmir"]],
   ["Ramsar","Meke Krater Gölü",["Konya"]],["Ramsar","Yumurtalık Lagünleri",["Adana"]],["Ramsar","Kızören Obruğu",["Konya"]],
   ["Ramsar","Kuyucuk Gölü",["Kars"]],["Ramsar","Nemrut Gölü",["Bitlis"]],
-
   ["UNESCO", "Divriği Ulu Camii ve Darüşşifası", ["Sivas"]],
   ["UNESCO", "İstanbul’un Tarihi Alanları", ["İstanbul"]],
   ["UNESCO", "Göreme Millî Parkı ve Kapadokya", ["Nevşehir"]],
@@ -724,7 +648,6 @@ const rawItems = [
   ["UNESCO", "Afyonkarahisar Ulu Camii (Ahşap Hipostil Cami)", ["Afyonkarahisar"]],
   ["UNESCO", "Arslanhane (Ahi Şerafeddin) Camii (Ahşap Hipostil Cami)", ["Ankara"]],
   ["UNESCO", "Sardes Antik Kenti ve Bintepeler Lidya Tümülüsleri", ["Manisa"]],
-
   ["Cittaslow","1-Seferihisar",["İzmir"]],["Cittaslow","2-Akyaka",["Muğla"]],["Cittaslow","3-Gökçeada",["Çanakkale"]],
   ["Cittaslow","4-Yenipazar",["Aydın"]],["Cittaslow","5-Vize",["Kırklareli"]],["Cittaslow","6-Perşembe",["Ordu"]],
   ["Cittaslow","7-Yalvaç",["Isparta"]],["Cittaslow","8-Halfeti",["Şanlıurfa"]],["Cittaslow","9-Şavşat",["Artvin"]],
@@ -735,7 +658,6 @@ const rawItems = [
   ["Cittaslow","22-Şarköy",["Tekirdağ"]],["Cittaslow","23-İznik",["Bursa"]],["Cittaslow","24-Safranbolu",["Karabük"]],
   ["Cittaslow","25-Daday",["Kastamonu"]],["Cittaslow","26-İbradı",["Antalya"]],["Cittaslow","27-Demre",["Antalya"]],
   ["Cittaslow","28-Çameli",["Denizli"]],["Cittaslow","29-Ortahisar",["Nevşehir"]],
-
   ["Serbest Bölge","Yumurtalık Serbest Bölgesi",["Adana"]],["Serbest Bölge","Antalya Serbest Bölgesi",["Antalya"]],
   ["Serbest Bölge","Avrupa Serbest Bölgesi",["Tekirdağ"]],["Serbest Bölge","Batı Anadolu Serbest Bölgesi",["İzmir"]],
   ["Serbest Bölge","Bursa Serbest Bölgesi",["Bursa"]],["Serbest Bölge","Denizli Serbest Bölgesi",["Denizli"]],
@@ -746,7 +668,6 @@ const rawItems = [
   ["Serbest Bölge","Mersin Serbest Bölgesi",["Mersin"]],["Serbest Bölge","Rize Serbest Bölgesi",["Rize"]],
   ["Serbest Bölge","Samsun Serbest Bölgesi",["Samsun"]],["Serbest Bölge","Trabzon Serbest Bölgesi",["Trabzon"]],
   ["Serbest Bölge","TÜBİTAK MAM Teknoloji Serbest Bölgesi",["Kocaeli"]],
-
   ["Sınır Kapısı","İpsala",["Edirne"],"Yunanistan"],["Sınır Kapısı","Uzunköprü 🚂",["Edirne"],"Yunanistan"],
   ["Sınır Kapısı","Pazarkule",["Edirne"],"Yunanistan"],["Sınır Kapısı","Kapıkule 🚂",["Edirne"],"Bulgaristan"],
   ["Sınır Kapısı","Hamzabeyli",["Edirne"],"Bulgaristan"],["Sınır Kapısı","Dereköy (Aziziye)",["Kırklareli"],"Bulgaristan"],
@@ -783,12 +704,22 @@ const borderGateCoords = {
   "Alican": { lat: 40.122, lng: 44.028, country: "Ermenistan", prov: "Iğdır" },
   "Dilucu": { lat: 39.789, lng: 44.783, country: "Nahçıvan", prov: "Iğdır" },
   "Nusaybin 🚂": { lat: 37.067, lng: 41.218, country: "Suriye", prov: "Mardin" },
-  "Cilvegözü": { lat: 36.239, lng: 36.657, country: "Suriye", prov: "Hatay" }
+  "Cilvegözü": { lat: 36.239, lng: 36.657, country: "Suriye", prov: "Hatay" },
+  "Derecik": { lat: 37.075, lng: 44.181, country: "Irak", prov: "Hakkari" },
+  "Üzümlü": { lat: 37.243, lng: 43.561, country: "Irak", prov: "Hakkari" },
+  "Ceylanpınar": { lat: 36.845, lng: 40.043, country: "Suriye", prov: "Şanlıurfa" },
+  "Akçakale": { lat: 36.708, lng: 38.948, country: "Suriye", prov: "Şanlıurfa" },
+  "Çobanbey 🚂": { lat: 36.634, lng: 37.472, country: "Suriye", prov: "Gaziantep" },
+  "Mürşitpınar 🚂": { lat: 36.892, lng: 38.354, country: "Suriye", prov: "Şanlıurfa" },
+  "Karkamış": { lat: 36.830, lng: 38.006, country: "Suriye", prov: "Gaziantep" },
+  "Öncüpınar": { lat: 36.633, lng: 37.110, country: "Suriye", prov: "Kilis" },
+  "Zeytindalı": { lat: 36.671, lng: 36.690, country: "Suriye", prov: "Hatay" },
+  "Yayladağı": { lat: 35.901, lng: 36.007, country: "Suriye", prov: "Hatay" }
 };
 const countryColors = { "Bulgaristan":"#3b82f6","Yunanistan":"#ec4899","Gürcistan":"#eab308","Ermenistan":"#f97316","İran":"#a855f7","Irak":"#14b8a6","Suriye":"#10b981","Nahçıvan":"#06b6d4" };
 
 /* =====================================================================
-   YENİ MOD: TURİSTİK YERLER (Şehirlere Göre)
+   TURİSTİK YERLER (Şehirlere Göre)
 ===================================================================== */
 const touristData = {
   "Adana": ["Akyatan Lagünü - Büyük Kuş Cenneti", "Taş Köprü - Antik Roma Köprüsü", "Tekir Yaylası - Serin Çam Ormanları", "Varda Köprüsü - Tarihi Alman Köprüsü", "Yılankale - Şahmeran Efsanesi Kalesi", "Yumurtalık Lagünü - Doğal Sit Alanı"],
@@ -873,6 +804,43 @@ const touristData = {
   "Yozgat": ["Alişar Höyüğü - Antik Yerleşim Alanı", "Kazankaya Kanyonu - Görkemli Nehir Kanyonu", "Yozgat Çamlığı - İlk Milli Park"],
   "Zonguldak": ["Cehennemağzı Mağaraları - Mitolojik Yeraltı Mağarası", "Zonguldak Maden Müzesi - Tarihi Endüstri Müzesi"]
 };
+/* =====================================================================
+   BARAJLAR VE YUMUŞATILMIŞ GEOJSON AKARSULAR (LineString)
+===================================================================== */
+const damsData = {
+  "Fırat": ["Atatürk", "Keban", "Karakaya", "Birecik", "Karkamış"],
+  "Dicle": ["Veysel Eroğlu (Ilısu)", "Devegeçidi", "Kıralkızı", "Dicle"],
+  "Kızılırmak": ["Hirfanlı", "Kesikköprü", "Altınkaya", "Kapulukaya"],
+  "Yeşilırmak": ["Almus", "H. ve S. Uğurlu", "Kılıçkaya"],
+  "Sakarya": ["Gökçekaya", "Sarıyar", "Kargı"],
+  "Çoruh": ["Deriner", "Yusufeli", "Borçka", "Muratlı"],
+  "Seyhan": ["Seyhan", "Çatalan", "Mentaş", "Yedigöze"],
+  "Ceyhan": ["Aslantaş", "Menzelet", "Berke", "Sır", "Kılavuzlu"],
+  "Göksu": ["Kayraktepe", "Silifke", "Ermenek", "Gezende"],
+  "Manavgat": ["Oymapınar", "Manavgat Brj"],
+  "Büyük Menderes": ["Kemer", "Adıgüzel", "Cindere"],
+  "Gediz": ["Demirköprü"],
+  "Murat": ["Alparslan I", "Alparslan II"]
+};
+
+const riversGeoJSON = {
+  "type": "FeatureCollection",
+  "features": [
+    { "type": "Feature", "properties": { "name": "Fırat" }, "geometry": { "type": "LineString", "coordinates": [[39.8, 39.7], [39.2, 39.2], [38.8, 38.7], [38.3, 38.4], [38.1, 38.1], [38.4, 37.8], [38.0, 37.2], [37.9, 36.8]] } },
+    { "type": "Feature", "properties": { "name": "Dicle" }, "geometry": { "type": "LineString", "coordinates": [[39.5, 38.5], [40.0, 37.8], [41.0, 37.5], [42.0, 37.2], [42.5, 37.1]] } },
+    { "type": "Feature", "properties": { "name": "Kızılırmak" }, "geometry": { "type": "LineString", "coordinates": [[38.3, 39.9], [37.0, 39.5], [35.5, 38.7], [34.8, 38.7], [34.0, 39.2], [33.5, 39.8], [34.2, 40.6], [35.0, 41.1], [36.0, 41.7]] } },
+    { "type": "Feature", "properties": { "name": "Yeşilırmak" }, "geometry": { "type": "LineString", "coordinates": [[37.5, 40.0], [36.5, 40.5], [35.5, 40.8], [36.5, 41.2]] } },
+    { "type": "Feature", "properties": { "name": "Sakarya" }, "geometry": { "type": "LineString", "coordinates": [[31.0, 38.8], [32.0, 39.5], [31.0, 40.5], [30.5, 41.1]] } },
+    { "type": "Feature", "properties": { "name": "Çoruh" }, "geometry": { "type": "LineString", "coordinates": [[40.5, 40.2], [41.5, 40.8], [41.8, 41.2], [41.6, 41.6]] } },
+    { "type": "Feature", "properties": { "name": "Seyhan" }, "geometry": { "type": "LineString", "coordinates": [[35.5, 38.2], [35.0, 37.5], [35.3, 37.0], [34.9, 36.7]] } },
+    { "type": "Feature", "properties": { "name": "Ceyhan" }, "geometry": { "type": "LineString", "coordinates": [[37.0, 38.0], [36.5, 37.5], [36.0, 37.0], [35.5, 36.6]] } },
+    { "type": "Feature", "properties": { "name": "Göksu" }, "geometry": { "type": "LineString", "coordinates": [[33.0, 37.0], [33.5, 36.5], [34.0, 36.3]] } },
+    { "type": "Feature", "properties": { "name": "Manavgat" }, "geometry": { "type": "LineString", "coordinates": [[32.0, 37.2], [31.5, 36.8], [31.4, 36.7]] } },
+    { "type": "Feature", "properties": { "name": "Büyük Menderes" }, "geometry": { "type": "LineString", "coordinates": [[30.0, 38.1], [29.0, 38.0], [28.0, 37.8], [27.2, 37.5]] } },
+    { "type": "Feature", "properties": { "name": "Gediz" }, "geometry": { "type": "LineString", "coordinates": [[29.5, 39.0], [28.5, 38.6], [27.5, 38.6], [26.9, 38.5]] } },
+    { "type": "Feature", "properties": { "name": "Murat" }, "geometry": { "type": "LineString", "coordinates": [[43.0, 39.5], [41.5, 39.0], [40.0, 38.7], [39.0, 38.7]] } }
+  ]
+};
 
 /* =====================================================================
    OYUN MODLARI
@@ -881,6 +849,7 @@ const GAME_MODES = [
   { id:'timeAttack', emoji:'⏳', name:'Zamana Karşı', desc:'60 saniyelik süre baskısıyla bilgini test et.' },
   { id:'classic', emoji:'🗺️', name:'Klasik Eşleştirme', desc:'Zaman baskısı yok, tek tek ögeleri haritada bul.' },
   { id:'tourist', emoji:'🏛️', name:'Turistik Şehirler', desc:'Karttaki tüm turistik yerleri oku, hangi şehir olduğunu bul.' },
+  { id:'dams', emoji:'🌊', name:'Barajlar & Akarsular', desc:'Baraj isimlerini oku, üzerindeki akarsuyu haritada işaretle.' },
   { id:'atlas', emoji:'📖', name:'Keşif & Atlas', desc:'Serbest mod. İle tıkla, tüm bilgileri rahatça öğren.' }
 ];
 
@@ -979,7 +948,7 @@ function renderMenu(){
   const earned=store.badges.length;
   heroStats.innerHTML = `
     <div class="hero-pill">🏅 Rozet: <val>${earned}/${BADGE_DEFS.length}</val></div>
-    <div class="hero-pill">📚 ${rawItems.length} Doğal Öğe & ${Object.keys(touristData).length} Turistik Şehir</div>
+    <div class="hero-pill">📚 ${rawItems.length} Doğal Öğe & ${Object.keys(touristData).length} Şehir & ${Object.keys(damsData).length} Akarsu</div>
   `;
 
   const modeGrid=document.getElementById('modeGrid');
@@ -1016,9 +985,8 @@ function renderMenu(){
     catGrid.appendChild(chip);
   });
   
-  // Sadece turistik mod seçilmemişse kategorileri göster
   const catTitle = document.querySelectorAll('.section-title')[1];
-  if(selectedMode === 'tourist' || selectedMode === 'atlas') {
+  if(selectedMode === 'tourist' || selectedMode === 'atlas' || selectedMode === 'dams') {
      catGrid.style.display = 'none'; catTitle.style.display = 'none';
   } else {
      catGrid.style.display = 'flex'; catTitle.style.display = 'flex';
@@ -1041,12 +1009,17 @@ document.getElementById('startGameBtn').addEventListener('click', ()=>startGame(
    OYUN MOTORU
 ===================================================================== */
 let map, provinceLayers=[], borderMarkers={}, activePopup=null, currentTileKey='dark', tileLayers={}, currentHighlightedRegion="";
+let riverMapLayer = null; // Akarsular için Leaflet Katmanı
 
 function buildItemPool(cats, mode){
   if (mode === 'tourist') {
-     // Turistik Yerler için JSON'dan yeni item seti oluştur
      return Object.keys(touristData).map(city => {
          return ["Turistik", "Turistik Yerler", [city], touristData[city]];
+     });
+  }
+  if (mode === 'dams') {
+     return Object.keys(damsData).map(river => {
+         return ["Baraj", river, [river], damsData[river]];
      });
   }
   if(!(cats.size===1 && cats.has('all'))){
@@ -1095,35 +1068,32 @@ function startGame(mode, cats){
 
 function setupHudForMode(mode){
   document.querySelector('.timerPill').style.display = mode==='timeAttack' ? 'flex' : 'none';
-  document.getElementById('jokerFifty').style.display = mode==='atlas' ? 'none' : 'flex';
-  document.getElementById('jokerRadar').style.display = mode==='atlas' ? 'none' : 'flex';
+  document.getElementById('jokerFifty').style.display = (mode==='atlas' || mode==='dams') ? 'none' : 'flex';
+  document.getElementById('jokerRadar').style.display = (mode==='atlas' || mode==='dams') ? 'none' : 'flex';
   updateJokerUI();
   
   const searchRow = document.getElementById('searchCatsRow');
   const catFilters = document.querySelectorAll('.filter-btn');
   if(mode === 'atlas') {
      searchRow.style.display = 'none';
-  } else if (mode === 'tourist') {
+  } else if (mode === 'tourist' || mode === 'dams') {
      searchRow.style.display = 'flex';
-     catFilters.forEach(b => b.style.display = 'none'); // Sadece aramayı göster, kategorileri gizle
+     catFilters.forEach(b => b.style.display = 'none'); 
   } else {
      searchRow.style.display = 'flex';
      catFilters.forEach(b => b.style.display = 'inline-block');
   }
   
-  // -- EKLENEN KISIM: Turistik Mod Düzeni --
   const mainArea = document.getElementById('game-main-area');
-  if(mode === 'tourist') {
+  if(mode === 'tourist' || mode === 'dams') {
       mainArea.classList.add('tourist-layout');
   } else {
       mainArea.classList.remove('tourist-layout');
   }
-  
-  // Leaflet haritası kapsayıcı boyutları değiştiği için güncellemeye ihtiyaç duyar. 
+
   if(typeof map !== 'undefined' && map) {
       setTimeout(() => map.invalidateSize(), 350); 
   }
-  // ----------------------------------------
 
   document.getElementById('atlasPanel').style.display = 'none';
   document.getElementById('atlasHint').style.display = mode==='atlas' ? 'block' : 'none';
@@ -1139,10 +1109,15 @@ function updateJokerUI(){
 }
 
 function resetMapState(){
+  if(!map) return;
   Object.values(borderMarkers).forEach(m=>map.removeLayer(m)); borderMarkers={};
   provinceLayers.forEach(l=>{ l.unbindTooltip(); map.removeLayer(l); }); provinceLayers=[];
+  if(riverMapLayer) { map.removeLayer(riverMapLayer); riverMapLayer = null; }
+  
   map.eachLayer(l=>{ if(l instanceof L.Marker || (l._path && l.options && l.options.className==='matched-dot')) { try{map.removeLayer(l);}catch(e){} } });
-  addGeoJsonLayer(); renderBorderPoints();
+  addGeoJsonLayer(); 
+  renderBorderPoints();
+  if(selectedMode === 'dams') addRiversLayer();
 }
 
 function initMap(){
@@ -1151,23 +1126,39 @@ function initMap(){
   tileLayers.dark=L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}{r}.png',{maxZoom:10,subdomains:'abcd'});
   tileLayers.topo=L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png',{maxZoom:17,subdomains:'abc'});
   tileLayers.dark.addTo(map);
-  addGeoJsonLayer(); renderBorderPoints();
+  addGeoJsonLayer(); 
+  renderBorderPoints();
+  if(selectedMode === 'dams') addRiversLayer();
 }
 
 function addGeoJsonLayer(){
   try{
     if(typeof turkeyGeoJSON==='undefined') return;
     const isMobile=window.innerWidth<=1000;
+    
+    // Baraj modunda illeri daha soluk yapıyoruz ki akarsular öne çıksın
+    const baseOpacity = selectedMode === 'dams' ? 0.3 : 0.65;
+    const baseColor = selectedMode === 'dams' ? '#0f172a' : '#1e293b';
+    
     const geoJsonLayer=L.geoJSON(turkeyGeoJSON,{
-      style:()=>({color:'rgba(255,255,255,0.18)', weight:1.2, fillColor:'#1e293b', fillOpacity:0.65}),
+      style:()=>({color:'rgba(255,255,255,0.18)', weight:1.2, fillColor:baseColor, fillOpacity:baseOpacity}),
       onEachFeature:(feature,layer)=>{
         const name=getProvinceName(feature.properties);
         layer.provinceName=name; provinceLayers.push(layer);
+        
+        // Baraj modunda il isimlerini gizleyebiliriz ama CSS 'hide-labels' bunu zaten kontrol ediyor.
         layer.bindTooltip(name,{permanent:true, direction:'center', className:'province-label', opacity:0.95});
-        layer.on('mouseover', ()=>{ if((selectedItem!==null) && selectedMode!=='atlas'){ layer.setStyle({fillColor:'#6366f1', fillOpacity:0.8, weight:2}); } });
+        
+        layer.on('mouseover', ()=>{ 
+            if(selectedItem!==null && selectedMode!=='atlas' && selectedMode!=='dams'){ 
+                layer.setStyle({fillColor:'#6366f1', fillOpacity:0.8, weight:2}); 
+            } 
+        });
         layer.on('mouseout', ()=> updateProvinceStyle(layer));
         layer.on('click', (e)=>{
           if(selectedMode==='atlas'){ showAtlasInfo(name); return; }
+          // Baraj modundayken illere tıklama işlem yapmasın
+          if(selectedMode==='dams') return;
           if(selectedItem!==null && items[selectedItem][0]!=='Sınır Kapısı'){ attemptMatch(selectedItem, layer, e.latlng); }
         });
       }
@@ -1175,6 +1166,33 @@ function addGeoJsonLayer(){
     map.fitBounds(geoJsonLayer.getBounds(), {padding:isMobile?[5,5]:[10,10]});
   }catch(err){ console.error(err); }
 }
+
+function addRiversLayer() {
+    riverMapLayer = L.geoJSON(riversGeoJSON, {
+        style: {
+            color: '#38bdf8',
+            weight: 4,
+            opacity: 0.85,
+            lineJoin: 'round',    // Akarsuların yumuşak/kıvrımlı durmasını sağlar
+            lineCap: 'round',
+            className: 'river-line'
+        },
+        onEachFeature: (feature, layer) => {
+            const riverName = feature.properties.name;
+            layer.bindTooltip(`📍 ${riverName}`, { direction: 'top', sticky: true, opacity: 0.9, className: 'river-tooltip' });
+            
+            layer.on('click', (e) => {
+                if(selectedItem !== null && selectedMode === 'dams') {
+                    attemptMatchRiver(selectedItem, riverName, layer, e.latlng);
+                }
+            });
+        }
+    }).addTo(map);
+    
+    // Nehirlerin il katmanlarının üzerinde kalmasını sağla
+    riverMapLayer.bringToFront();
+}
+
 
 function toggleTileLayer(){
   if(!map) return;
@@ -1188,6 +1206,10 @@ function toggleTileLayer(){
 }
 
 function updateProvinceStyle(layer){
+  if(selectedMode === 'dams') {
+      layer.setStyle({fillColor:'#0f172a', fillOpacity:0.3, weight:1.2, color:'rgba(255,255,255,0.18)'});
+      return;
+  }
   if(currentHighlightedRegion && developmentProjects[currentHighlightedRegion]){
     if(developmentProjects[currentHighlightedRegion].some(p=>norm(p)===norm(layer.provinceName))){
       layer.setStyle({fillColor:'#10b981', fillOpacity:0.85, weight:2, color:'#34d399'}); return;
@@ -1204,10 +1226,13 @@ function renderBorderPoints(){
     marker.gateName=gateName; borderMarkers[gateName]=marker;
     marker.on('click', ()=>{
       if(selectedMode==='atlas'){ showAtlasInfo(null, gateName); return; }
+      // Baraj modundayken tıklanmasın
+      if(selectedMode==='dams') return;
       if(selectedItem!==null) attemptMatch(selectedItem, null, [data.lat,data.lng], gateName);
     });
   });
 }
+
 
 function showAtlasInfo(provinceName, gateName){
   const panel=document.getElementById('atlasBody');
@@ -1222,7 +1247,6 @@ function showAtlasInfo(provinceName, gateName){
   title.textContent=provinceName;
   let html='';
   
-  // Turistik Yerler Atlası
   if (touristData[provinceName]) {
       html += `<div class="atlas-group"><div class="atlas-group-title">Turistik Yerler</div>`;
       touristData[provinceName].forEach(p => {
@@ -1236,7 +1260,6 @@ function showAtlasInfo(provinceName, gateName){
       html += `</div>`;
   }
 
-  // Diğer Özellikler
   const relevant=rawItems.filter(it=> it[2].some(p=>norm(p)===norm(provinceName)) );
   if(relevant.length > 0){
       const groups={}; relevant.forEach(it=>{ (groups[it[0]]=groups[it[0]]||[]).push(it); });
@@ -1258,9 +1281,9 @@ function selectNextAvailableCard(){
   const availableIndices=[];
   items.forEach((x,idx)=>{
     if(!matched.has(idx)){
-      if(selectedMode !== 'tourist' && activeCat!=='all' && x[0]!==activeCat) return;
+      if(selectedMode !== 'tourist' && selectedMode !== 'dams' && activeCat!=='all' && x[0]!==activeCat) return;
       if(searchQuery) {
-          if (x[0] === 'Turistik') {
+          if (x[0] === 'Turistik' || x[0] === 'Baraj') {
               const match = x[3].some(p => norm(p).includes(norm(searchQuery))) || norm(x[2][0]).includes(norm(searchQuery));
               if(!match) return;
           } else {
@@ -1281,9 +1304,9 @@ function renderCards(){
   container.innerHTML='';
   items.forEach((x,i)=>{
     if(matched.has(i)) return;
-    if(selectedMode !== 'tourist' && activeCat!=='all' && x[0]!==activeCat) return;
+    if(selectedMode !== 'tourist' && selectedMode !== 'dams' && activeCat!=='all' && x[0]!==activeCat) return;
     if(searchQuery) {
-          if (x[0] === 'Turistik') {
+          if (x[0] === 'Turistik' || x[0] === 'Baraj') {
               const match = x[3].some(p => norm(p).includes(norm(searchQuery))) || norm(x[2][0]).includes(norm(searchQuery));
               if(!match) return;
           } else {
@@ -1297,15 +1320,15 @@ function renderCards(){
 
     let hintHTML='';
     if(wrongCounts[i]>=3){
-      const detail = x[0] === 'Turistik' ? 'Bu şehir: ' + x[2][0] : (x[3] ? `${x[3]} (${x[2].join('/')})` : x[2].join(' / '));
+      const detail = (x[0] === 'Turistik' || x[0] === 'Baraj') ? 'Cevap: ' + x[2][0] : (x[3] ? `${x[3]} (${x[2].join('/')})` : x[2].join(' / '));
       hintHTML=`<div class="card-hint-text">💡 İpucu: ${detail}</div>`;
     }
 
-    // Turistik Yerler Özel Kart Görünümü
-    if (x[0] === 'Turistik') {
-        const places = x[3];
+    // Turistik ve Baraj Modeli Özel Kart Görünümü
+    if (x[0] === 'Turistik' || x[0] === 'Baraj') {
+        const listItems = x[3];
         let listHTML = '<ul class="tourist-ul">';
-        places.forEach(p => {
+        listItems.forEach(p => {
            let parts = p.split(' - ');
            if(parts.length > 1) {
               listHTML += `<li><strong>${parts[0]}</strong><span class="tourist-place-desc">${parts.slice(1).join(' - ')}</span></li>`;
@@ -1315,10 +1338,13 @@ function renderCards(){
         });
         listHTML += '</ul>';
         
-        card.innerHTML = `<span class="tag tag-tourist">🏛️ Turistik</span><div class="tourist-city-title"></div>${listHTML}${hintHTML}`;
+        const isDam = x[0] === 'Baraj';
+        const tagIcon = isDam ? '🌊 Barajlar' : '🏛️ Turistik';
+        const tagBg = isDam ? '#3b82f6' : '#ec4899';
+        
+        card.innerHTML = `<span class="tag" style="background:${tagBg}">${tagIcon}</span><div class="tourist-city-title"></div>${listHTML}${hintHTML}`;
         card.classList.add('tourist-card');
     } else {
-        // Klasik Kart Görünümü
         let tagClass='tag-milli';
         if(x[0]==='Ramsar') tagClass='tag-ramsar';
         if(x[0]==='UNESCO') tagClass='tag-unesco';
@@ -1346,7 +1372,6 @@ function renderCards(){
 
   document.querySelectorAll('.score-val').forEach(el=>el.textContent=score);
   
-  // Kalan hesaplaması Kalkınma projesi de dahil netleştiriliyor
   let remainingTotal = 0;
   if(selectedMode === 'classic' || selectedMode === 'timeAttack') {
        items.forEach((it, idx) => {
@@ -1376,6 +1401,43 @@ function showMapPopup(latlng,message,type='success',duration=3000){
     .setLatLng(latlng).setContent(`<div class="${cssClass}">${icon} ${message}</div>`).openOn(map);
   setTimeout(()=>{ if(activePopup){ map.closePopup(activePopup); activePopup=null; } }, duration);
 }
+
+// BARAJLAR MODU (Nehir Eşleştirme)
+function attemptMatchRiver(itemIndex, clickedRiverName, layer, latlng) {
+    if(gameEnded) return;
+    const [cat, name, provs, extra] = items[itemIndex];
+    totalAttempts++;
+
+    // 'name' bizim aradığımız akarsuyun adı (karttaki veri)
+    if(norm(clickedRiverName) === norm(name)) {
+        totalCorrectAttempts++;
+        matched.add(itemIndex);
+        registerCorrect();
+        
+        // Akarsuyu doğru bilince yeşil ve sabit kalsın
+        layer.getElement().classList.add('matched');
+        
+        showMapPopup(latlng, `<b>Harika! 🌊</b><br><span style='color:#6ee7b7; font-size:13px;'>${name} Üzerindeki Barajlar</span>`, 'success', 2500);
+        
+        selectNextAvailableCard();
+        renderCards();
+        checkFastBadge();
+        if(matched.size === items.length) { setTimeout(()=>endGame('complete'), 800); }
+    } else {
+        combo=0; wrongCounts[itemIndex] = (wrongCounts[itemIndex]||0)+1; playWrongSound();
+        if(selectedMode==='timeAttack') adjustTimeAttack(-5);
+        const cardEl = document.querySelector(`.card[data-i="${itemIndex}"]`);
+        if(cardEl) { cardEl.classList.add('wrong-shake'); setTimeout(()=>cardEl.classList.remove('wrong-shake'), 400); }
+
+        if(wrongCounts[itemIndex]>=3) {
+            showMapPopup(latlng, `Yanlış!<br>💡 İpucu: Aranan akarsu "${name}" idi.`, 'danger', 3000);
+        } else {
+            showMapPopup(latlng, `Yanlış Akarsu (${clickedRiverName}). Tekrar dene!`, 'danger', 2000);
+        }
+        renderCards();
+    }
+}
+
 
 function attemptMatch(itemIndex, layer, latlng, hitGateName=null){
   if(gameEnded) return;
@@ -1407,29 +1469,38 @@ function attemptMatch(itemIndex, layer, latlng, hitGateName=null){
       L.marker(latlng,{icon:L.divIcon({className:'matched-dot',iconSize:[12,12],iconAnchor:[6,6]}), interactive:false})
         .addTo(map).bindTooltip(`${name} (${matchedProvReal})`, {direction:'top', offset:[0,-6]});
       const remaining=provs.length-foundSet.size;
+      
       if(remaining===0){
         matched.add(itemIndex);
-        showMapPopup(latlng, `Tebrikler! ${name} projesinin TÜM şehirlerini tamamladınız!`, 'success', 3000);
+        showMapPopup(latlng, `<b>Tebrikler! 👏</b><br><span style='color:#6ee7b7; font-size:13px;'>${name}</span><br><span style='font-size:10px;opacity:0.85;'>Projesinin TÜM şehirlerini tamamladınız!</span>`, 'success', 3500);
         selectNextAvailableCard();
-      } else { showMapPopup(latlng, `Doğru! ${matchedProvReal} (${name}). Kalan: ${remaining}`, 'success', 2000); }
+      } else { 
+        showMapPopup(latlng, `<b>Doğru! ✨</b><br><span style='color:#6ee7b7; font-size:13px;'>${matchedProvReal}</span><br><span style='font-size:10px;opacity:0.85;'>Proje: ${name}<br>Kalan Şehir: ${remaining}</span>`, 'success', 2500); 
+      }
+      
     } else {
       matched.add(itemIndex); registerCorrect();
-      
+        
       if(cat==='Sınır Kapısı' && borderMarkers[name]){
         const marker=borderMarkers[name]; const color=countryColors[extra]||'#10b981';
         marker.setStyle({fillColor:color, color:'#ffffff', radius:8});
         marker.bindTooltip(`<b>${name}</b> (${extra} - ${provs[0]})`, {direction:'top', offset:[0,-8]});
-        showMapPopup(latlng, `Doğru! ${name} → ${extra} (${provs[0]})`, 'success', 2000);
+        
+        showMapPopup(latlng, `<b>Doğru Kapı! ✨</b><br><span style='color:#6ee7b7; font-size:13px;'>${name}</span><br><span style='font-size:10px;opacity:0.85;'>📍 İl: ${provs[0]}<br>🌍 Sınır: ${extra}</span>`, 'success', 3500);
+        
       } else if (cat==='Turistik') {
         L.marker(latlng,{icon:L.divIcon({className:'matched-dot',iconSize:[12,12],iconAnchor:[6,6]}), interactive:false})
           .addTo(map).bindTooltip(provs[0], {direction:'top', offset:[0,-6]});
         layer.setStyle({fillColor:'#ec4899', fillOpacity:0.85, weight:2});
-        showMapPopup(latlng, `Harika! Aranan Şehir: ${provs[0]} 🏛️`, 'success', 2000);
+        
+        showMapPopup(latlng, `<b>Harika! 🏛️</b><br><span style='color:#6ee7b7; font-size:13px;'>Şehir: ${provs[0]}</span>`, 'success', 2500);
+        
       } else if(layer){
         L.marker(latlng,{icon:L.divIcon({className:'matched-dot',iconSize:[12,12],iconAnchor:[6,6]}), interactive:false})
           .addTo(map).bindTooltip(name, {direction:'top', offset:[0,-6]});
         layer.setStyle({fillColor:'#10b981', fillOpacity:0.85, weight:2});
-        showMapPopup(latlng, `Doğru! ${name} → ${layer.provinceName}`, 'success', 2000);
+        
+        showMapPopup(latlng, `<b>Doğru Eşleşme! ✨</b><br><span style='color:#6ee7b7; font-size:13px;'>${name}</span><br><span style='font-size:10px;opacity:0.85;'>Kategori: ${cat}<br>İl: ${layer.provinceName}</span>`, 'success', 3500);
       }
       selectNextAvailableCard();
     }
@@ -1471,42 +1542,6 @@ function awardBadge(id){
   if(store.badges.includes(id)) return;
   store.badges.push(id); saveStore(store); sessionNewBadges.push(id); playBadgeSound();
 }
-
-/* ============ JOKERLER ============ */
-document.getElementById('jokerFifty').addEventListener('click', ()=>{
-  if(jokers.fifty<=0 || selectedItem===null || selectedMode==='atlas') return;
-  jokers.fifty--; updateJokerUI();
-  const item=items[selectedItem]; const provs=item[2];
-  if(provinceLayers.length===0) return;
-  const targetLayers=provinceLayers.filter(l=>provs.some(p=>norm(p)===norm(l.provinceName)));
-  if(targetLayers.length===0) return;
-  const centers=targetLayers.map(l=>l.getBounds().getCenter());
-  const avgLat=centers.reduce((s,c)=>s+c.lat,0)/centers.length, avgLng=centers.reduce((s,c)=>s+c.lng,0)/centers.length;
-  const dists=provinceLayers.map(l=>({l, d:Math.hypot(l.getBounds().getCenter().lat-avgLat, l.getBounds().getCenter().lng-avgLng)}));
-  dists.sort((a,b)=>a.d-b.d);
-  const keepCount=Math.max(10, Math.round(provinceLayers.length*0.35));
-  dists.forEach((entry,idx)=>{ if(idx>=keepCount){ entry.l.setStyle({fillOpacity:0.12, fillColor:'#0f172a'}); } });
-  setTimeout(()=>{ provinceLayers.forEach(l=>updateProvinceStyle(l)); }, 6000);
-});
-
-document.getElementById('jokerRadar').addEventListener('click', ()=>{
-  if(jokers.radar<=0 || selectedItem===null || selectedMode==='atlas') return;
-  jokers.radar--; updateJokerUI();
-  const item=items[selectedItem]; const [cat,name,provs]=item;
-  let center=null;
-  if(cat==='Sınır Kapısı' && borderGateCoords[name]){ center=[borderGateCoords[name].lat, borderGateCoords[name].lng]; }
-  else{
-    const targetLayers=provinceLayers.filter(l=>provs.some(p=>norm(p)===norm(l.provinceName)));
-    if(targetLayers.length===0) return;
-    const c=targetLayers[0].getBounds().getCenter(); center=[c.lat,c.lng];
-  }
-  const circle=L.circle(center,{radius:60000, color:'#38bdf8', fillColor:'#38bdf8', fillOpacity:0.25, weight:2}).addTo(map);
-  let pulses=0;
-  const pulseInt=setInterval(()=>{
-    pulses++; circle.setStyle({fillOpacity: pulses%2===0?0.25:0.05});
-    if(pulses>=8){ clearInterval(pulseInt); map.removeLayer(circle); }
-  }, 400);
-});
 
 /* ============ ZAMAN MODU ============ */
 function startTimeAttack(){
@@ -1561,6 +1596,7 @@ function endGame(reason){
     .map(([idx,count])=>{
         let nameToDisplay = items[idx][1];
         if (items[idx][0] === 'Turistik') nameToDisplay = `Turistik Yerler (${items[idx][2][0]})`;
+        if (items[idx][0] === 'Baraj') nameToDisplay = `Barajlar (${items[idx][2][0]} Akarsuyu)`;
         return {name:nameToDisplay, cat:items[idx][0], count};
     });
     
@@ -1607,9 +1643,9 @@ function buildPrintNote(weakEntries, accuracy, mm, ss){
     let subject = it[1];
     let detail = it[3] ? `${it[3]} — ${it[2].join(' / ')}` : it[2].join(' / ');
     
-    if (it[0] === 'Turistik') {
-        subject = 'Turistik: ' + it[3].map(p=>p.split(' - ')[0]).join(', ');
-        detail = it[2][0]; // Sadece şehir adını doğru cevap yap
+    if (it[0] === 'Turistik' || it[0] === 'Baraj') {
+        subject = it[0] + ': ' + it[3].map(p=>p.split(' - ')[0]).join(', ');
+        detail = it[2][0];
     }
     
     rows += `<tr><td style="padding:8px;border:1px solid #ccc;">${subject}</td><td style="padding:8px;border:1px solid #ccc;">${it[0]}</td><td style="padding:8px;border:1px solid #ccc;">${detail}</td><td style="padding:8px;border:1px solid #ccc;">${count}</td></tr>`;
