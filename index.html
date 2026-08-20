@@ -384,13 +384,15 @@ body.kpss-faint .leaflet-interactive{ opacity:0.55; }
   
   /* MOBİL + SADECE TURİSTİK MOD:
      Kartları kısa tutuyoruz; haritaya mümkün olduğunca fazla alan bırakıyoruz. */
+  /* MOBİL + SADECE TURİSTİK MOD:
+     Kartlar dikey kaydırılabilir, haritaya geniş alan bırakır. */
   #game-main-area.tourist-layout {
     flex-direction: column;
   }
   #game-main-area.tourist-layout #cards-wrapper {
     width: 100%;
-    height: 132px;
-    max-height: 132px;
+    height: 140px;
+    max-height: 140px;
     border-left: none;
     border-bottom: 2px solid rgba(99,102,241,0.12);
     flex-shrink: 0;
@@ -401,82 +403,73 @@ body.kpss-faint .leaflet-interactive{ opacity:0.55; }
     overflow-y: hidden;
     height: 100%;
     padding: 6px 8px 8px;
-    gap: 7px;
+    gap: 8px;
     align-items: stretch;
     -webkit-mask-image: linear-gradient(to right, black 94%, transparent 100%);
     mask-image: linear-gradient(to right, black 94%, transparent 100%);
   }
-
-  /* Şehir adı mobilde görünür; masaüstü görünümü etkilenmez. */
   #game-main-area.tourist-layout .tourist-city-title {
-    display: block;
-    font-size: 10px;
-    line-height: 1.15;
-    font-weight: 800;
-    color: #f8fafc;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    margin-bottom: 2px;
+    display: none;
   }
-
   #game-main-area.tourist-layout .card.tourist-card {
-    min-width: 158px;
-    max-width: 158px;
-    width: 158px;
-    height: 118px;
-    max-height: 118px;
+    min-width: 165px;
+    max-width: 165px;
+    width: 165px;
+    height: 100%;
+    max-height: 100%;
     padding: 6px 7px;
     margin-bottom: 0;
     gap: 3px;
     border-radius: 9px;
+    display: flex;
+    flex-direction: column;
   }
-
   #game-main-area.tourist-layout .tourist-ul {
-    gap: 2px;
-    overflow: hidden;
-    padding-right: 0;
+    gap: 3px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding-right: 2px;
+    flex: 1;
+    touch-action: pan-y;
+    -webkit-overflow-scrolling: touch;
   }
-
+  #game-main-area.tourist-layout .tourist-ul::-webkit-scrollbar {
+    width: 3px;
+  }
+  #game-main-area.tourist-layout .tourist-ul::-webkit-scrollbar-thumb {
+    background: rgba(255,255,255,0.2);
+    border-radius: 3px;
+  }
   #game-main-area.tourist-layout .tourist-ul li {
-    min-height: 17px;
-    padding: 2px 4px;
+    min-height: auto;
+    padding: 3px 5px;
     border-radius: 4px;
-    font-size: 8px;
-    line-height: 1.15;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    font-size: 9px;
+    line-height: 1.2;
+    white-space: normal;
+    word-break: break-word;
+    flex-shrink: 0;
   }
-
   #game-main-area.tourist-layout .tourist-ul li strong {
     display: inline;
-    font-size: 8.5px;
+    font-size: 9px;
     margin: 0;
     color: #38bdf8;
   }
-
-  #game-main-area.tourist-layout .tourist-ul li strong::after {
-    content: " — ";
-    color: #64748b;
-  }
-
-  /* Açıklamalar mobilde gizli: sadece yer isimleri kalıyor. */
   #game-main-area.tourist-layout .tourist-place-desc {
     display: none;
   }
-
   #game-main-area.tourist-layout .tag {
-    font-size: 7px;
+    font-size: 7.5px;
     padding: 2px 5px;
   }
-
   #game-main-area.tourist-layout .card-hint-text {
     font-size: 7.5px;
     padding: 2px 4px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    flex-shrink: 0;
   }
   
 }
