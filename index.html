@@ -174,7 +174,7 @@ button{font-family:inherit;}
 }
 .filter-btn.active{ background:linear-gradient(135deg,var(--accent),#7c3aed); color:#fff; border-color:var(--accent); }
 
-/* ============ YENİ EKLENEN LAYOUT SİSTEMİ ============ */
+/* ============ LAYOUT SİSTEMİ ============ */
 #game-main-area {
   display: flex;
   flex-direction: column;
@@ -189,7 +189,7 @@ button{font-family:inherit;}
   z-index: 15;
 }
 
-/* Turistik ve Baraj Mod İçin Özel Sağ Panel Görünümü */
+/* Turistik, Baraj İçin Özel Sağ Panel Görünümü */
 #game-main-area.tourist-layout {
   flex-direction: row-reverse;
 }
@@ -230,13 +230,13 @@ button{font-family:inherit;}
 .tag{ font-size:8.5px; font-weight:800; text-transform:uppercase; padding:2px 6px; border-radius:4px; color:#fff; width:fit-content; letter-spacing:.4px; flex-shrink:0; }
 .tag-milli{background:var(--cat-milli);} .tag-ramsar{background:var(--cat-ramsar);} .tag-unesco{background:var(--cat-unesco);}
 .tag-ticaret{background:var(--cat-ticaret);} .tag-kapi{background:var(--cat-kapi);} .tag-cittaslow{background:var(--cat-cittaslow);}
-.tag-kalkinma{background:var(--cat-kalkinma); color:#0f172a;} .tag-tourist{background:#ec4899;}
+.tag-kalkinma{background:var(--cat-kalkinma); color:#0f172a;} .tag-tourist{background:#ec4899;} .tag-gulf{background:#0284c7;}
 
 .card-title{ font-size:12px; font-weight:700; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
 .card-progress{ font-size:9.5px; color:#38bdf8; font-weight:700; }
 .card-hint-text{ font-size:9.5px; color:#fca5a5; background:rgba(239,68,68,.15); padding:3px 6px; border-radius:4px; margin-top:auto;}
 
-/* Turistik ve Baraj Yerler Özel Kart Modeli */
+/* Turistik, Baraj Yerler Özel Kart Modeli */
 .card.tourist-card {
   min-width: 250px;
   max-width: 280px;
@@ -284,9 +284,10 @@ body.kpss-faint .leaflet-interactive{ opacity:0.55; }
 .popup-success{ color:#34d399; } .popup-danger{ color:#f87171; }
 .matched-dot{ width:12px; height:12px; border-radius:50%; background:#10b981; border:2px solid #fff; box-shadow:0 0 8px rgba(16,185,129,.8); }
 
-/* Nehir Vektör Efektleri */
-.river-line { transition: stroke-width 0.2s ease, stroke 0.2s ease; cursor: pointer; }
-.river-line:hover { stroke-width: 8px !important; stroke: #60a5fa !important; filter: drop-shadow(0 0 4px rgba(96,165,250,0.8)); }
+/* Nehir Vektör Efektleri - Güncellendi */
+.river-hitbox { cursor: pointer; }
+.river-line { transition: stroke-width 0.2s ease, stroke 0.2s ease; pointer-events: none; }
+.river-line.river-hover { stroke-width: 8px !important; stroke: #60a5fa !important; filter: drop-shadow(0 0 4px rgba(96,165,250,0.8)); }
 .river-line.matched { stroke: #10b981 !important; stroke-width: 6px !important; pointer-events: none; }
 
 .atlas-panel{
@@ -719,6 +720,45 @@ const borderGateCoords = {
 const countryColors = { "Bulgaristan":"#3b82f6","Yunanistan":"#ec4899","Gürcistan":"#eab308","Ermenistan":"#f97316","İran":"#a855f7","Irak":"#14b8a6","Suriye":"#10b981","Nahçıvan":"#06b6d4" };
 
 /* =====================================================================
+   KÖRFEZLER (Kirli/Temiz Durumu ve KPSS Notları)
+===================================================================== */
+const gulfsData = [
+  { name: "Saros Körfezi", status: "Temiz", info: "Güçlü dip akıntılarıyla kendi kendini temizleyebilen nadir körfezlerden." },
+  { name: "Edremit Körfezi", status: "Kirli", info: "Zeytinyağı ve sabun endüstrisi atıkları zaman zaman kirlilik yaratır." },
+  { name: "Çandarlı Körfezi", status: "Kirli", info: "İzmir'in kuzeyinde, Aliağa rafinerisi ve sanayi tesisleri kirlilik nedenidir." },
+  { name: "İzmir Körfezi", status: "Kirli", info: "Yoğun nüfus, liman ve sanayileşme nedeniyle kirlilik oranı yüksektir." },
+  { name: "Kuşadası Körfezi", status: "Kirli", info: "Turizm baskısı, yapılaşma ve evsel atıklar kirlilik riskini artırır." },
+  { name: "Güllük Körfezi", status: "Temiz", info: "Menteşe yöresinde yer alır, kültür balıkçılığının yoğun yapıldığı temiz bir alandır." },
+  { name: "Gökova Körfezi", status: "Temiz", info: "Doğal sit alanlarıyla korunan, sanayinin uğramadığı doğa harikası körfez." },
+  { name: "Fethiye Körfezi", status: "Temiz", info: "Turizmin can damarı, mavi yolculuk rotalarının temiz durağı." },
+  { name: "Antalya Körfezi", status: "Temiz", info: "Sanayinin az, turizm gelirinin çok olduğu devasa temiz körfez." },
+  { name: "Mersin Körfezi", status: "Kirli", info: "Serbest bölge, gelişmiş liman faaliyetleri ve sanayi tesisleri kirlilik sebebidir." },
+  { name: "İskenderun Körfezi", status: "Kirli", info: "Demir-çelik endüstrisi ve petrol boru hatları nedeniyle yoğun kirlilik yaşar." },
+  { name: "Erdek Körfezi", status: "Kirli", info: "Marmara'da, Kapıdağ Yarımadası güneyinde evsel atık ve turizm baskısı." },
+  { name: "Bandırma Körfezi", status: "Kirli", info: "Önemli bir ithalat-ihracat limanı ve sanayi tesisleri kirliliği artırır." },
+  { name: "Gemlik Körfezi", status: "Kirli", info: "Gübre ve suni ipek fabrikaları, güney Marmara sanayisinin denize yansımasıdır." },
+  { name: "İzmit Körfezi", status: "Kirli", info: "Türkiye'nin en yoğun sanayi kuşağı ve deniz trafiği nedeniyle en kirli körfezdir." }
+];
+
+const gulfCoords = {
+  "Saros Körfezi": { lat: 40.598, lng: 26.541 },
+  "Erdek Körfezi": { lat: 40.380, lng: 27.755 },
+  "Bandırma Körfezi": { lat: 40.395, lng: 27.978 },
+  "Gemlik Körfezi": { lat: 40.428, lng: 29.070 },
+  "İzmit Körfezi": { lat: 40.730, lng: 29.750 },
+  "Edremit Körfezi": { lat: 39.505, lng: 26.812 },
+  "Çandarlı Körfezi": { lat: 38.878, lng: 26.883 },
+  "İzmir Körfezi": { lat: 38.441, lng: 26.790 },
+  "Kuşadası Körfezi": { lat: 37.954, lng: 27.185 },
+  "Güllük Körfezi": { lat: 37.240, lng: 27.530 },
+  "Gökova Körfezi": { lat: 36.992, lng: 28.026 },
+  "Fethiye Körfezi": { lat: 36.657, lng: 28.988 },
+  "Antalya Körfezi": { lat: 36.562, lng: 30.738 },
+  "Mersin Körfezi": { lat: 36.654, lng: 34.698 },
+  "İskenderun Körfezi": { lat: 36.611, lng: 35.856 }
+};
+
+/* =====================================================================
    TURİSTİK YERLER (Şehirlere Göre)
 ===================================================================== */
 const touristData = {
@@ -843,13 +883,14 @@ const riversGeoJSON = {
 };
 
 /* =====================================================================
-   OYUN MODLARI
+   OYUN MODLARI VE DEĞİŞKENLERİ
 ===================================================================== */
 const GAME_MODES = [
   { id:'timeAttack', emoji:'⏳', name:'Zamana Karşı', desc:'60 saniyelik süre baskısıyla bilgini test et.' },
   { id:'classic', emoji:'🗺️', name:'Klasik Eşleştirme', desc:'Zaman baskısı yok, tek tek ögeleri haritada bul.' },
   { id:'tourist', emoji:'🏛️', name:'Turistik Şehirler', desc:'Karttaki tüm turistik yerleri oku, hangi şehir olduğunu bul.' },
   { id:'dams', emoji:'🌊', name:'Barajlar & Akarsular', desc:'Baraj isimlerini oku, üzerindeki akarsuyu haritada işaretle.' },
+  { id:'gulfs', emoji:'🌊', name:'Körfezler', desc:'Türkiye\'nin körfezlerini haritada yerlerine yerleştir.' },
   { id:'atlas', emoji:'📖', name:'Keşif & Atlas', desc:'Serbest mod. İle tıkla, tüm bilgileri rahatça öğren.' }
 ];
 
@@ -889,6 +930,8 @@ let searchQuery='', activeCat='all', totalAttempts=0, totalCorrectAttempts=0;
 let gameEnded=false, gameStartTime=0;
 let jokers={fifty:3, radar:3}, correctTimestamps=[], sessionNewBadges=[];
 let timeAttackActive=false, timeAttackRemaining=60, timeAttackInterval=null;
+
+let gulfMarkers = {}; 
 
 const STORAGE_KEY='trGeoAcademyV3';
 function loadStore(){ try{ return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {badges:[], highScores:{}}; }catch(e){ return {badges:[], highScores:{}}; } }
@@ -986,7 +1029,7 @@ function renderMenu(){
   });
   
   const catTitle = document.querySelectorAll('.section-title')[1];
-  if(selectedMode === 'tourist' || selectedMode === 'atlas' || selectedMode === 'dams') {
+  if(selectedMode === 'tourist' || selectedMode === 'atlas' || selectedMode === 'dams' || selectedMode === 'gulfs') {
      catGrid.style.display = 'none'; catTitle.style.display = 'none';
   } else {
      catGrid.style.display = 'flex'; catTitle.style.display = 'flex';
@@ -1009,9 +1052,12 @@ document.getElementById('startGameBtn').addEventListener('click', ()=>startGame(
    OYUN MOTORU
 ===================================================================== */
 let map, provinceLayers=[], borderMarkers={}, activePopup=null, currentTileKey='dark', tileLayers={}, currentHighlightedRegion="";
-let riverMapLayer = null; // Akarsular için Leaflet Katmanı
+let riverMapLayer = null; 
 
 function buildItemPool(cats, mode){
+  if (mode === 'gulfs') {
+      return gulfsData.map(g => ["Körfez", g.name, [g.name], [g.status, g.info]]);
+  }
   if (mode === 'tourist') {
      return Object.keys(touristData).map(city => {
          return ["Turistik", "Turistik Yerler", [city], touristData[city]];
@@ -1068,15 +1114,15 @@ function startGame(mode, cats){
 
 function setupHudForMode(mode){
   document.querySelector('.timerPill').style.display = mode==='timeAttack' ? 'flex' : 'none';
-  document.getElementById('jokerFifty').style.display = (mode==='atlas' || mode==='dams') ? 'none' : 'flex';
-  document.getElementById('jokerRadar').style.display = (mode==='atlas' || mode==='dams') ? 'none' : 'flex';
+  document.getElementById('jokerFifty').style.display = (mode==='atlas' || mode==='dams' || mode==='gulfs') ? 'none' : 'flex';
+  document.getElementById('jokerRadar').style.display = (mode==='atlas' || mode==='dams' || mode==='gulfs') ? 'none' : 'flex';
   updateJokerUI();
   
   const searchRow = document.getElementById('searchCatsRow');
   const catFilters = document.querySelectorAll('.filter-btn');
   if(mode === 'atlas') {
      searchRow.style.display = 'none';
-  } else if (mode === 'tourist' || mode === 'dams') {
+  } else if (mode === 'tourist' || mode === 'dams' || mode === 'gulfs') {
      searchRow.style.display = 'flex';
      catFilters.forEach(b => b.style.display = 'none'); 
   } else {
@@ -1085,7 +1131,7 @@ function setupHudForMode(mode){
   }
   
   const mainArea = document.getElementById('game-main-area');
-  if(mode === 'tourist' || mode === 'dams') {
+  if(mode === 'tourist' || mode === 'dams' || mode === 'gulfs') {
       mainArea.classList.add('tourist-layout');
   } else {
       mainArea.classList.remove('tourist-layout');
@@ -1111,13 +1157,17 @@ function updateJokerUI(){
 function resetMapState(){
   if(!map) return;
   Object.values(borderMarkers).forEach(m=>map.removeLayer(m)); borderMarkers={};
+  Object.values(gulfMarkers).forEach(m=>map.removeLayer(m)); gulfMarkers={};
+  
   provinceLayers.forEach(l=>{ l.unbindTooltip(); map.removeLayer(l); }); provinceLayers=[];
   if(riverMapLayer) { map.removeLayer(riverMapLayer); riverMapLayer = null; }
   
   map.eachLayer(l=>{ if(l instanceof L.Marker || (l._path && l.options && l.options.className==='matched-dot')) { try{map.removeLayer(l);}catch(e){} } });
   addGeoJsonLayer(); 
-  renderBorderPoints();
+  if(selectedMode !== 'gulfs' && selectedMode !== 'dams') renderBorderPoints();
+  
   if(selectedMode === 'dams') addRiversLayer();
+  if(selectedMode === 'gulfs' || selectedMode === 'atlas') renderGulfPoints();
 }
 
 function initMap(){
@@ -1127,8 +1177,27 @@ function initMap(){
   tileLayers.topo=L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png',{maxZoom:17,subdomains:'abc'});
   tileLayers.dark.addTo(map);
   addGeoJsonLayer(); 
-  renderBorderPoints();
+  
+  if(selectedMode !== 'gulfs' && selectedMode !== 'dams') renderBorderPoints();
+  
   if(selectedMode === 'dams') addRiversLayer();
+  if(selectedMode === 'gulfs' || selectedMode === 'atlas') renderGulfPoints();
+}
+
+function renderGulfPoints(){
+  const isMobile=window.innerWidth<=1000;
+  Object.keys(gulfCoords).forEach(gulfName=>{
+    const data=gulfCoords[gulfName];
+    const marker=L.circleMarker([data.lat,data.lng],{
+      radius:isMobile?9:7, fillColor:'#ffffff', color:'#000000', weight:2, opacity:1, fillOpacity:0.95
+    }).addTo(map);
+    marker.gulfName=gulfName; gulfMarkers[gulfName]=marker;
+    
+    marker.on('click', ()=>{
+      if(selectedMode==='atlas'){ showAtlasInfo(null, null, gulfName); return; }
+      if(selectedMode==='gulfs' && selectedItem!==null) attemptMatchGulf(selectedItem, gulfName, [data.lat,data.lng]);
+    });
+  });
 }
 
 function addGeoJsonLayer(){
@@ -1136,7 +1205,6 @@ function addGeoJsonLayer(){
     if(typeof turkeyGeoJSON==='undefined') return;
     const isMobile=window.innerWidth<=1000;
     
-    // Baraj modunda illeri daha soluk yapıyoruz ki akarsular öne çıksın
     const baseOpacity = selectedMode === 'dams' ? 0.3 : 0.65;
     const baseColor = selectedMode === 'dams' ? '#0f172a' : '#1e293b';
     
@@ -1146,19 +1214,17 @@ function addGeoJsonLayer(){
         const name=getProvinceName(feature.properties);
         layer.provinceName=name; provinceLayers.push(layer);
         
-        // Baraj modunda il isimlerini gizleyebiliriz ama CSS 'hide-labels' bunu zaten kontrol ediyor.
         layer.bindTooltip(name,{permanent:true, direction:'center', className:'province-label', opacity:0.95});
         
         layer.on('mouseover', ()=>{ 
-            if(selectedItem!==null && selectedMode!=='atlas' && selectedMode!=='dams'){ 
+            if(selectedItem!==null && selectedMode!=='atlas' && selectedMode!=='dams' && selectedMode!=='gulfs'){ 
                 layer.setStyle({fillColor:'#6366f1', fillOpacity:0.8, weight:2}); 
             } 
         });
         layer.on('mouseout', ()=> updateProvinceStyle(layer));
         layer.on('click', (e)=>{
           if(selectedMode==='atlas'){ showAtlasInfo(name); return; }
-          // Baraj modundayken illere tıklama işlem yapmasın
-          if(selectedMode==='dams') return;
+          if(selectedMode==='dams' || selectedMode==='gulfs') return; 
           if(selectedItem!==null && items[selectedItem][0]!=='Sınır Kapısı'){ attemptMatch(selectedItem, layer, e.latlng); }
         });
       }
@@ -1168,29 +1234,50 @@ function addGeoJsonLayer(){
 }
 
 function addRiversLayer() {
-    riverMapLayer = L.geoJSON(riversGeoJSON, {
+    const visualLayer = L.geoJSON(riversGeoJSON, {
         style: {
             color: '#38bdf8',
             weight: 4,
             opacity: 0.85,
-            lineJoin: 'round',    // Akarsuların yumuşak/kıvrımlı durmasını sağlar
+            lineJoin: 'round',    
             lineCap: 'round',
             className: 'river-line'
+        }
+    });
+
+    const hitboxLayer = L.geoJSON(riversGeoJSON, {
+        style: {
+            color: 'transparent',
+            weight: 24, // Tıklanmayı çok kolaylaştıran dev görünmez hitbox
+            opacity: 0,
+            className: 'river-hitbox'
         },
         onEachFeature: (feature, layer) => {
             const riverName = feature.properties.name;
             layer.bindTooltip(`📍 ${riverName}`, { direction: 'top', sticky: true, opacity: 0.9, className: 'river-tooltip' });
             
+            layer.on('mouseover', () => {
+                const targetVisual = visualLayer.getLayers().find(l => l.feature.properties.name === riverName);
+                if(targetVisual && targetVisual.getElement()) {
+                    targetVisual.getElement().classList.add('river-hover');
+                }
+            });
+            layer.on('mouseout', () => {
+                const targetVisual = visualLayer.getLayers().find(l => l.feature.properties.name === riverName);
+                if(targetVisual && targetVisual.getElement()) {
+                    targetVisual.getElement().classList.remove('river-hover');
+                }
+            });
             layer.on('click', (e) => {
                 if(selectedItem !== null && selectedMode === 'dams') {
-                    attemptMatchRiver(selectedItem, riverName, layer, e.latlng);
+                    const targetVisual = visualLayer.getLayers().find(l => l.feature.properties.name === riverName);
+                    attemptMatchRiver(selectedItem, riverName, targetVisual || layer, e.latlng);
                 }
             });
         }
-    }).addTo(map);
-    
-    // Nehirlerin il katmanlarının üzerinde kalmasını sağla
-    riverMapLayer.bringToFront();
+    });
+
+    riverMapLayer = L.layerGroup([visualLayer, hitboxLayer]).addTo(map);
 }
 
 
@@ -1226,24 +1313,32 @@ function renderBorderPoints(){
     marker.gateName=gateName; borderMarkers[gateName]=marker;
     marker.on('click', ()=>{
       if(selectedMode==='atlas'){ showAtlasInfo(null, gateName); return; }
-      // Baraj modundayken tıklanmasın
-      if(selectedMode==='dams') return;
+      if(selectedMode==='dams' || selectedMode==='gulfs') return;
       if(selectedItem!==null) attemptMatch(selectedItem, null, [data.lat,data.lng], gateName);
     });
   });
 }
 
-
-function showAtlasInfo(provinceName, gateName){
+function showAtlasInfo(provinceName, gateName, gulfName = null){
   const panel=document.getElementById('atlasBody');
   const title=document.getElementById('atlasTitle');
   document.getElementById('atlasPanel').style.display='block';
+  
+  if(gulfName){
+    const g = gulfsData.find(x => x.name === gulfName);
+    title.textContent=gulfName;
+    const color = g.status === "Temiz" ? "#06b6d4" : "#ef4444";
+    panel.innerHTML=`<div class="atlas-group"><div class="atlas-group-title" style="color:${color}">${g.status} Körfez</div><div class="atlas-entry">${g.info}</div></div>`;
+    return;
+  }
+  
   if(gateName){
     const data=borderGateCoords[gateName];
     title.textContent=gateName.replace(' 🚂','');
     panel.innerHTML=`<div class="atlas-group"><div class="atlas-group-title">Sınır Kapısı</div><div class="atlas-entry">${data.country} sınırı — ${data.prov} ili</div></div>`;
     return;
   }
+  
   title.textContent=provinceName;
   let html='';
   
@@ -1281,9 +1376,9 @@ function selectNextAvailableCard(){
   const availableIndices=[];
   items.forEach((x,idx)=>{
     if(!matched.has(idx)){
-      if(selectedMode !== 'tourist' && selectedMode !== 'dams' && activeCat!=='all' && x[0]!==activeCat) return;
+      if(selectedMode !== 'tourist' && selectedMode !== 'dams' && selectedMode !== 'gulfs' && activeCat!=='all' && x[0]!==activeCat) return;
       if(searchQuery) {
-          if (x[0] === 'Turistik' || x[0] === 'Baraj') {
+          if (x[0] === 'Turistik' || x[0] === 'Baraj' || x[0] === 'Körfez') {
               const match = x[3].some(p => norm(p).includes(norm(searchQuery))) || norm(x[2][0]).includes(norm(searchQuery));
               if(!match) return;
           } else {
@@ -1304,9 +1399,9 @@ function renderCards(){
   container.innerHTML='';
   items.forEach((x,i)=>{
     if(matched.has(i)) return;
-    if(selectedMode !== 'tourist' && selectedMode !== 'dams' && activeCat!=='all' && x[0]!==activeCat) return;
+    if(selectedMode !== 'tourist' && selectedMode !== 'dams' && selectedMode !== 'gulfs' && activeCat!=='all' && x[0]!==activeCat) return;
     if(searchQuery) {
-          if (x[0] === 'Turistik' || x[0] === 'Baraj') {
+          if (x[0] === 'Turistik' || x[0] === 'Baraj' || x[0] === 'Körfez') {
               const match = x[3].some(p => norm(p).includes(norm(searchQuery))) || norm(x[2][0]).includes(norm(searchQuery));
               if(!match) return;
           } else {
@@ -1320,14 +1415,22 @@ function renderCards(){
 
     let hintHTML='';
     if(wrongCounts[i]>=3){
-      const detail = (x[0] === 'Turistik' || x[0] === 'Baraj') ? 'Cevap: ' + x[2][0] : (x[3] ? `${x[3]} (${x[2].join('/')})` : x[2].join(' / '));
+      const detail = (x[0] === 'Turistik' || x[0] === 'Baraj' || x[0] === 'Körfez') ? 'Cevap: ' + x[1] : (x[3] ? `${x[3]} (${x[2].join('/')})` : x[2].join(' / '));
       hintHTML=`<div class="card-hint-text">💡 İpucu: ${detail}</div>`;
     }
 
-    // Turistik ve Baraj Modeli Özel Kart Görünümü
+    // Körfezleri normal bir kart gibi render et, Baraj ve Turistik için özel UI tut
     if (x[0] === 'Turistik' || x[0] === 'Baraj') {
-        const listItems = x[3];
+        let tagIcon = '🏛️ Turistik';
+        let tagBg = '#ec4899';
+        
+        if (x[0] === 'Baraj') {
+            tagIcon = '🌊 Barajlar';
+            tagBg = '#3b82f6';
+        }
+        
         let listHTML = '<ul class="tourist-ul">';
+        const listItems = x[3];
         listItems.forEach(p => {
            let parts = p.split(' - ');
            if(parts.length > 1) {
@@ -1336,22 +1439,19 @@ function renderCards(){
               listHTML += `<li><strong>${p}</strong></li>`;
            }
         });
+        
         listHTML += '</ul>';
-        
-        const isDam = x[0] === 'Baraj';
-        const tagIcon = isDam ? '🌊 Barajlar' : '🏛️ Turistik';
-        const tagBg = isDam ? '#3b82f6' : '#ec4899';
-        
-        card.innerHTML = `<span class="tag" style="background:${tagBg}">${tagIcon}</span><div class="tourist-city-title"></div>${listHTML}${hintHTML}`;
+        card.innerHTML = `<span class="tag" style="background:${tagBg}">${tagIcon}</span>${listHTML}${hintHTML}`;
         card.classList.add('tourist-card');
     } else {
         let tagClass='tag-milli';
-        if(x[0]==='Ramsar') tagClass='tag-ramsar';
-        if(x[0]==='UNESCO') tagClass='tag-unesco';
-        if(x[0]==='Cittaslow') tagClass='tag-cittaslow';
-        if(x[0]==='Serbest Bölge') tagClass='tag-ticaret';
-        if(x[0]==='Sınır Kapısı') tagClass='tag-kapi';
-        if(x[0]==='Kalkınma Projesi') tagClass='tag-kalkinma';
+        if(x[0]==='Körfez') tagClass='tag-gulf'; // Körfez için özel küçük etiket stili
+        else if(x[0]==='Ramsar') tagClass='tag-ramsar';
+        else if(x[0]==='UNESCO') tagClass='tag-unesco';
+        else if(x[0]==='Cittaslow') tagClass='tag-cittaslow';
+        else if(x[0]==='Serbest Bölge') tagClass='tag-ticaret';
+        else if(x[0]==='Sınır Kapısı') tagClass='tag-kapi';
+        else if(x[0]==='Kalkınma Projesi') tagClass='tag-kalkinma';
 
         let progressHTML='';
         if(x[0]==='Kalkınma Projesi'){
@@ -1402,19 +1502,57 @@ function showMapPopup(latlng,message,type='success',duration=3000){
   setTimeout(()=>{ if(activePopup){ map.closePopup(activePopup); activePopup=null; } }, duration);
 }
 
-// BARAJLAR MODU (Nehir Eşleştirme)
+// KÖRFEZLER MODU
+function attemptMatchGulf(itemIndex, clickedGulfName, latlng) {
+  if(gameEnded) return;
+  const [cat, name, provs, extra] = items[itemIndex];
+  totalAttempts++;
+
+  if(norm(clickedGulfName) === norm(name)) {
+    totalCorrectAttempts++;
+    matched.add(itemIndex);
+    registerCorrect();
+    
+    const status = extra[0]; 
+    const info = extra[1];
+    const marker = gulfMarkers[name];
+    const color = status === "Temiz" ? "#06b6d4" : "#ef4444"; 
+    
+    marker.setStyle({fillColor: color, color: '#ffffff', radius: 9});
+    marker.bindTooltip(`<b>${name}</b><br>${status} Körfez`, {direction:'top', offset:[0,-8]});
+    
+    showMapPopup(latlng, `<b>Doğru! ✨</b><br><span style='color:${color}; font-size:13px;'>${name} (${status})</span><br><span style='font-size:10px;opacity:0.85;'>${info}</span>`, 'success', 4000);
+    
+    selectNextAvailableCard();
+    renderCards();
+    checkFastBadge();
+    if(matched.size === items.length) { setTimeout(()=>endGame('complete'), 800); }
+  } else {
+    combo=0; wrongCounts[itemIndex] = (wrongCounts[itemIndex]||0)+1; playWrongSound();
+    if(selectedMode==='timeAttack') adjustTimeAttack(-5);
+    const cardEl = document.querySelector(`.card[data-i="${itemIndex}"]`);
+    if(cardEl) { cardEl.classList.add('wrong-shake'); setTimeout(()=>cardEl.classList.remove('wrong-shake'), 400); }
+
+    if(wrongCounts[itemIndex]>=3) {
+        showMapPopup(latlng, `Yanlış Nokta!<br>💡 İpucu: Aranan "${name}" idi.`, 'danger', 3000);
+    } else {
+        showMapPopup(latlng, `Yanlış Körfez (${clickedGulfName}). Tekrar dene!`, 'danger', 2000);
+    }
+    renderCards();
+  }
+}
+
+// BARAJLAR MODU
 function attemptMatchRiver(itemIndex, clickedRiverName, layer, latlng) {
     if(gameEnded) return;
     const [cat, name, provs, extra] = items[itemIndex];
     totalAttempts++;
 
-    // 'name' bizim aradığımız akarsuyun adı (karttaki veri)
     if(norm(clickedRiverName) === norm(name)) {
         totalCorrectAttempts++;
         matched.add(itemIndex);
         registerCorrect();
         
-        // Akarsuyu doğru bilince yeşil ve sabit kalsın
         layer.getElement().classList.add('matched');
         
         showMapPopup(latlng, `<b>Harika! 🌊</b><br><span style='color:#6ee7b7; font-size:13px;'>${name} Üzerindeki Barajlar</span>`, 'success', 2500);
@@ -1597,6 +1735,7 @@ function endGame(reason){
         let nameToDisplay = items[idx][1];
         if (items[idx][0] === 'Turistik') nameToDisplay = `Turistik Yerler (${items[idx][2][0]})`;
         if (items[idx][0] === 'Baraj') nameToDisplay = `Barajlar (${items[idx][2][0]} Akarsuyu)`;
+        if (items[idx][0] === 'Körfez') nameToDisplay = `${items[idx][1]} (${items[idx][3][0]})`;
         return {name:nameToDisplay, cat:items[idx][0], count};
     });
     
@@ -1646,6 +1785,10 @@ function buildPrintNote(weakEntries, accuracy, mm, ss){
     if (it[0] === 'Turistik' || it[0] === 'Baraj') {
         subject = it[0] + ': ' + it[3].map(p=>p.split(' - ')[0]).join(', ');
         detail = it[2][0];
+    }
+    if (it[0] === 'Körfez') {
+        subject = it[0] + ': ' + it[1];
+        detail = it[3][0] + " Körfez (" + it[3][1] + ")";
     }
     
     rows += `<tr><td style="padding:8px;border:1px solid #ccc;">${subject}</td><td style="padding:8px;border:1px solid #ccc;">${it[0]}</td><td style="padding:8px;border:1px solid #ccc;">${detail}</td><td style="padding:8px;border:1px solid #ccc;">${count}</td></tr>`;
